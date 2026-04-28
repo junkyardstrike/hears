@@ -9,7 +9,7 @@ import { GeneralTab } from '@/components/GeneralTab';
 import { ExportPanel } from '@/components/ExportPanel';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Button } from '@/components/ui/button';
-import { ArrowLeft, Save } from 'lucide-react';
+import { ArrowLeft, Save, Briefcase } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 
 export default function Editor() {
@@ -70,10 +70,25 @@ export default function Editor() {
           </div>
         </div>
         
-        <Button onClick={persistStorage} variant="outline" className="border-border hover:bg-white/5 text-muted-foreground whitespace-nowrap">
-          <Save className="w-4 h-4 mr-2" />
-          手動保存（自動保存済）
-        </Button>
+        <div className="flex flex-wrap gap-2">
+          <Button 
+            onClick={() => {
+              if (confirm('この内容で案件管理を作成しますか？\n（シートはバックアップフォルダへ移動します）')) {
+                useHearsStore.getState().convertToCase(project.id);
+                router.push('/');
+              }
+            }} 
+            className="bg-blue-600 hover:bg-blue-700 text-white font-bold h-10 px-4 shadow-lg shadow-blue-500/20"
+          >
+            <Briefcase className="w-4 h-4 mr-2" />
+            案件管理を作成
+          </Button>
+          
+          <Button onClick={persistStorage} variant="outline" className="border-border hover:bg-white/5 text-muted-foreground whitespace-nowrap h-10">
+            <Save className="w-4 h-4 mr-2" />
+            保存
+          </Button>
+        </div>
       </div>
 
       <BasicInfo project={project} />

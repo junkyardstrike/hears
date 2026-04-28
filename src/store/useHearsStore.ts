@@ -43,9 +43,36 @@ export interface GeneralQuestionItem {
   value: string;
 }
 
+export interface TodoItem {
+  id: string;
+  text: string;
+  completed: boolean;
+  createdAt: number;
+}
+
+export interface CaseData {
+  id: string;
+  projectId?: string; // Optional link to original hearing project
+  name: string;
+  clientName: string;
+  status: 'active' | 'completed' | 'archived';
+  technicalInfo: {
+    url: string;
+    idPass: string;
+    server: string;
+    memo: string;
+  };
+  todos: TodoItem[];
+  updatedAt: number;
+  createdAt: number;
+}
+
+export type HearingFolder = 'not-started' | 'in-progress' | 'backup';
+
 export interface ProjectData {
   id: string;
   name: string;
+  folder: HearingFolder;
   updatedAt: number;
   basicInfo: BasicInfo;
   
@@ -105,14 +132,24 @@ export interface ProjectData {
 
 export interface HearsState {
   projects: ProjectData[];
+  cases: CaseData[];
   
+  // Security
+  pinCode: string;
+  isLocked: boolean;
+  setPinCode: (pin: string) => void;
+  setLocked: (locked: boolean) => void;
+
   // Dashboard Actions
   createProject: (name: string) => string;
   deleteProject: (id: string) => void;
-  importProjects: (projects: ProjectData[]) => void;
-  
-  // Editor Actions
   updateProject: (id: string, updater: (project: ProjectData) => void) => void;
+  
+  // Case Actions
+  createCase: (name: string, projectId?: string) => string;
+  deleteCase: (id: string) => void;
+  updateCase: (id: string, updater: (c: CaseData) => void) => void;
+  convertToCase: (projectId: string) => void;
 }
 
 // ---------------------------------------------------------
@@ -123,6 +160,7 @@ export const generateId = () => Math.random().toString(36).substring(2, 9);
 const createInitialProject = (name: string): ProjectData => ({
   id: generateId(),
   name,
+  folder: 'not-started',
   updatedAt: Date.now(),
   basicInfo: {
     clientName: '', managerName: '', contact: '', location: '', phone: '', parking: '',
@@ -221,6 +259,12 @@ export const useHearsStore = create<HearsState>()(
   persist(
     (set, get) => ({
       projects: [],
+      cases: [],
+      pinCode: '0000',
+      isLocked: true,
+
+      setPinCode: (pin) => set({ pinCode: pin }),
+      setLocked: (locked) => set({ isLocked: locked }),
       
       createProject: (name: string) => {
         const newProject = createInitialProject(name);
@@ -236,10 +280,6 @@ export const useHearsStore = create<HearsState>()(
         }));
       },
       
-      importProjects: (importedProjects: ProjectData[]) => {
-        set({ projects: importedProjects });
-      },
-      
       updateProject: (id: string, updater: (project: ProjectData) => void) => {
         set((state) => {
           const newProjects = state.projects.map(p => {
@@ -253,12 +293,64 @@ export const useHearsStore = create<HearsState>()(
           });
           return { projects: newProjects };
         });
+      },
+
+      createCase: (name: string, projectId?: string) => {
+        const id = generateId();
+        const newCase: CaseData = {
+          id,
+          projectId,
+          name,
+          clientName: '',
+          status: 'active',
+          technicalInfo: { url: '', idPass: '', server: '', memo: '' },
+          todos: [],
+          updatedAt: Date.now(),
+          createdAt: Date.now()
+        };
+        set((state) => ({ cases: [...state.cases, newCase] }));
+        return id;
+      },
+
+      deleteCase: (id: string) => {
+        set((state) => ({ cases: state.cases.filter(c => c.id !== id) }));
+      },
+
+      updateCase: (id: string, updater: (c: CaseData) => void) => {
+        set((state) => ({
+          cases: state.cases.map(c => {
+            if (c.id === id) {
+              const clone = JSON.parse(JSON.stringify(c));
+              updater(clone);
+              clone.updatedAt = Date.now();
+              return clone;
+            }
+            return c;
+          })
+        }));
+      },
+
+      convertToCase: (projectId: string) => {
+        const state = get();
+        const project = state.projects.find(p => p.id === projectId);
+        if (!project) return;
+
+        // 1. Create Case
+        const caseId = state.createCase(project.name, project.id);
+        state.updateCase(caseId, (c) => {
+          c.clientName = project.basicInfo.clientName || project.name;
+          c.technicalInfo.url = project.basicInfo.urlOrDomain;
+        });
+
+        // 2. Move project to backup folder
+        state.updateProject(projectId, (p) => {
+          p.folder = 'backup';
+        });
       }
     }),
     {
-      name: 'hears-v3-storage',
+      name: 'alchemist-v5-storage',
       storage: createJSONStorage(() => idbStorage),
-      // To handle migrations if needed, but since we changed the name, it will start fresh.
     }
   )
 );

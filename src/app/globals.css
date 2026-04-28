@@ -49,25 +49,38 @@
 }
 
 :root, .dark {
-  --background: #0a0a0b;
+  --background: #050505;
   --foreground: #ffffff;
-  --card: #161618;
+  --card: #0c0c0e;
   --card-foreground: #ffffff;
-  --popover: #161618;
+  --popover: #0c0c0e;
   --popover-foreground: #ffffff;
-  --primary: #D4AF37;
-  --primary-foreground: #000000;
-  --secondary: #4169E1;
+  --primary: #00896B;
+  --primary-foreground: #ffffff;
+  --secondary: #1a1a1a;
   --secondary-foreground: #ffffff;
-  --muted: #2a2a2d;
-  --muted-foreground: #a1a1aa;
-  --accent: #D4AF37;
-  --accent-foreground: #000000;
+  --muted: #1a1a1a;
+  --muted-foreground: #71717a;
+  --accent: #00896B;
+  --accent-foreground: #ffffff;
   --destructive: #7f1d1d;
-  --border: #333333;
-  --input: #2a2a2d;
-  --ring: #D4AF37;
-  --radius: 0.5rem;
+  --border: #1a1a1a;
+  --input: #1a1a1a;
+  --ring: #00896B;
+  --radius: 0.75rem;
+}
+
+@layer utilities {
+  .glow-primary {
+    box-shadow: 0 0 15px -3px rgba(0, 137, 107, 0.4), 0 0 6px -2px rgba(0, 137, 107, 0.2);
+  }
+  .glow-text {
+    text-shadow: 0 0 10px rgba(0, 137, 107, 0.5);
+  }
+  .glow-border {
+    border-color: rgba(0, 137, 107, 0.4);
+    box-shadow: inset 0 0 8px rgba(0, 137, 107, 0.1);
+  }
 }
 
 @layer base {
