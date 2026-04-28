@@ -92,14 +92,14 @@ export function SettingsView() {
               <Download className="w-5 h-5 text-blue-500" />
               <div className="text-center">
                 <div className="text-[11px] sm:text-sm font-bold">バックアップ</div>
-                <div className="text-[8px] opacity-40 uppercase tracking-tighter">Export JSON</div>
+                <div className="text-[8px] opacity-40 font-bold tracking-tighter">データを保存</div>
               </div>
             </Button>
             <Button variant="outline" onClick={() => fileInputRef.current?.click()} className="h-20 sm:h-24 flex flex-col gap-1 sm:gap-2 border-white/5 hover:bg-white/5 p-2">
               <Upload className="w-5 h-5 text-purple-500" />
               <div className="text-center">
                 <div className="text-[11px] sm:text-sm font-bold">インポート</div>
-                <div className="text-[8px] opacity-40 uppercase tracking-tighter">Import JSON</div>
+                <div className="text-[8px] opacity-40 font-bold tracking-tighter">データを復元</div>
               </div>
             </Button>
             <input 
@@ -186,7 +186,16 @@ export function SettingsView() {
                 <p className="text-[9px] sm:text-[11px] text-muted-foreground leading-relaxed">
                   すべてのヒアリングシートと案件データが削除されます。この操作は取り消せません。
                 </p>
-                <Button variant="ghost" className="mt-2 text-destructive hover:bg-destructive/10 px-0 h-auto font-bold text-[10px] sm:text-xs">
+                <Button 
+                  variant="ghost" 
+                  onClick={() => {
+                    if(confirm('本当にすべてのデータを削除しますか？')) {
+                      useHearsStore.setState({ projects: [], cases: [] });
+                      alert('データを削除しました');
+                    }
+                  }}
+                  className="mt-2 text-destructive hover:bg-destructive/10 px-0 h-auto font-bold text-[10px] sm:text-xs"
+                >
                   全データを削除する
                 </Button>
               </div>
@@ -200,7 +209,7 @@ export function SettingsView() {
         <div className="flex items-center gap-2 text-xs font-black italic tracking-widest text-white mb-2">
           ALCHEMIST <span className="text-primary not-italic">v5.0.0</span>
         </div>
-        <p className="text-[10px] uppercase tracking-widest font-bold">Professional Management Infrastructure</p>
+        <p className="text-[10px] font-bold tracking-widest">プロフェッショナル業務マネジメント基盤</p>
       </div>
     </div>
   );

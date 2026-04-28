@@ -1,258 +1,99 @@
 'use client';
 
-import { useState } from 'react';
-import { useHearsStore, CaseData, TodoItem } from '@/store/useHearsStore';
+import { useRouter } from 'next/navigation';
+import Link from 'next/link';
+import { useHearsStore } from '@/store/useHearsStore';
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
 import { format } from 'date-fns';
 import { 
   Plus, Trash2, ExternalLink, Shield, Server, FileText, 
-  CheckCircle2, Circle, MoreVertical, X, Check, Clock
+  CheckCircle2, Circle, MoreVertical, X, Check, Clock, ChevronRight, Briefcase
 } from 'lucide-react';
-import { Input } from '@/components/ui/input';
-import { Textarea } from '@/components/ui/textarea';
-import { 
-  Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogFooter 
-} from '@/components/ui/dialog';
-import { Badge } from '@/components/ui/badge';
 
 export function CasesView() {
-  const { cases, createCase, deleteCase, updateCase } = useHearsStore();
-  const [selectedCaseId, setSelectedCaseId] = useState<string | null>(null);
-  
-  const selectedCase = cases.find(c => c.id === selectedCaseId);
+  const { cases, createCase, deleteCase } = useHearsStore();
+  const router = useRouter();
 
   const handleCreate = () => {
     const name = prompt('案件名を入力してください', '新規案件');
     if (name) createCase(name);
   };
 
+  if (cases.length === 0) {
+    return (
+      <div className="flex flex-col items-center justify-center py-20 text-center animate-in fade-in duration-700">
+        <div className="w-20 h-20 rounded-full bg-white/5 flex items-center justify-center mb-6">
+          <Briefcase className="w-10 h-10 text-muted-foreground opacity-20" />
+        </div>
+        <h3 className="text-xl font-bold text-white mb-2">進行案件がありません</h3>
+        <p className="text-muted-foreground text-sm max-w-xs">
+          ヒアリングシートから「案件化」するか、右上のボタンから新規案件を作成してください。
+        </p>
+      </div>
+    );
+  }
+
   return (
-    <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
+    <div className="space-y-6 sm:space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
       <div className="flex justify-between items-center">
-        <h2 className="text-2xl font-bold tracking-tight text-white flex items-center gap-2">
-          <Badge variant="outline" className="text-primary border-primary/20 bg-primary/5 px-3 py-1">
-            {cases.length}
-          </Badge>
-          ACTIVE PROJECTS
-        </h2>
-        <Button onClick={handleCreate} className="bg-blue-500 hover:bg-blue-600 text-white font-bold px-6 shadow-lg shadow-blue-500/20">
+        <div>
+          <h2 className="text-xl sm:text-2xl font-bold tracking-tight text-white flex items-center gap-2 italic italic">
+            進行案件・管理ページ
+          </h2>
+          <p className="text-muted-foreground text-[10px] sm:text-xs mt-1">全プロジェクトの運用・管理ハブ</p>
+        </div>
+        <Button onClick={handleCreate} className="bg-primary hover:bg-primary/90 text-black font-bold px-4 sm:px-6 shadow-lg shadow-primary/20">
           <Plus className="w-5 h-5 mr-1" /> 新規案件
         </Button>
       </div>
 
-      {cases.length === 0 ? (
-        <div className="py-24 text-center border-2 border-dashed border-white/5 rounded-[2rem] bg-white/[0.02]">
-          <p className="text-muted-foreground italic mb-4">現在進行中の案件はありません</p>
-          <Button variant="outline" onClick={handleCreate}>最初の案件を作成</Button>
-        </div>
-      ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {cases.sort((a, b) => b.updatedAt - a.updatedAt).map((c) => (
-            <Card 
-              key={c.id} 
-              onClick={() => setSelectedCaseId(c.id)}
-              className="bg-[#0c0c0e] border-white/5 hover:border-blue-500/40 transition-all group cursor-pointer overflow-hidden"
-            >
-              <div className="h-1 w-full bg-gradient-to-r from-blue-500 to-transparent opacity-50" />
-              <CardHeader className="pb-3">
-                <div className="flex justify-between items-start">
-                  <CardTitle className="text-xl font-bold truncate pr-4 text-white group-hover:text-blue-400 transition-colors">
-                    {c.name}
-                  </CardTitle>
-                  <Badge className="bg-blue-500/10 text-blue-400 border-none uppercase text-[9px] tracking-widest">
-                    {c.status}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        {cases.sort((a, b) => b.updatedAt - a.updatedAt).map((c) => (
+          <Link key={c.id} href={`/cases/${c.id}`} className="block group">
+            <Card className="bg-[#0c0c0e] border-white/5 hover:border-primary/40 transition-all hover:scale-[1.02] active:scale-[0.98] cursor-pointer overflow-hidden relative h-full">
+              <div className="h-1 w-full bg-gradient-to-r from-primary/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+              <CardHeader className="p-5">
+                <div className="flex justify-between items-start mb-2">
+                  <Badge className={
+                    c.status === 'active' ? 'bg-emerald-500/20 text-emerald-400 border-none px-2' :
+                    c.status === 'completed' ? 'bg-blue-500/20 text-blue-400 border-none px-2' :
+                    'bg-zinc-500/20 text-zinc-400 border-none px-2'
+                  }>
+                    {c.status === 'active' ? '進行中' : c.status === 'completed' ? '完了' : 'アーカイブ'}
                   </Badge>
+                  <Button 
+                    variant="ghost" 
+                    size="icon" 
+                    className="h-8 w-8 text-muted-foreground hover:text-destructive opacity-0 group-hover:opacity-100 transition-all"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      if(confirm('案件を削除しますか？')) deleteCase(c.id);
+                    }}
+                  >
+                    <Trash2 className="w-4 h-4" />
+                  </Button>
                 </div>
-                <CardDescription className="text-xs opacity-50 flex items-center gap-2">
-                  <Clock className="w-3 h-3" /> {format(new Date(c.updatedAt), 'yyyy/MM/dd')}
+                <CardTitle className="text-lg font-bold text-white mb-1 group-hover:text-primary transition-colors line-clamp-1">{c.name}</CardTitle>
+                <CardDescription className="text-[10px] opacity-50 flex items-center gap-2">
+                  <Clock className="w-3 h-3" /> 更新: {format(new Date(c.updatedAt), 'yyyy/MM/dd HH:mm')}
                 </CardDescription>
               </CardHeader>
-              <CardContent>
-                <div className="space-y-3">
-                  <div className="flex items-center gap-2 text-xs text-muted-foreground bg-white/5 p-2 rounded-lg">
-                    <ExternalLink className="w-3 h-3 text-blue-500" />
-                    <span className="truncate">{c.technicalInfo.url || 'URL未設定'}</span>
+              <CardContent className="px-5 pb-5 pt-0">
+                <div className="flex items-center justify-between text-[11px] text-muted-foreground bg-white/5 rounded-xl p-3">
+                  <div className="flex flex-col">
+                    <span className="text-[9px] opacity-40 uppercase font-bold tracking-widest mb-0.5">タスク状況</span>
+                    <span className="text-white font-bold">
+                      {c.todos.filter(t => t.completed).length} / {c.todos.length} <span className="opacity-40 ml-1 font-normal">完了</span>
+                    </span>
                   </div>
-                  <div className="flex items-center justify-between text-[10px] font-bold text-muted-foreground uppercase tracking-tighter">
-                    <span>TASKS</span>
-                    <span>{c.todos.filter(t => t.completed).length} / {c.todos.length}</span>
-                  </div>
-                  <div className="w-full h-1.5 bg-white/5 rounded-full overflow-hidden">
-                    <div 
-                      className="h-full bg-blue-500 shadow-[0_0_8px_rgba(59,130,246,0.5)] transition-all duration-500"
-                      style={{ width: `${c.todos.length > 0 ? (c.todos.filter(t => t.completed).length / c.todos.length) * 100 : 0}%` }}
-                    />
-                  </div>
+                  <ChevronRight className="w-4 h-4 text-primary group-hover:translate-x-1 transition-transform" />
                 </div>
               </CardContent>
             </Card>
-          ))}
-        </div>
-      )}
-
-      {/* Case Detail Dialog */}
-      <Dialog open={!!selectedCaseId} onOpenChange={(open) => !open && setSelectedCaseId(null)}>
-        <DialogContent className="w-[95vw] sm:max-w-2xl bg-[#050505] border-white/10 text-white overflow-y-auto max-h-[90vh] p-4 sm:p-6 rounded-[2rem]">
-          {selectedCase && (
-            <CaseDetailView c={selectedCase} onClose={() => setSelectedCaseId(null)} />
-          )}
-        </DialogContent>
-      </Dialog>
-    </div>
-  );
-}
-
-function CaseDetailView({ c, onClose }: { c: CaseData, onClose: () => void }) {
-  const { updateCase, deleteCase } = useHearsStore();
-  const [newTodo, setNewTodo] = useState('');
-
-  const updateInfo = (key: keyof CaseData['technicalInfo'], val: string) => {
-    updateCase(c.id, (draft) => {
-      draft.technicalInfo[key] = val;
-    });
-  };
-
-  const addTodo = () => {
-    if (!newTodo.trim()) return;
-    updateCase(c.id, (draft) => {
-      draft.todos.push({
-        id: Math.random().toString(36).substring(2, 9),
-        text: newTodo,
-        completed: false,
-        createdAt: Date.now()
-      });
-    });
-    setNewTodo('');
-  };
-
-  const toggleTodo = (todoId: string) => {
-    updateCase(c.id, (draft) => {
-      const todo = draft.todos.find(t => t.id === todoId);
-      if (todo) todo.completed = !todo.completed;
-    });
-  };
-
-  const deleteTodo = (todoId: string) => {
-    updateCase(c.id, (draft) => {
-      draft.todos = draft.todos.filter(t => t.id !== todoId);
-    });
-  };
-
-  return (
-    <div className="space-y-6 sm:space-y-8 py-2">
-      <DialogHeader>
-        <div className="flex justify-between items-start pr-2">
-          <div className="min-w-0 flex-1">
-            <DialogTitle className="text-xl sm:text-3xl font-black italic tracking-tighter mb-1 truncate">{c.name}</DialogTitle>
-            <div className="flex flex-wrap items-center gap-2 sm:gap-4 text-[10px] text-muted-foreground">
-              <span>作成日: {format(new Date(c.createdAt), 'yyyy/MM/dd')}</span>
-            </div>
-          </div>
-          <Button variant="ghost" size="icon" onClick={() => {
-            if(confirm('案件を削除しますか？')) {
-              deleteCase(c.id);
-              onClose();
-            }
-          }} className="text-muted-foreground hover:text-destructive">
-            <Trash2 className="w-5 h-5" />
-          </Button>
-        </div>
-      </DialogHeader>
-
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        {/* Technical Info */}
-        <div className="space-y-4">
-          <div className="flex items-center gap-2 text-blue-400 text-sm font-bold tracking-widest uppercase">
-            <Shield className="w-4 h-4" /> Technical Info
-          </div>
-          <div className="space-y-4 bg-white/[0.03] p-4 rounded-2xl border border-white/5">
-            <div className="space-y-1.5">
-              <label className="text-[10px] font-bold text-muted-foreground">SITE URL</label>
-              <Input 
-                value={c.technicalInfo.url} 
-                onChange={(e) => updateInfo('url', e.target.value)}
-                placeholder="https://..."
-                className="bg-black/40 border-white/5 focus-visible:ring-blue-500/50"
-              />
-            </div>
-            <div className="space-y-1.5">
-              <label className="text-[10px] font-bold text-muted-foreground">ID / PASSWORD</label>
-              <Input 
-                value={c.technicalInfo.idPass} 
-                onChange={(e) => updateInfo('idPass', e.target.value)}
-                placeholder="admin / pass123"
-                className="bg-black/40 border-white/5 focus-visible:ring-blue-500/50"
-              />
-            </div>
-            <div className="space-y-1.5">
-              <label className="text-[10px] font-bold text-muted-foreground">SERVER / FTP</label>
-              <Input 
-                value={c.technicalInfo.server} 
-                onChange={(e) => updateInfo('server', e.target.value)}
-                placeholder="Server name or IP"
-                className="bg-black/40 border-white/5 focus-visible:ring-blue-500/50"
-              />
-            </div>
-          </div>
-          
-          <div className="space-y-1.5">
-            <div className="flex items-center gap-2 text-blue-400 text-sm font-bold tracking-widest uppercase">
-              <FileText className="w-4 h-4" /> Memo
-            </div>
-            <Textarea 
-              value={c.technicalInfo.memo} 
-              onChange={(e) => updateInfo('memo', e.target.value)}
-              placeholder="案件に関するメモ..."
-              className="min-h-[120px] bg-white/[0.03] border-white/5 focus-visible:ring-blue-500/50 rounded-2xl"
-            />
-          </div>
-        </div>
-
-        {/* ToDo List */}
-        <div className="space-y-4">
-          <div className="flex items-center gap-2 text-blue-400 text-sm font-bold tracking-widest uppercase">
-            <CheckCircle2 className="w-4 h-4" /> Tasks
-          </div>
-          <div className="bg-white/[0.03] p-4 rounded-2xl border border-white/5 flex flex-col h-full max-h-[400px]">
-            <div className="flex gap-2 mb-4">
-              <Input 
-                placeholder="新しいタスクを追加..." 
-                value={newTodo}
-                onChange={(e) => setNewTodo(e.target.value)}
-                onKeyDown={(e) => e.key === 'Enter' && addTodo()}
-                className="bg-black/40 border-white/5"
-              />
-              <Button size="icon" onClick={addTodo} className="bg-blue-500 hover:bg-blue-600 shrink-0">
-                <Plus className="w-4 h-4" />
-              </Button>
-            </div>
-
-            <div className="flex-1 overflow-y-auto space-y-2 pr-2 scrollbar-thin">
-              {c.todos.length === 0 ? (
-                <p className="text-center py-10 text-xs text-muted-foreground italic">タスクはありません</p>
-              ) : (
-                c.todos.sort((a, b) => b.createdAt - a.createdAt).map((todo) => (
-                  <div key={todo.id} className="flex items-center gap-3 p-3 rounded-xl bg-black/20 border border-white/5 group">
-                    <button onClick={() => toggleTodo(todo.id)} className="shrink-0 transition-colors">
-                      {todo.completed ? (
-                        <CheckCircle2 className="w-5 h-5 text-blue-500" />
-                      ) : (
-                        <Circle className="w-5 h-5 text-muted-foreground/30" />
-                      )}
-                    </button>
-                    <span className={`text-sm flex-1 ${todo.completed ? 'line-through text-muted-foreground' : 'text-white'}`}>
-                      {todo.text}
-                    </span>
-                    <button onClick={() => deleteTodo(todo.id)} className="opacity-0 group-hover:opacity-100 text-muted-foreground hover:text-destructive transition-opacity">
-                      <X className="w-4 h-4" />
-                    </button>
-                  </div>
-                ))
-              )}
-            </div>
-          </div>
-        </div>
+          </Link>
+        ))}
       </div>
     </div>
   );
