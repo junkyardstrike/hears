@@ -96,7 +96,7 @@ export default function Editor() {
           <LoveHotelTab project={project} />
         </TabsContent>
         
-        <TabsContent value="general" className="mt-0 focus-visible:outline-none focus-visible:ring-0 w-full max-w-none bg-primary/5 rounded-b-xl">
+        <TabsContent value="general" className="mt-0 focus-visible:outline-none focus-visible:ring-0 w-full max-w-none">
           <div className="w-full">
             <GeneralTab project={project} />
           </div>
