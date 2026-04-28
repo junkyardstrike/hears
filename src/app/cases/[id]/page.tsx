@@ -259,8 +259,12 @@ export default function CaseDetailPage({ params }: { params: Promise<{ id: strin
             <div className="space-y-8 pb-20">
               <div className="flex items-center justify-between">
                 <h2 className="text-2xl font-bold text-white italic">ヒアリングシート内容の参照</h2>
-                <Button variant="ghost" asChild className="text-primary hover:bg-primary/10">
-                  <Link href={`/editor/${project.id}`}>エディタで開く <ExternalLink className="ml-2 w-4 h-4" /></Link>
+                <Button 
+                  variant="ghost" 
+                  onClick={() => router.push(`/editor/${project.id}`)}
+                  className="text-primary hover:bg-primary/10"
+                >
+                  エディタで開く <ExternalLink className="ml-2 w-4 h-4" />
                 </Button>
               </div>
               
