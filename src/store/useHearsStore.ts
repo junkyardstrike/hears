@@ -50,17 +50,43 @@ export interface TodoItem {
   createdAt: number;
 }
 
+export interface ClientData {
+  id: string;
+  name: string;
+  managerName?: string;
+  contact?: string;
+  memo?: string;
+  updatedAt: number;
+}
+
 export interface CaseData {
   id: string;
-  projectId?: string; // Optional link to original hearing project
+  projectId?: string;
   name: string;
   clientName: string;
+  contractEntity: string;
+  clientId?: string;
   status: 'active' | 'completed' | 'archived';
+  genre?: string;
   technicalInfo: {
     url: string;
     idPass: string;
     server: string;
     memo: string;
+  };
+  finance: {
+    // For HP/SNS (Stock Type)
+    maintenanceFee: number;
+    oneTimeFee: number;
+    oneTimeFeeTakeHome?: number;
+    oneTimeFeeMonth?: string;
+    
+    // For Spot Type (Other Genres)
+    spotFee?: number;
+    spotRate?: number; // % (default 40)
+    spotMonth?: string;
+
+    revenueStartMonth: string;
   };
   todos: TodoItem[];
   updatedAt: number;
@@ -97,12 +123,12 @@ export interface ProjectData {
     system: {
       hotenavi: {
         displays: {
-          member: string; // 'ホテナビで表示' | 'HPで表示' | '両方'
+          member: string;
           price: string;
           service: string;
           food: string;
         };
-        reverseLinks: string; // HPからホテナビへリンクさせる項目
+        reverseLinks: string;
       };
       hasMemberSystem: boolean;
       memberDetails: string;
@@ -133,29 +159,42 @@ export interface ProjectData {
 export interface HearsState {
   projects: ProjectData[];
   cases: CaseData[];
+  clients: ClientData[];
+  globalGenres: string[];
   
-  // Security
   pinCode: string;
   isLocked: boolean;
   setPinCode: (pin: string) => void;
   setLocked: (locked: boolean) => void;
 
-  // Dashboard Actions
+  globalFinance: {
+    baseSalary: number;
+    baseSalaryOverrides?: Record<string, number>; // yyyy-MM -> amount
+  };
+  updateGlobalFinance: (updater: (f: HearsState['globalFinance']) => void) => void;
+
   createProject: (name: string) => string;
   deleteProject: (id: string) => void;
   updateProject: (id: string, updater: (project: ProjectData) => void) => void;
   
-  // Case Actions
   createCase: (name: string, projectId?: string) => string;
   deleteCase: (id: string) => void;
   updateCase: (id: string, updater: (c: CaseData) => void) => void;
   convertToCase: (projectId: string) => void;
+
+  createClient: (name: string) => string;
+  deleteClient: (id: string) => void;
+  updateClient: (id: string, updater: (client: ClientData) => void) => void;
+
+  addGenre: (name: string) => void;
+  deleteGenre: (name: string) => void;
+
+  importData: (rawData: any) => void;
 }
 
-// ---------------------------------------------------------
-// Initial Data Generators
-// ---------------------------------------------------------
-export const generateId = () => Math.random().toString(36).substring(2, 9);
+export const generateId = () => {
+  return Date.now().toString(36) + Math.random().toString(36).substring(2, 5);
+};
 
 const createInitialProject = (name: string): ProjectData => ({
   id: generateId(),
@@ -209,27 +248,18 @@ const createInitialProject = (name: string): ProjectData => ({
     images: { basicInfo: null, rooms: null, system: null, access: null }
   },
   generalQuestions: [
-    // 目的・ターゲット
     { id: generateId(), category: '① 目的・ターゲット', label: 'サイトの主な目的 (CV、認知、採用等)', value: '' },
     { id: generateId(), category: '① 目的・ターゲット', label: 'ターゲット層 (年齢、性別、属性、悩み等)', value: '' },
     { id: generateId(), category: '① 目的・ターゲット', label: '競合・ベンチマークサイト (URL)', value: '' },
-    
-    // デザイン・ブランド
     { id: generateId(), category: '② デザイン・ブランド', label: 'キーカラー・イメージカラー', value: '' },
     { id: generateId(), category: '② デザイン・ブランド', label: '全体の雰囲気 (高級、ポップ、信頼感等)', value: '' },
     { id: generateId(), category: '② デザイン・ブランド', label: 'ロゴ・既存ブランド規定の有無', value: '' },
-    
-    // コンテンツ・素材
     { id: generateId(), category: '③ コンテンツ・素材', label: '必要なページ構成 (TOP、会社概要、ブログ等)', value: '' },
     { id: generateId(), category: '③ コンテンツ・素材', label: '写真・素材の準備状況', value: '' },
     { id: generateId(), category: '③ コンテンツ・素材', label: '各ページの原稿・テキストの準備状況', value: '' },
-    
-    // 機能・システム
     { id: generateId(), category: '④ 機能・システム', label: '必須機能 (問い合わせ、予約、決済等)', value: '' },
     { id: generateId(), category: '④ 機能・システム', label: 'SNS連携・埋め込み (Instagram, LINE等)', value: '' },
     { id: generateId(), category: '④ 機能・システム', label: '多言語対応の要否', value: '' },
-    
-    // 技術・運用
     { id: generateId(), category: '⑤ 技術・運用', label: 'ドメイン・サーバーの希望 (新規/既存)', value: '' },
     { id: generateId(), category: '⑤ 技術・運用', label: '更新頻度・サイト運営体制', value: '' },
     { id: generateId(), category: '⑤ 技術・運用', label: 'SEO対策・広告運用の希望', value: '' },
@@ -237,9 +267,6 @@ const createInitialProject = (name: string): ProjectData => ({
   generalImages: {}
 });
 
-// ---------------------------------------------------------
-// IndexedDB Storage Engine
-// ---------------------------------------------------------
 const idbStorage: StateStorage = {
   getItem: async (name: string): Promise<string | null> => {
     return (await get(name)) || null;
@@ -252,61 +279,121 @@ const idbStorage: StateStorage = {
   },
 };
 
-// ---------------------------------------------------------
-// Store
-// ---------------------------------------------------------
 export const useHearsStore = create<HearsState>()(
   persist(
     (set, get) => ({
       projects: [],
       cases: [],
+      clients: [],
+      globalGenres: [
+        'HP制作',
+        'SNS運用',
+        'システム開発',
+        '保守・運用',
+        'コンサルティング'
+      ],
       pinCode: '0000',
       isLocked: true,
+      globalFinance: {
+        baseSalary: 200000,
+        baseSalaryOverrides: {},
+      },
 
       setPinCode: (pin) => set({ pinCode: pin }),
       setLocked: (locked) => set({ isLocked: locked }),
+
+      updateGlobalFinance: (updater) => {
+        set((state) => {
+          const clone = JSON.parse(JSON.stringify(state.globalFinance));
+          updater(clone);
+          return { globalFinance: clone };
+        });
+      },
       
       createProject: (name: string) => {
         const newProject = createInitialProject(name);
-        set((state) => ({
-          projects: [...state.projects, newProject]
-        }));
+        set((state) => ({ projects: [...state.projects, newProject] }));
         return newProject.id;
       },
       
       deleteProject: (id: string) => {
-        set((state) => ({
-          projects: state.projects.filter(p => p.id !== id)
-        }));
+        set((state) => ({ projects: state.projects.filter(p => p.id !== id) }));
       },
       
       updateProject: (id: string, updater: (project: ProjectData) => void) => {
-        set((state) => {
-          const newProjects = state.projects.map(p => {
+        set((state) => ({
+          projects: state.projects.map(p => {
             if (p.id === id) {
-              const clone = JSON.parse(JSON.stringify(p)); // deep clone
+              const clone = JSON.parse(JSON.stringify(p));
               updater(clone);
+              if (clone.folder === 'not-started') {
+                clone.folder = 'in-progress';
+              }
               clone.updatedAt = Date.now();
               return clone;
             }
             return p;
-          });
-          return { projects: newProjects };
+          })
+        }));
+      },
+
+      importData: (rawData: any) => {
+        set((state) => {
+          const existingIds = new Set(state.projects.map(p => p.id));
+          const processProject = (p: any): ProjectData => {
+            const base = createInitialProject(p.name || '不明なプロジェクト');
+            let targetId = p.id || base.id;
+            if (existingIds.has(targetId)) targetId = generateId();
+            return {
+              ...base, ...p, id: targetId, updatedAt: p.updatedAt || Date.now(),
+              basicInfo: { ...base.basicInfo, ...(p.basicInfo || {}) },
+              loveHotel: {
+                ...base.loveHotel, ...(p.loveHotel || {}),
+                pricing: { ...base.loveHotel.pricing, ...(p.loveHotel?.pricing || {}) },
+                food: { ...base.loveHotel.food, ...(p.loveHotel?.food || {}) },
+                system: { 
+                  ...base.loveHotel.system, ...(p.loveHotel?.system || {}),
+                  hotenavi: { ...base.loveHotel.system.hotenavi, ...(p.loveHotel?.system?.hotenavi || {}) }
+                },
+                access: { ...base.loveHotel.access, ...(p.loveHotel?.access || {}) },
+                images: { ...base.loveHotel.images, ...(p.loveHotel?.images || {}) }
+              },
+              generalQuestions: Array.isArray(p.generalQuestions) && p.generalQuestions.length > 0 ? p.generalQuestions : base.generalQuestions,
+              generalImages: { ...base.generalImages, ...(p.generalImages || {}) }
+            };
+          };
+          let newProjects = [...state.projects];
+          let newCases = [...state.cases];
+          let newClients = [...state.clients];
+          if (rawData.projects && Array.isArray(rawData.projects)) {
+            newProjects = rawData.projects.map(processProject);
+            newCases = rawData.cases || [];
+            newClients = rawData.clients || [];
+          }
+          return { projects: newProjects, cases: newCases, clients: newClients };
         });
+      },
+
+      addGenre: (name: string) => {
+        set((state) => {
+          if (state.globalGenres.includes(name)) return state;
+          return { globalGenres: [...state.globalGenres, name] };
+        });
+      },
+
+      deleteGenre: (name: string) => {
+        set((state) => ({ globalGenres: state.globalGenres.filter(g => g !== name) }));
       },
 
       createCase: (name: string, projectId?: string) => {
         const id = generateId();
+        const now = new Date();
+        const currentMonth = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`;
         const newCase: CaseData = {
-          id,
-          projectId,
-          name,
-          clientName: '',
-          status: 'active',
+          id, projectId, name, clientName: '', contractEntity: '', status: 'active',
           technicalInfo: { url: '', idPass: '', server: '', memo: '' },
-          todos: [],
-          updatedAt: Date.now(),
-          createdAt: Date.now()
+          finance: { maintenanceFee: 0, oneTimeFee: 0, revenueStartMonth: currentMonth, spotRate: 40 },
+          todos: [], updatedAt: Date.now(), createdAt: Date.now()
         };
         set((state) => ({ cases: [...state.cases, newCase] }));
         return id;
@@ -334,53 +421,42 @@ export const useHearsStore = create<HearsState>()(
         const state = get();
         const project = state.projects.find(p => p.id === projectId);
         if (!project) return;
-
-        // 1. Create Case
         const caseId = state.createCase(project.name, project.id);
         state.updateCase(caseId, (c) => {
           c.clientName = project.basicInfo.clientName || project.name;
           c.technicalInfo.url = project.basicInfo.urlOrDomain;
         });
+        state.updateProject(projectId, (p) => { p.folder = 'backup'; });
+      },
 
-        // 2. Move project to backup folder
-        state.updateProject(projectId, (p) => {
-          p.folder = 'backup';
-        });
+      createClient: (name: string) => {
+        const id = generateId();
+        const newClient: ClientData = { id, name, updatedAt: Date.now() };
+        set((state) => ({ clients: [...state.clients, newClient] }));
+        return id;
+      },
+
+      deleteClient: (id: string) => {
+        set((state) => ({ clients: state.clients.filter(c => c.id !== id) }));
+      },
+
+      updateClient: (id: string, updater: (client: ClientData) => void) => {
+        set((state) => ({
+          clients: state.clients.map(c => {
+            if (c.id === id) {
+              const clone = JSON.parse(JSON.stringify(c));
+              updater(clone);
+              clone.updatedAt = Date.now();
+              return clone;
+            }
+            return c;
+          })
+        }));
       }
     }),
     {
-      name: 'alchemist-v5-storage',
-      storage: createJSONStorage(() => idbStorage),
-      onRehydrateStorage: (state) => {
-        return (rehydratedState, error) => {
-          if (error) {
-            console.error('Rehydration error:', error);
-            return;
-          }
-          
-          // Migration logic: if new state is empty, try to pull from old key
-          if (rehydratedState && rehydratedState.projects.length === 0) {
-            const storageEngine: any = idbStorage;
-            if (storageEngine && storageEngine.getItem) {
-              storageEngine.getItem('hears-v3-storage').then((oldDataStr: any) => {
-                if (oldDataStr) {
-                  try {
-                    const oldData = JSON.parse(oldDataStr as string);
-                    if (oldData.state && oldData.state.projects) {
-                      console.log('Migrating old data...');
-                      rehydratedState.projects = oldData.state.projects;
-                      // Force update the store
-                      useHearsStore.setState({ projects: oldData.state.projects });
-                    }
-                  } catch (e) {
-                    console.error('Migration failed:', e);
-                  }
-                }
-              });
-            }
-          }
-        };
-      },
+      name: 'alchemist-v6-storage',
+      storage: createJSONStorage(() => idbStorage)
     }
   )
 );
