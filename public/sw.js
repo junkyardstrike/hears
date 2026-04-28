@@ -1,4 +1,4 @@
-const CACHE_NAME = 'hears-cache-v2';
+const CACHE_NAME = 'alchemist-cache-v10';
 const urlsToCache = [
   '/manifest.json',
   '/icon-192.png',

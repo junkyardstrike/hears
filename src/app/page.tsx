@@ -99,9 +99,9 @@ export default function Dashboard() {
       <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center mb-8 sm:mb-12 gap-6">
         <div className="relative pl-0 sm:pl-6">
           <div className="absolute left-0 top-0 bottom-0 w-1.5 bg-gradient-to-b from-primary via-primary/50 to-transparent rounded-full hidden sm:block"></div>
-          <h1 className="text-5xl sm:text-6xl font-black tracking-tighter text-white leading-[0.8] mb-4">
-            HEARS
-            <span className="block text-[10px] sm:text-xs font-bold tracking-[0.4em] text-primary/70 mt-3 uppercase">
+          <h1 className="text-5xl sm:text-7xl font-black tracking-tighter text-white leading-[0.8] mb-4 italic">
+            ALCHEMIST
+            <span className="block text-[10px] sm:text-xs font-bold tracking-[0.4em] text-primary/70 mt-3 uppercase not-italic">
               Management System
             </span>
           </h1>

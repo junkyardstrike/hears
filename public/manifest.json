@@ -1,7 +1,7 @@
 {
-  "name": "Hears - Hearing Sheet Generator",
-  "short_name": "Hears",
-  "description": "Dynamic hearing sheet generator for professionals.",
+  "name": "ALCHEMIST",
+  "short_name": "ALCHEMIST",
+  "description": "プロフェッショナルな案件管理とヒアリングをサポートするALCHEMISTシステム",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#000000",

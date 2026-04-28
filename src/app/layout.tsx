@@ -14,8 +14,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Hears - Hearing Sheet Generator",
-  description: "Dynamic hearing sheet generator for professionals.",
+  title: "ALCHEMIST | 案件管理・ヒアリングツール",
+  description: "プロフェッショナルな案件管理とヒアリングをサポートするALCHEMISTシステム",
   manifest: "/manifest.json",
 };
 
