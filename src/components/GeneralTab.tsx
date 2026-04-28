@@ -53,7 +53,7 @@ export function GeneralTab({ project }: Props) {
   const cardStyle = "bg-card border-l-4 border-l-primary/60 border-y border-r border-border/50 shadow-lg mb-8";
 
   return (
-    <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
+    <div className="w-full space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
       {categories.map((category) => {
         const categoryQuestions = questions.filter((q) => q.category === category);
         return (
@@ -64,7 +64,7 @@ export function GeneralTab({ project }: Props) {
                 <Plus className="w-4 h-4 mr-1" /> 項目追加
               </Button>
             </CardHeader>
-            <CardContent className="space-y-8 pt-8 px-4 sm:px-6">
+            <CardContent className="space-y-8 pt-8 px-6">
               <AnimatePresence>
                 <div className="space-y-6">
                   {categoryQuestions.map((q) => (
