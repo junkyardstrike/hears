@@ -61,7 +61,7 @@ export default function Editor() {
             <ArrowLeft className="w-5 h-5" />
           </Button>
           <div className="flex-1">
-            <p className="text-sm text-primary mb-1 font-semibold tracking-wider uppercase">Project Name</p>
+            <p className="text-[10px] text-primary mb-1 font-bold tracking-widest">案件名 / プロジェクト名</p>
             <Input 
               value={project.name} 
               onChange={handleNameChange} 
