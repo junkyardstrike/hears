@@ -7,7 +7,7 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter }
 import { format } from 'date-fns';
 import { 
   Plus, Trash2, ExternalLink, Shield, Server, FileText, 
-  CheckCircle2, Circle, MoreVertical, X, Check
+  CheckCircle2, Circle, MoreVertical, X, Check, Clock
 } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
