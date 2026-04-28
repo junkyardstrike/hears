@@ -102,7 +102,53 @@ export function SettingsView() {
                 <div className="text-[8px] opacity-40 uppercase tracking-tighter">Import JSON</div>
               </div>
             </Button>
-            <input type="file" className="hidden" ref={fileInputRef} accept=".json" />
+            <input 
+              type="file" 
+              className="hidden" 
+              ref={fileInputRef} 
+              accept=".json" 
+              onChange={(e) => {
+                const file = e.target.files?.[0];
+                if (!file) return;
+                const reader = new FileReader();
+                reader.onload = (event) => {
+                  try {
+                    const content = event.target?.result as string;
+                    const data = JSON.parse(content);
+                    
+                    // 1. Full Store Export
+                    if (data.projects && Array.isArray(data.projects)) {
+                      useHearsStore.setState({ 
+                        projects: data.projects,
+                        cases: data.cases || []
+                      });
+                      alert('データを復元しました');
+                    } 
+                    // 2. Project Array (Old Backup)
+                    else if (Array.isArray(data)) {
+                      useHearsStore.setState((state) => ({
+                        projects: [...state.projects, ...data]
+                      }));
+                      alert(`${data.length}件のプロジェクトを追加しました`);
+                    }
+                    // 3. Single Project
+                    else if (data.id && data.name) {
+                      useHearsStore.setState((state) => ({
+                        projects: [...state.projects, data]
+                      }));
+                      alert('プロジェクトを1件追加しました');
+                    } else {
+                      alert('無効なファイル形式です');
+                    }
+                  } catch (err) {
+                    console.error(err);
+                    alert('ファイルの読み込みに失敗しました');
+                  }
+                  e.target.value = ''; // Reset input
+                };
+                reader.readAsText(file);
+              }}
+            />
           </div>
 
           <div className="p-3 sm:p-4 rounded-2xl bg-destructive/5 border border-destructive/10">

@@ -89,8 +89,8 @@ export function HearingView() {
             className="pl-10 bg-white/5 border-white/10 focus-visible:ring-primary/40"
           />
         </div>
-        <Button onClick={handleCreate} className="w-full sm:w-auto bg-primary hover:bg-primary/90 text-white font-bold px-8 shadow-lg shadow-primary/20">
-          <Plus className="w-5 h-5 mr-1" /> 新規作成
+        <Button onClick={handleCreate} className="bg-primary hover:bg-primary/90 text-black font-bold h-11 px-6 rounded-2xl glow-primary transition-all active:scale-95 shrink-0">
+          <Plus className="w-5 h-5 mr-2" /> ヒアリングを新規作成
         </Button>
       </div>
 
