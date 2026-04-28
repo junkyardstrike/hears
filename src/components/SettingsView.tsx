@@ -116,27 +116,54 @@ export function SettingsView() {
                     const content = event.target?.result as string;
                     const data = JSON.parse(content);
                     
+                    // Helper to ensure project data is compatible with Ver.5
+                    const patchProject = (p: any) => {
+                      // Basic required fields
+                      const patched = {
+                        folder: 'not-started', // Default to not-started for old data
+                        updatedAt: Date.now(),
+                        loveHotel: {},
+                        basicInfo: {},
+                        generalQuestions: [],
+                        generalImages: {},
+                        ...p
+                      };
+                      
+                      // Deep merge objects to avoid missing sub-fields
+                      if (p.loveHotel) {
+                        patched.loveHotel = {
+                          pricing: { rest: '', stay: '', freeTime: '', shortTime: '', extension: '', image: null },
+                          ...p.loveHotel
+                        };
+                      }
+                      
+                      return patched;
+                    };
+
                     // 1. Full Store Export
                     if (data.projects && Array.isArray(data.projects)) {
+                      const patchedProjects = data.projects.map(patchProject);
                       useHearsStore.setState({ 
-                        projects: data.projects,
+                        projects: patchedProjects,
                         cases: data.cases || []
                       });
                       alert('データを復元しました');
                     } 
                     // 2. Project Array (Old Backup)
                     else if (Array.isArray(data)) {
+                      const patchedProjects = data.map(patchProject);
                       useHearsStore.setState((state) => ({
-                        projects: [...state.projects, ...data]
+                        projects: [...state.projects, ...patchedProjects]
                       }));
-                      alert(`${data.length}件のプロジェクトを追加しました`);
+                      alert(`${data.length}件のプロジェクトを追加・復元しました`);
                     }
                     // 3. Single Project
                     else if (data.id && data.name) {
+                      const patched = patchProject(data);
                       useHearsStore.setState((state) => ({
-                        projects: [...state.projects, data]
+                        projects: [...state.projects, patched]
                       }));
-                      alert('プロジェクトを1件追加しました');
+                      alert('プロジェクトを1件追加・復元しました');
                     } else {
                       alert('無効なファイル形式です');
                     }
