@@ -351,6 +351,33 @@ export const useHearsStore = create<HearsState>()(
     {
       name: 'alchemist-v5-storage',
       storage: createJSONStorage(() => idbStorage),
+      onRehydrateStorage: (state) => {
+        return (rehydratedState, error) => {
+          if (error) {
+            console.error('Rehydration error:', error);
+            return;
+          }
+          
+          // Migration logic: if new state is empty, try to pull from old key
+          if (rehydratedState && rehydratedState.projects.length === 0) {
+            idbStorage.getItem('hears-v3-storage').then((oldDataStr) => {
+              if (oldDataStr) {
+                try {
+                  const oldData = JSON.parse(oldDataStr);
+                  if (oldData.state && oldData.state.projects) {
+                    console.log('Migrating old data...');
+                    rehydratedState.projects = oldData.state.projects;
+                    // Force update the store
+                    useHearsStore.setState({ projects: oldData.state.projects });
+                  }
+                } catch (e) {
+                  console.error('Migration failed:', e);
+                }
+              }
+            });
+          }
+        };
+      },
     }
   )
 );

@@ -48,26 +48,27 @@
   --radius-4xl: calc(var(--radius) * 2.6);
 }
 
-:root, .dark {
-  --background: #050505;
-  --foreground: #ffffff;
-  --card: #0c0c0e;
-  --card-foreground: #ffffff;
-  --popover: #0c0c0e;
-  --popover-foreground: #ffffff;
-  --primary: #00896B;
-  --primary-foreground: #ffffff;
-  --secondary: #1a1a1a;
-  --secondary-foreground: #ffffff;
-  --muted: #1a1a1a;
-  --muted-foreground: #71717a;
-  --accent: #00896B;
-  --accent-foreground: #ffffff;
-  --destructive: #7f1d1d;
-  --border: #1a1a1a;
-  --input: #1a1a1a;
-  --ring: #00896B;
-  --radius: 0.75rem;
+:root {
+  --background: 0 0% 2%;
+  --foreground: 0 0% 100%;
+  --card: 0 0% 4%;
+  --card-foreground: 0 0% 100%;
+  --popover: 0 0% 4%;
+  --popover-foreground: 0 0% 100%;
+  --primary: 166 100% 45%;
+  --primary-foreground: 166 100% 5%;
+  --secondary: 217 91% 60%;
+  --secondary-foreground: 217 91% 5%;
+  --muted: 0 0% 15%;
+  --muted-foreground: 0 0% 85%;
+  --accent: 166 100% 20%;
+  --accent-foreground: 0 0% 100%;
+  --destructive: 0 84% 60%;
+  --destructive-foreground: 0 0% 100%;
+  --border: 0 0% 15%;
+  --input: 0 0% 15%;
+  --ring: 166 100% 45%;
+  --radius: 1rem;
 }
 
 @layer utilities {

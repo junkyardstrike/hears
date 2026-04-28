@@ -33,16 +33,16 @@ export function SplashScreen({ onComplete }: { onComplete: () => void }) {
             {/* Glow effect background */}
             <div className="absolute inset-0 bg-primary/20 blur-[60px] rounded-full scale-150 animate-pulse" />
             
-            <h1 className="text-6xl sm:text-8xl font-black tracking-[0.2em] text-white italic relative z-10">
+            <h1 className="text-4xl sm:text-8xl font-black tracking-[0.1em] sm:tracking-[0.2em] text-white italic relative z-10 text-center">
               ALCHEMIST
             </h1>
             <motion.p
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 0.5, y: 0 }}
               transition={{ delay: 1, duration: 0.8 }}
-              className="text-center mt-6 text-sm sm:text-base font-bold tracking-[0.5em] text-primary uppercase relative z-10"
+              className="text-center mt-6 text-[10px] sm:text-base font-bold tracking-[0.3em] sm:tracking-[0.5em] text-primary uppercase relative z-10"
             >
-              Management System
+              案件管理・ヒアリングツール
             </motion.p>
           </motion.div>
 

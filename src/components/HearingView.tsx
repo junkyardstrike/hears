@@ -95,15 +95,15 @@ export function HearingView() {
       </div>
 
       <Tabs defaultValue="not-started" className="w-full">
-        <TabsList className="bg-black/40 border border-white/5 p-1 h-12 mb-8">
-          <TabsTrigger value="not-started" className="data-[state=active]:bg-primary data-[state=active]:text-white">
-            <Clock className="w-4 h-4 mr-2" /> 未着手
+        <TabsList className="bg-black/40 border border-white/5 p-1 h-12 mb-6 sm:mb-8 w-full overflow-x-auto justify-start sm:justify-center no-scrollbar">
+          <TabsTrigger value="not-started" className="flex-1 sm:flex-none data-[state=active]:bg-primary data-[state=active]:text-white text-[10px] sm:text-sm">
+            <Clock className="w-3 h-3 sm:w-4 h-4 mr-1 sm:mr-2" /> 未着手
           </TabsTrigger>
-          <TabsTrigger value="in-progress" className="data-[state=active]:bg-primary data-[state=active]:text-white">
-            <FolderOpen className="w-4 h-4 mr-2" /> 進行中
+          <TabsTrigger value="in-progress" className="flex-1 sm:flex-none data-[state=active]:bg-primary data-[state=active]:text-white text-[10px] sm:text-sm">
+            <FolderOpen className="w-3 h-3 sm:w-4 h-4 mr-1 sm:mr-2" /> 進行中
           </TabsTrigger>
-          <TabsTrigger value="backup" className="data-[state=active]:bg-primary data-[state=active]:text-white">
-            <Archive className="w-4 h-4 mr-2" /> 完了・バックアップ
+          <TabsTrigger value="backup" className="flex-1 sm:flex-none data-[state=active]:bg-primary data-[state=active]:text-white text-[10px] sm:text-sm">
+            <Archive className="w-3 h-3 sm:w-4 h-4 mr-1 sm:mr-2" /> バックアップ
           </TabsTrigger>
         </TabsList>
         

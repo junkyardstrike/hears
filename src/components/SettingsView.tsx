@@ -49,29 +49,30 @@ export function SettingsView() {
       {/* Passcode Settings */}
       <Card className="bg-[#0c0c0e] border-white/5 overflow-hidden">
         <div className="h-1 w-full bg-gradient-to-r from-primary to-transparent" />
-        <CardHeader>
-          <CardTitle className="text-xl flex items-center gap-2 text-white">
-            <Key className="w-5 h-5 text-primary" /> PASSCODE SETTINGS
+        <CardHeader className="p-4 sm:p-6">
+          <CardTitle className="text-lg sm:text-xl flex items-center gap-2 text-white">
+            <Key className="w-5 h-5 text-primary" /> パスコード設定
           </CardTitle>
-          <CardDescription>起動時の4桁PINコードを設定します</CardDescription>
+          <CardDescription className="text-xs">起動時の4桁PINコードを設定します</CardDescription>
         </CardHeader>
-        <CardContent className="space-y-4">
-          <div className="flex gap-4">
+        <CardContent className="p-4 sm:p-6 pt-0 space-y-4">
+          <div className="flex gap-2 sm:gap-4">
             <Input 
               type="password"
+              inputMode="numeric"
               maxLength={4}
               placeholder="新しい4桁のPIN"
               value={newPin}
               onChange={(e) => setNewPin(e.target.value.replace(/\D/g, ''))}
-              className="bg-black/40 border-white/5 text-center text-2xl tracking-[1em]"
+              className="bg-black/40 border-white/5 text-center text-xl sm:text-2xl tracking-[0.5em] sm:tracking-[1em] h-12"
             />
-            <Button onClick={handleUpdatePin} className="bg-primary hover:bg-primary/90 text-white font-bold px-8">
+            <Button onClick={handleUpdatePin} className="bg-primary hover:bg-primary/90 text-primary-foreground font-bold px-4 sm:px-8">
               更新
             </Button>
           </div>
           {showPinSuccess && (
-            <p className="text-primary text-xs font-bold flex items-center gap-2 animate-bounce">
-              <CheckCircle2 className="w-4 h-4" /> PINコードを更新しました
+            <p className="text-primary text-[10px] font-bold flex items-center gap-2 animate-bounce">
+              <CheckCircle2 className="w-3 h-3" /> PINコードを更新しました
             </p>
           )}
         </CardContent>
@@ -79,40 +80,40 @@ export function SettingsView() {
 
       {/* Data Management */}
       <Card className="bg-[#0c0c0e] border-white/5">
-        <CardHeader>
-          <CardTitle className="text-xl flex items-center gap-2 text-white">
-            <Database className="w-5 h-5 text-blue-500" /> DATA MANAGEMENT
+        <CardHeader className="p-4 sm:p-6">
+          <CardTitle className="text-lg sm:text-xl flex items-center gap-2 text-white">
+            <Database className="w-5 h-5 text-blue-500" /> データ管理
           </CardTitle>
-          <CardDescription>データのバックアップと復元を行います</CardDescription>
+          <CardDescription className="text-xs">データのバックアップと復元を行います</CardDescription>
         </CardHeader>
-        <CardContent className="space-y-6">
-          <div className="grid grid-cols-2 gap-4">
-            <Button variant="outline" onClick={handleExport} className="h-24 flex flex-col gap-2 border-white/5 hover:bg-white/5">
-              <Download className="w-6 h-6 text-blue-500" />
+        <CardContent className="p-4 sm:p-6 pt-0 space-y-6">
+          <div className="grid grid-cols-2 gap-2 sm:gap-4">
+            <Button variant="outline" onClick={handleExport} className="h-20 sm:h-24 flex flex-col gap-1 sm:gap-2 border-white/5 hover:bg-white/5 p-2">
+              <Download className="w-5 h-5 text-blue-500" />
               <div className="text-center">
-                <div className="text-sm font-bold">全データ出力</div>
-                <div className="text-[10px] opacity-40 uppercase tracking-tighter">Export JSON</div>
+                <div className="text-[11px] sm:text-sm font-bold">バックアップ</div>
+                <div className="text-[8px] opacity-40 uppercase tracking-tighter">Export JSON</div>
               </div>
             </Button>
-            <Button variant="outline" onClick={() => fileInputRef.current?.click()} className="h-24 flex flex-col gap-2 border-white/5 hover:bg-white/5">
-              <Upload className="w-6 h-6 text-purple-500" />
+            <Button variant="outline" onClick={() => fileInputRef.current?.click()} className="h-20 sm:h-24 flex flex-col gap-1 sm:gap-2 border-white/5 hover:bg-white/5 p-2">
+              <Upload className="w-5 h-5 text-purple-500" />
               <div className="text-center">
-                <div className="text-sm font-bold">インポート</div>
-                <div className="text-[10px] opacity-40 uppercase tracking-tighter">Import JSON</div>
+                <div className="text-[11px] sm:text-sm font-bold">インポート</div>
+                <div className="text-[8px] opacity-40 uppercase tracking-tighter">Import JSON</div>
               </div>
             </Button>
             <input type="file" className="hidden" ref={fileInputRef} accept=".json" />
           </div>
 
-          <div className="p-4 rounded-2xl bg-destructive/5 border border-destructive/10">
-            <div className="flex items-start gap-3">
-              <AlertTriangle className="w-5 h-5 text-destructive shrink-0 mt-0.5" />
+          <div className="p-3 sm:p-4 rounded-2xl bg-destructive/5 border border-destructive/10">
+            <div className="flex items-start gap-2 sm:gap-3">
+              <AlertTriangle className="w-4 h-4 text-destructive shrink-0 mt-0.5" />
               <div>
-                <p className="text-sm font-bold text-destructive mb-1">データの初期化</p>
-                <p className="text-[11px] text-muted-foreground leading-relaxed">
+                <p className="text-[11px] sm:text-sm font-bold text-destructive mb-1">データの初期化</p>
+                <p className="text-[9px] sm:text-[11px] text-muted-foreground leading-relaxed">
                   すべてのヒアリングシートと案件データが削除されます。この操作は取り消せません。
                 </p>
-                <Button variant="ghost" className="mt-3 text-destructive hover:bg-destructive/10 px-0 h-auto font-bold text-xs">
+                <Button variant="ghost" className="mt-2 text-destructive hover:bg-destructive/10 px-0 h-auto font-bold text-[10px] sm:text-xs">
                   全データを削除する
                 </Button>
               </div>

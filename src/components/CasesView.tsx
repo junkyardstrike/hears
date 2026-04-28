@@ -93,7 +93,7 @@ export function CasesView() {
 
       {/* Case Detail Dialog */}
       <Dialog open={!!selectedCaseId} onOpenChange={(open) => !open && setSelectedCaseId(null)}>
-        <DialogContent className="max-w-2xl bg-[#050505] border-white/10 text-white overflow-y-auto max-h-[90vh]">
+        <DialogContent className="w-[95vw] sm:max-w-2xl bg-[#050505] border-white/10 text-white overflow-y-auto max-h-[90vh] p-4 sm:p-6 rounded-[2rem]">
           {selectedCase && (
             <CaseDetailView c={selectedCase} onClose={() => setSelectedCaseId(null)} />
           )}
@@ -140,14 +140,13 @@ function CaseDetailView({ c, onClose }: { c: CaseData, onClose: () => void }) {
   };
 
   return (
-    <div className="space-y-8 py-4">
+    <div className="space-y-6 sm:space-y-8 py-2">
       <DialogHeader>
-        <div className="flex justify-between items-start pr-8">
-          <div>
-            <DialogTitle className="text-3xl font-black italic tracking-tighter mb-2">{c.name}</DialogTitle>
-            <div className="flex items-center gap-4 text-xs text-muted-foreground">
-              <span>CREATED: {format(new Date(c.createdAt), 'yyyy/MM/dd')}</span>
-              <span>ID: {c.id}</span>
+        <div className="flex justify-between items-start pr-2">
+          <div className="min-w-0 flex-1">
+            <DialogTitle className="text-xl sm:text-3xl font-black italic tracking-tighter mb-1 truncate">{c.name}</DialogTitle>
+            <div className="flex flex-wrap items-center gap-2 sm:gap-4 text-[10px] text-muted-foreground">
+              <span>作成日: {format(new Date(c.createdAt), 'yyyy/MM/dd')}</span>
             </div>
           </div>
           <Button variant="ghost" size="icon" onClick={() => {

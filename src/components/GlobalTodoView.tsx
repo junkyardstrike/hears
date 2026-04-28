@@ -49,16 +49,16 @@ export function TodoView() {
   const activeCount = allTodos.filter(t => !t.completed).length;
 
   return (
-    <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
+    <div className="space-y-6 sm:space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-        <div>
-          <h2 className="text-2xl font-bold tracking-tight text-white flex items-center gap-3">
-            <Badge className="bg-purple-500/20 text-purple-400 border-none px-3">
-              {activeCount} LEFT
+        <div className="min-w-0">
+          <h2 className="text-xl sm:text-2xl font-bold tracking-tight text-white flex items-center gap-2">
+            <Badge className="bg-purple-500/20 text-purple-400 border-none px-2 py-0.5">
+              残り {activeCount} 件
             </Badge>
-            GLOBAL TASKS
+            全体タスク
           </h2>
-          <p className="text-muted-foreground text-xs mt-1">全案件のToDoを横断して管理</p>
+          <p className="text-muted-foreground text-[10px] sm:text-xs mt-1">全案件のタスクを横断管理</p>
         </div>
 
         <div className="flex items-center gap-2 w-full sm:w-auto">
