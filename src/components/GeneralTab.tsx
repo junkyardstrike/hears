@@ -57,9 +57,11 @@ export function GeneralTab({ project }: Props) {
       {categories.map((category) => {
         const categoryQuestions = questions.filter((q) => q.category === category);
         return (
-          <Card key={category} className={cardStyle}>
+          <Card key={category} className={cardStyle + " w-full"}>
             <CardHeader className="bg-black/20 border-b border-border/30 flex flex-row items-center justify-between py-4">
-              <CardTitle className="text-xl text-primary font-bold tracking-wide">{category}</CardTitle>
+              <CardTitle className="text-xl text-primary font-bold tracking-wide">
+                {category} <span className="text-[10px] opacity-30 font-normal ml-2 tracking-normal">v1.1</span>
+              </CardTitle>
               <Button variant="outline" size="sm" onClick={() => addQuestion(category)} className="hover:bg-primary hover:text-primary-foreground border-primary/40 text-primary">
                 <Plus className="w-4 h-4 mr-1" /> 項目追加
               </Button>
