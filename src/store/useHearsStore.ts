@@ -171,9 +171,30 @@ const createInitialProject = (name: string): ProjectData => ({
     images: { basicInfo: null, rooms: null, system: null, access: null }
   },
   generalQuestions: [
-    { id: generateId(), category: '目的・ターゲット', label: 'CV（売上、採用、認知等）', value: '' },
-    { id: generateId(), category: 'コンテンツ', label: '強み（USP）', value: '' },
-    { id: generateId(), category: '機能', label: '決済・多言語・問い合わせ等', value: '' },
+    // 目的・ターゲット
+    { id: generateId(), category: '① 目的・ターゲット', label: 'サイトの主な目的 (CV、認知、採用等)', value: '' },
+    { id: generateId(), category: '① 目的・ターゲット', label: 'ターゲット層 (年齢、性別、属性、悩み等)', value: '' },
+    { id: generateId(), category: '① 目的・ターゲット', label: '競合・ベンチマークサイト (URL)', value: '' },
+    
+    // デザイン・ブランド
+    { id: generateId(), category: '② デザイン・ブランド', label: 'キーカラー・イメージカラー', value: '' },
+    { id: generateId(), category: '② デザイン・ブランド', label: '全体の雰囲気 (高級、ポップ、信頼感等)', value: '' },
+    { id: generateId(), category: '② デザイン・ブランド', label: 'ロゴ・既存ブランド規定の有無', value: '' },
+    
+    // コンテンツ・素材
+    { id: generateId(), category: '③ コンテンツ・素材', label: '必要なページ構成 (TOP、会社概要、ブログ等)', value: '' },
+    { id: generateId(), category: '③ コンテンツ・素材', label: '写真・素材の準備状況', value: '' },
+    { id: generateId(), category: '③ コンテンツ・素材', label: '各ページの原稿・テキストの準備状況', value: '' },
+    
+    // 機能・システム
+    { id: generateId(), category: '④ 機能・システム', label: '必須機能 (問い合わせ、予約、決済等)', value: '' },
+    { id: generateId(), category: '④ 機能・システム', label: 'SNS連携・埋め込み (Instagram, LINE等)', value: '' },
+    { id: generateId(), category: '④ 機能・システム', label: '多言語対応の要否', value: '' },
+    
+    // 技術・運用
+    { id: generateId(), category: '⑤ 技術・運用', label: 'ドメイン・サーバーの希望 (新規/既存)', value: '' },
+    { id: generateId(), category: '⑤ 技術・運用', label: '更新頻度・サイト運営体制', value: '' },
+    { id: generateId(), category: '⑤ 技術・運用', label: 'SEO対策・広告運用の希望', value: '' },
   ],
   generalImages: {}
 });
