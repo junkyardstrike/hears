@@ -360,21 +360,24 @@ export const useHearsStore = create<HearsState>()(
           
           // Migration logic: if new state is empty, try to pull from old key
           if (rehydratedState && rehydratedState.projects.length === 0) {
-            idbStorage.getItem('hears-v3-storage').then((oldDataStr) => {
-              if (oldDataStr) {
-                try {
-                  const oldData = JSON.parse(oldDataStr);
-                  if (oldData.state && oldData.state.projects) {
-                    console.log('Migrating old data...');
-                    rehydratedState.projects = oldData.state.projects;
-                    // Force update the store
-                    useHearsStore.setState({ projects: oldData.state.projects });
+            const storage = idbStorage;
+            if (storage && typeof storage.getItem === 'function') {
+              storage.getItem('hears-v3-storage').then((oldDataStr) => {
+                if (oldDataStr) {
+                  try {
+                    const oldData = JSON.parse(oldDataStr);
+                    if (oldData.state && oldData.state.projects) {
+                      console.log('Migrating old data...');
+                      rehydratedState.projects = oldData.state.projects;
+                      // Force update the store
+                      useHearsStore.setState({ projects: oldData.state.projects });
+                    }
+                  } catch (e) {
+                    console.error('Migration failed:', e);
                   }
-                } catch (e) {
-                  console.error('Migration failed:', e);
                 }
-              }
-            });
+              });
+            }
           }
         };
       },
