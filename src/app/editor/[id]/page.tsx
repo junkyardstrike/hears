@@ -52,7 +52,7 @@ export default function Editor() {
   };
 
   return (
-    <main className="min-h-screen bg-background text-foreground pb-32 pt-4 sm:pt-8 px-4 sm:px-8 max-w-5xl mx-auto">
+    <main className="min-h-screen bg-background text-foreground pb-32 pt-4 sm:pt-8 px-4 sm:px-8 max-w-7xl mx-auto w-full">
       
       {/* Header Area */}
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4 border-b border-border/50 pb-6">
@@ -96,8 +96,10 @@ export default function Editor() {
           <LoveHotelTab project={project} />
         </TabsContent>
         
-        <TabsContent value="general" className="mt-0 focus-visible:outline-none focus-visible:ring-0">
-          <GeneralTab project={project} />
+        <TabsContent value="general" className="mt-0 focus-visible:outline-none focus-visible:ring-0 w-full max-w-none bg-primary/5 rounded-b-xl">
+          <div className="w-full">
+            <GeneralTab project={project} />
+          </div>
         </TabsContent>
       </Tabs>
 

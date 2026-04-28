@@ -68,35 +68,38 @@ export function GeneralTab({ project }: Props) {
             </CardHeader>
             <CardContent className="space-y-8 pt-8 px-6">
               <AnimatePresence>
-                <div className="space-y-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   {categoryQuestions.map((q) => (
                     <motion.div
                       key={q.id}
-                      initial={{ opacity: 0, scale: 0.95 }}
-                      animate={{ opacity: 1, scale: 1 }}
+                      initial={{ opacity: 0, y: 10 }}
+                      animate={{ opacity: 1, y: 0 }}
                       exit={{ opacity: 0, scale: 0.95 }}
-                      className="flex flex-col gap-3 p-5 rounded-xl bg-[#0c0c0e] border border-border/40 hover:border-primary/40 transition-all shadow-inner group"
+                      className="flex flex-col gap-4 p-6 rounded-2xl bg-[#0c0c0e] border border-border/40 hover:border-primary/40 transition-all shadow-2xl group"
                     >
-                      <div className="flex items-center justify-between gap-2">
-                        <Input 
-                          value={q.label} 
-                          onChange={(e) => updateQuestion(q.id, 'label', e.target.value)}
-                          className="font-black text-xs tracking-[0.2em] text-primary/60 focus-visible:ring-0 border-none bg-transparent px-0 h-auto py-0 uppercase hover:text-primary transition-colors"
-                        />
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-2">
+                          <div className="w-1.5 h-1.5 rounded-full bg-primary/60"></div>
+                          <Input 
+                            value={q.label} 
+                            onChange={(e) => updateQuestion(q.id, 'label', e.target.value)}
+                            className="font-bold text-xs tracking-widest text-primary/80 focus-visible:ring-0 border-none bg-transparent px-0 h-auto py-0 uppercase"
+                          />
+                        </div>
                         <Button 
                           variant="ghost" 
                           size="icon" 
                           onClick={() => removeQuestion(q.id)} 
-                          className="text-muted-foreground hover:text-destructive hover:bg-destructive/10 opacity-0 group-hover:opacity-100 transition-opacity w-7 h-7"
+                          className="text-muted-foreground hover:text-destructive hover:bg-destructive/10 opacity-0 group-hover:opacity-100 transition-opacity w-8 h-8"
                         >
-                          <Trash2 className="w-3.5 h-3.5" />
+                          <Trash2 className="w-4 h-4" />
                         </Button>
                       </div>
                       <Textarea 
                         value={q.value}
                         onChange={(e) => updateQuestion(q.id, 'value', e.target.value)}
                         placeholder="ヒアリング内容を入力..."
-                        className="resize-none min-h-[120px] bg-black/30 border-border/20 focus-visible:ring-primary/30 text-base leading-relaxed rounded-lg"
+                        className="resize-y min-h-[140px] bg-black/40 border-border/30 focus-visible:ring-primary/40 text-base leading-relaxed rounded-xl p-4"
                       />
                     </motion.div>
                   ))}
