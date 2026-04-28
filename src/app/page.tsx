@@ -106,7 +106,7 @@ export default function Dashboard() {
             </span>
           </h1>
           <p className="text-muted-foreground text-sm sm:text-base font-medium max-w-xs leading-relaxed opacity-60">
-            プロフェッショナルな案件管理と<br className="sm:hidden" />確実なバックアップ体制
+            案件管理・ヒアリングツール
           </p>
         </div>
         
