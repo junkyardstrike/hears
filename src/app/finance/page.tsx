@@ -320,7 +320,7 @@ export default function FinancePage() {
                     outerRadius={55} 
                     paddingAngle={4} 
                     dataKey="value"
-                    label={({ count }) => `${count}`}
+                    label={({ payload }: any) => `${payload.count}`}
                     labelLine={false}
                   >
                     {genreMix.map((entry, index) => <Cell key={`cell-${index}`} fill={entry.color} />)}
