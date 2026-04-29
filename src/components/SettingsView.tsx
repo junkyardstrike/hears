@@ -7,12 +7,14 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/com
 import { Input } from '@/components/ui/input';
 import { 
   Shield, Download, Upload, Trash2, Key, Info, 
-  AlertTriangle, CheckCircle2, Database
+  AlertTriangle, CheckCircle2, Database, ChevronRight,
+  ShieldCheck, RefreshCcw, Settings
 } from 'lucide-react';
 import { format } from 'date-fns';
+import { cn } from '@/lib/utils';
 
 export function SettingsView() {
-  const { pinCode, setPinCode, projects, cases } = useHearsStore();
+  const { pinCode, setPinCode, projects, cases, importData } = useHearsStore();
   const [newPin, setNewPin] = useState('');
   const [showPinSuccess, setShowPinSuccess] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -33,183 +35,163 @@ export function SettingsView() {
       projects,
       cases,
       exportDate: new Date().toISOString(),
-      version: '5.0.0'
+      version: '6.1.0'
     };
     const dataStr = JSON.stringify(data, null, 2);
     const blob = new Blob([dataStr], { type: 'application/json' });
     const url = URL.createObjectURL(blob);
     const link = document.createElement('a');
     link.href = url;
-    link.download = `alchemist_backup_${format(new Date(), 'yyyyMMdd')}.json`;
+    link.download = `alchemist_sfa_backup_${format(new Date(), 'yyyyMMdd')}.json`;
     link.click();
   };
 
+  const handleImport = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = (event) => {
+      try {
+        const content = event.target?.result as string;
+        const data = JSON.parse(content);
+        importData(data);
+        alert('データを正常にインポートしました');
+      } catch (err) {
+        console.error(err);
+        alert('ファイルの読み込みに失敗しました。正しい形式のJSONを選択してください。');
+      }
+      e.target.value = ''; // Reset
+    };
+    reader.readAsText(file);
+  };
+
   return (
-    <div className="max-w-2xl mx-auto space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
+    <div className="max-w-3xl mx-auto space-y-10 animate-in fade-in slide-in-from-bottom-4 duration-500 pb-20">
+      {/* Header */}
+      <div>
+        <h2 className="text-2xl font-black italic tracking-tighter text-foreground flex items-center gap-3">
+          <Settings className="w-8 h-8 text-primary" /> SYSTEM SETTINGS
+        </h2>
+        <p className="text-[10px] font-black text-muted-foreground uppercase tracking-widest mt-1">セキュリティとデータ管理の設定</p>
+      </div>
+
       {/* Passcode Settings */}
-      <Card className="bg-[#0c0c0e] border-white/5 overflow-hidden">
-        <div className="h-1 w-full bg-gradient-to-r from-primary to-transparent" />
-        <CardHeader className="p-4 sm:p-6">
-          <CardTitle className="text-lg sm:text-xl flex items-center gap-2 text-white">
-            <Key className="w-5 h-5 text-primary" /> パスコード設定
+      <Card className="bg-white border-none paper-shadow-lg rounded-[2.5rem] overflow-hidden">
+        <div className="h-2 w-full bg-primary" />
+        <CardHeader className="p-8 pb-4">
+          <CardTitle className="text-xl font-black italic tracking-tighter flex items-center gap-4 text-foreground uppercase">
+            <ShieldCheck className="w-6 h-6 text-primary" /> Passcode Setup
           </CardTitle>
-          <CardDescription className="text-xs">起動時の4桁PINコードを設定します</CardDescription>
+          <CardDescription className="text-xs font-bold text-muted-foreground uppercase tracking-widest opacity-60">起動時の4桁PINコードを管理します</CardDescription>
         </CardHeader>
-        <CardContent className="p-4 sm:p-6 pt-0 space-y-4">
-          <div className="flex gap-2 sm:gap-4">
-            <Input 
-              type="password"
-              inputMode="numeric"
-              maxLength={4}
-              placeholder="新しい4桁のPIN"
-              value={newPin}
-              onChange={(e) => setNewPin(e.target.value.replace(/\D/g, ''))}
-              className="bg-black/40 border-white/5 text-center text-xl sm:text-2xl tracking-[0.5em] sm:tracking-[1em] h-12"
-            />
-            <Button onClick={handleUpdatePin} className="bg-primary hover:bg-primary/90 text-primary-foreground font-bold px-4 sm:px-8">
+        <CardContent className="p-8 pt-4 space-y-6">
+          <div className="flex gap-4">
+            <div className="relative flex-1">
+              <Key className="absolute left-6 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground opacity-30" />
+              <Input 
+                type="password"
+                inputMode="numeric"
+                maxLength={4}
+                placeholder="新しい4桁のPIN"
+                value={newPin}
+                onChange={(e) => setNewPin(e.target.value.replace(/\D/g, ''))}
+                className="h-16 bg-secondary/30 border-none rounded-2xl font-black text-3xl tracking-[1em] text-center pl-10"
+              />
+            </div>
+            <Button onClick={handleUpdatePin} className="bg-primary hover:bg-primary/90 text-white font-black h-16 px-10 rounded-2xl shadow-lg shadow-primary/20 transition-all hover:scale-105 active:scale-95">
               更新
             </Button>
           </div>
           {showPinSuccess && (
-            <p className="text-primary text-[10px] font-bold flex items-center gap-2 animate-bounce">
-              <CheckCircle2 className="w-3 h-3" /> PINコードを更新しました
-            </p>
+            <div className="flex items-center gap-3 text-emerald-600 bg-emerald-50 p-4 rounded-2xl animate-in fade-in slide-in-from-top-2">
+              <CheckCircle2 className="w-5 h-5" />
+              <span className="text-sm font-black italic">PINコードを正常に更新しました</span>
+            </div>
           )}
         </CardContent>
       </Card>
 
       {/* Data Management */}
-      <Card className="bg-[#0c0c0e] border-white/5">
-        <CardHeader className="p-4 sm:p-6">
-          <CardTitle className="text-lg sm:text-xl flex items-center gap-2 text-white">
-            <Database className="w-5 h-5 text-blue-500" /> データ管理
+      <Card className="bg-white border-none paper-shadow-lg rounded-[2.5rem] overflow-hidden">
+        <CardHeader className="p-8 pb-4">
+          <CardTitle className="text-xl font-black italic tracking-tighter flex items-center gap-4 text-foreground uppercase">
+            <Database className="w-6 h-6 text-blue-500" /> Data Management
           </CardTitle>
-          <CardDescription className="text-xs">データのバックアップと復元を行います</CardDescription>
+          <CardDescription className="text-xs font-bold text-muted-foreground uppercase tracking-widest opacity-60">バックアップ・復元・初期化の操作</CardDescription>
         </CardHeader>
-        <CardContent className="p-4 sm:p-6 pt-0 space-y-6">
-          <div className="grid grid-cols-2 gap-2 sm:gap-4">
-            <Button variant="outline" onClick={handleExport} className="h-20 sm:h-24 flex flex-col gap-1 sm:gap-2 border-white/5 hover:bg-white/5 p-2">
-              <Download className="w-5 h-5 text-blue-500" />
+        <CardContent className="p-8 pt-4 space-y-8">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+            <Button 
+              variant="outline" 
+              onClick={handleExport} 
+              className="h-32 flex flex-col items-center justify-center gap-4 border-none bg-secondary/30 hover:bg-secondary/50 rounded-3xl transition-all hover:scale-[1.02] active:scale-98"
+            >
+              <div className="p-3 bg-blue-500/10 rounded-2xl text-blue-600">
+                <Download className="w-6 h-6" />
+              </div>
               <div className="text-center">
-                <div className="text-[11px] sm:text-sm font-bold">バックアップ</div>
-                <div className="text-[8px] opacity-40 font-bold tracking-tighter">データを保存</div>
+                <div className="text-lg font-black italic text-foreground tracking-tighter">Backup</div>
+                <div className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest opacity-60">全データをJSON出力</div>
               </div>
             </Button>
-            <Button variant="outline" onClick={() => fileInputRef.current?.click()} className="h-20 sm:h-24 flex flex-col gap-1 sm:gap-2 border-white/5 hover:bg-white/5 p-2">
-              <Upload className="w-5 h-5 text-purple-500" />
+
+            <Button 
+              variant="outline" 
+              onClick={() => fileInputRef.current?.click()} 
+              className="h-32 flex flex-col items-center justify-center gap-4 border-none bg-secondary/30 hover:bg-secondary/50 rounded-3xl transition-all hover:scale-[1.02] active:scale-98"
+            >
+              <div className="p-3 bg-primary/10 rounded-2xl text-primary">
+                <Upload className="w-6 h-6" />
+              </div>
               <div className="text-center">
-                <div className="text-[11px] sm:text-sm font-bold">インポート</div>
-                <div className="text-[8px] opacity-40 font-bold tracking-tighter">データを復元</div>
+                <div className="text-lg font-black italic text-foreground tracking-tighter">Restore</div>
+                <div className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest opacity-60">バックアップを読込</div>
               </div>
             </Button>
+            
             <input 
               type="file" 
               className="hidden" 
               ref={fileInputRef} 
               accept=".json" 
-              onChange={(e) => {
-                const file = e.target.files?.[0];
-                if (!file) return;
-                const reader = new FileReader();
-                reader.onload = (event) => {
-                  try {
-                    const content = event.target?.result as string;
-                    const data = JSON.parse(content);
-                    
-                    // Helper to ensure project data is compatible with Ver.5
-                    const patchProject = (p: any) => {
-                      // Basic required fields
-                      const patched = {
-                        folder: 'not-started', // Default to not-started for old data
-                        updatedAt: Date.now(),
-                        loveHotel: {},
-                        basicInfo: {},
-                        generalQuestions: [],
-                        generalImages: {},
-                        ...p
-                      };
-                      
-                      // Deep merge objects to avoid missing sub-fields
-                      if (p.loveHotel) {
-                        patched.loveHotel = {
-                          pricing: { rest: '', stay: '', freeTime: '', shortTime: '', extension: '', image: null },
-                          ...p.loveHotel
-                        };
-                      }
-                      
-                      return patched;
-                    };
-
-                    // 1. Full Store Export
-                    if (data.projects && Array.isArray(data.projects)) {
-                      const patchedProjects = data.projects.map(patchProject);
-                      useHearsStore.setState({ 
-                        projects: patchedProjects,
-                        cases: data.cases || []
-                      });
-                      alert('データを復元しました');
-                    } 
-                    // 2. Project Array (Old Backup)
-                    else if (Array.isArray(data)) {
-                      const patchedProjects = data.map(patchProject);
-                      useHearsStore.setState((state) => ({
-                        projects: [...state.projects, ...patchedProjects]
-                      }));
-                      alert(`${data.length}件のプロジェクトを追加・復元しました`);
-                    }
-                    // 3. Single Project
-                    else if (data.id && data.name) {
-                      const patched = patchProject(data);
-                      useHearsStore.setState((state) => ({
-                        projects: [...state.projects, patched]
-                      }));
-                      alert('プロジェクトを1件追加・復元しました');
-                    } else {
-                      alert('無効なファイル形式です');
-                    }
-                  } catch (err) {
-                    console.error(err);
-                    alert('ファイルの読み込みに失敗しました');
-                  }
-                  e.target.value = ''; // Reset input
-                };
-                reader.readAsText(file);
-              }}
+              onChange={handleImport}
             />
           </div>
 
-          <div className="p-3 sm:p-4 rounded-2xl bg-destructive/5 border border-destructive/10">
-            <div className="flex items-start gap-2 sm:gap-3">
-              <AlertTriangle className="w-4 h-4 text-destructive shrink-0 mt-0.5" />
-              <div>
-                <p className="text-[11px] sm:text-sm font-bold text-destructive mb-1">データの初期化</p>
-                <p className="text-[9px] sm:text-[11px] text-muted-foreground leading-relaxed">
-                  すべてのヒアリングシートと案件データが削除されます。この操作は取り消せません。
-                </p>
-                <Button 
-                  variant="ghost" 
-                  onClick={() => {
-                    if(confirm('本当にすべてのデータを削除しますか？')) {
-                      useHearsStore.setState({ projects: [], cases: [] });
-                      alert('データを削除しました');
-                    }
-                  }}
-                  className="mt-2 text-destructive hover:bg-destructive/10 px-0 h-auto font-bold text-[10px] sm:text-xs"
-                >
-                  全データを削除する
-                </Button>
-              </div>
+          <div className="p-8 rounded-[2rem] bg-destructive/5 border border-destructive/10 flex flex-col sm:flex-row items-center gap-6">
+            <div className="bg-destructive/10 p-4 rounded-2xl">
+              <AlertTriangle className="w-8 h-8 text-destructive" />
             </div>
+            <div className="flex-1 text-center sm:text-left">
+              <p className="text-lg font-black italic text-destructive tracking-tighter mb-1 uppercase">Danger Zone</p>
+              <p className="text-[11px] font-bold text-muted-foreground leading-relaxed opacity-80">
+                すべてのヒアリングシートと案件データが削除されます。実行前に必ずバックアップを取ってください。
+              </p>
+            </div>
+            <Button 
+              variant="ghost" 
+              onClick={() => {
+                if(confirm('【警告】本当にすべてのデータを削除しますか？\nこの操作は取り消せません。')) {
+                  useHearsStore.setState({ projects: [], cases: [] });
+                  alert('すべてのデータを削除しました');
+                }
+              }}
+              className="w-full sm:w-auto h-14 px-8 rounded-2xl text-destructive hover:bg-destructive/10 font-black text-xs uppercase tracking-widest"
+            >
+              全データを初期化
+            </Button>
           </div>
         </CardContent>
       </Card>
 
-      {/* System Info */}
-      <div className="flex flex-col items-center justify-center pt-8 pb-12 opacity-30">
-        <div className="flex items-center gap-2 text-xs font-black italic tracking-widest text-white mb-2">
-          ALCHEMIST <span className="text-primary not-italic">v5.0.0</span>
+      {/* System Status */}
+      <div className="flex flex-col items-center justify-center pt-8 pb-12">
+        <div className="flex items-center gap-3 text-sm font-black italic tracking-[0.2em] text-foreground mb-3 opacity-40 uppercase">
+          <RefreshCcw className="w-4 h-4" /> ALCHEMIST SFA INFRASTRUCTURE v6.3.0
         </div>
-        <p className="text-[10px] font-bold tracking-widest">プロフェッショナル業務マネジメント基盤</p>
+        <div className="px-6 py-2 bg-secondary/50 rounded-full text-[10px] font-black text-muted-foreground uppercase tracking-[0.3em] opacity-30">
+          Professional Build 2026.04.29
+        </div>
       </div>
     </div>
   );

@@ -3,8 +3,10 @@
 import { useState } from 'react';
 import { ProjectData } from '@/store/useHearsStore';
 import { Button } from '@/components/ui/button';
-import { Copy, Check, Download, Bot, Plus } from 'lucide-react';
+import { Copy, Check, Download, Bot, Plus, X, FileText, Share2 } from 'lucide-react';
 import Papa from 'papaparse';
+import { cn } from '@/lib/utils';
+import { AnimatePresence, motion } from 'framer-motion';
 
 interface Props {
   project: ProjectData;
@@ -14,6 +16,7 @@ interface Props {
 export function ExportPanel({ project, activeTab }: Props) {
   const [copiedMd, setCopiedMd] = useState(false);
   const [copiedPrompt, setCopiedPrompt] = useState(false);
+  const [isOpen, setIsOpen] = useState(false);
 
   const generateMarkdown = () => {
     let md = `# ヒアリングシート (${activeTab === 'loveHotel' ? 'ラブホテル特化' : '汎用'})\n\n`;
@@ -114,7 +117,7 @@ export function ExportPanel({ project, activeTab }: Props) {
   const generateReaddyPrompt = () => {
     let prompt = `あなたはプロのWebディレクターです。今から渡すヒアリングシートの情報を元に、ノーコードツール『Readdy』でホームページを制作するための、詳細なセクション構成案と各ブロックへの指示書を作成してください。\n\n`;
     prompt += `【入力データ】\n`;
-    prompt += generateMarkdown(); // Markdown出力をベースにする
+    prompt += generateMarkdown();
     
     prompt += `\n\n【Readdy向けの具体的制約】\n`;
     prompt += `1. ラブホテルとしての高級感を出すためのカラーパレットとフォントの指定を行ってください。\n`;
@@ -145,8 +148,6 @@ export function ExportPanel({ project, activeTab }: Props) {
     }
   };
 
-  const [isOpen, setIsOpen] = useState(false);
-
   const handleExportCSV = () => {
     const rows: string[][] = [];
     rows.push(['カテゴリ', '項目名', '内容']);
@@ -172,7 +173,6 @@ export function ExportPanel({ project, activeTab }: Props) {
       const access = loveHotel.access || { entryEase: '', parkingHiding: '', highRoof: false };
 
       addRow('推しポイント', 'ホテルの推しポイント', loveHotel.sellingPoints);
-
       addRow('部屋詳細', '共通設備', loveHotel.commonEquipments.map(e => e.name).filter(Boolean).join(', '));
       addRow('部屋詳細', '合計部屋数', String(loveHotel.rooms.length));
       
@@ -190,8 +190,7 @@ export function ExportPanel({ project, activeTab }: Props) {
       addRow('フード', 'ウェルカムサービス', loveHotel.food.welcomeService ? 'あり' : 'なし');
       addRow('フード', '深夜メニュー', loveHotel.food.midnightMenu ? 'あり' : 'なし');
       addRow('フード', 'メンバー価格', loveHotel.food.memberPrice ? 'あり' : 'なし');
-      addRow('フード', 'メニュー画像有無', loveHotel.food.menuImageBase64 ? 'アップロード済' : 'なし');
-
+      
       addRow('システム', 'ホテナビ特典表示', loveHotel.system.hotenavi.displays.member);
       addRow('システム', 'ホテナビ料金表示', loveHotel.system.hotenavi.displays.price);
       addRow('システム', 'ホテナビサービス表示', loveHotel.system.hotenavi.displays.service);
@@ -243,49 +242,70 @@ export function ExportPanel({ project, activeTab }: Props) {
     document.body.removeChild(link);
   };
 
-
-
   return (
-    <div className="fixed bottom-6 right-6 z-50 flex flex-col items-end gap-3">
-      {/* Mobile Toggle / Desktop Always Show logic can be handled by CSS or state */}
-      <div className={`${isOpen ? 'flex' : 'hidden md:flex'} flex-col gap-3 animate-in slide-in-from-bottom-4 duration-300`}>
-        <Button 
-          onClick={handleExportCSV}
-          className="shadow-2xl shadow-secondary/20 bg-secondary text-secondary-foreground hover:bg-secondary/90 h-12 px-5 rounded-full font-semibold transition-all hover:scale-105 active:scale-95 w-full justify-start whitespace-nowrap"
-        >
-          <Download className="w-4 h-4 mr-2" />
-          CSV 出力
-        </Button>
+    <div className="fixed bottom-10 right-10 z-[100] flex flex-col items-end gap-5 font-[family-name:var(--font-noto)]">
+      
+      <AnimatePresence>
+        {isOpen && (
+          <div className="flex flex-col gap-4 animate-in slide-in-from-bottom-10 fade-in duration-500">
+            
+            <ExportButton 
+              onClick={handleExportCSV}
+              icon={<Download className="w-5 h-5" />}
+              label="CSV 形式で出力"
+              subLabel="Excelなどで管理"
+              className="bg-white text-foreground hover:bg-secondary/50"
+            />
 
-        <Button 
-          onClick={handleCopyMd}
-          className="shadow-2xl shadow-primary/20 bg-primary text-primary-foreground hover:bg-primary/90 h-12 px-5 rounded-full font-semibold transition-all hover:scale-105 active:scale-95 w-full justify-start whitespace-nowrap"
-        >
-          {copiedMd ? (
-            <><Check className="w-4 h-4 mr-2" /> コピー完了</>
-          ) : (
-            <><Copy className="w-4 h-4 mr-2" /> Markdown コピー</>
-          )}
-        </Button>
+            <ExportButton 
+              onClick={handleCopyMd}
+              icon={copiedMd ? <Check className="w-5 h-5 text-emerald-500" /> : <FileText className="w-5 h-5" />}
+              label={copiedMd ? "コピー完了" : "Markdown 出力"}
+              subLabel="ドキュメント等に貼り付け"
+              className="bg-white text-foreground hover:bg-secondary/50"
+            />
 
-        <Button 
-          onClick={handleCopyPrompt}
-          className="shadow-2xl shadow-[#10b981]/30 bg-[#10b981] text-white hover:bg-[#10b981]/90 h-12 px-5 rounded-full font-semibold transition-all hover:scale-105 active:scale-95 w-full justify-start whitespace-nowrap"
-        >
-          {copiedPrompt ? (
-            <><Check className="w-5 h-5 mr-2" /> プロンプトコピー完了</>
-          ) : (
-            <><Bot className="w-5 h-5 mr-2" /> Readdy用プロンプト生成</>
-          )}
-        </Button>
-      </div>
+            <ExportButton 
+              onClick={handleCopyPrompt}
+              icon={copiedPrompt ? <Check className="w-6 h-6 text-emerald-500" /> : <Bot className="w-6 h-6" />}
+              label={copiedPrompt ? "プロンプト生成完了" : "Readdy用指示書"}
+              subLabel="AIでサイト構成案を生成"
+              className="bg-primary text-white hover:bg-primary/90 shadow-xl shadow-primary/20"
+            />
+            
+          </div>
+        )}
+      </AnimatePresence>
 
       <Button
         onClick={() => setIsOpen(!isOpen)}
-        className={`md:hidden shadow-2xl h-14 w-14 rounded-full flex items-center justify-center transition-all ${isOpen ? 'bg-destructive text-destructive-foreground rotate-45' : 'bg-primary text-primary-foreground'}`}
+        className={cn(
+          "h-20 w-20 rounded-[2rem] shadow-2xl transition-all hover:scale-105 active:scale-95 flex items-center justify-center p-0",
+          isOpen ? "bg-white text-foreground rotate-0" : "bg-primary text-white"
+        )}
       >
-        <Plus className="w-8 h-8" />
+        {isOpen ? <X className="w-10 h-10" /> : <Share2 className="w-10 h-10" />}
       </Button>
     </div>
+  );
+}
+
+function ExportButton({ onClick, icon, label, subLabel, className }: any) {
+  return (
+    <Button 
+      onClick={onClick}
+      className={cn(
+        "h-20 px-8 rounded-[2rem] paper-shadow border-none transition-all hover:scale-105 active:scale-95 flex items-center gap-6 min-w-[280px] justify-start group",
+        className
+      )}
+    >
+      <div className="w-12 h-12 rounded-2xl bg-secondary/30 flex items-center justify-center group-hover:scale-110 transition-transform">
+        {icon}
+      </div>
+      <div className="flex flex-col items-start gap-0.5">
+        <span className="text-sm font-bold tracking-tight">{label}</span>
+        <span className="text-[9px] font-bold uppercase tracking-widest opacity-40">{subLabel}</span>
+      </div>
+    </Button>
   );
 }

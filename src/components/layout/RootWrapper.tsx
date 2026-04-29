@@ -2,14 +2,14 @@
 
 import { useState, useEffect } from 'react';
 import { useHearsStore } from '@/store/useHearsStore';
-import { SplashScreen } from '@/components/SplashScreen';
 import { PasscodeLock } from '@/components/PasscodeLock';
-import { AppHeader } from './AppHeader';
+import { Sidebar } from './Sidebar';
+import { GlobalToolbar } from './GlobalToolbar';
 import { usePathname } from 'next/navigation';
+import { cn } from '@/lib/utils';
 
 export function RootWrapper({ children }: { children: React.ReactNode }) {
   const { isLocked, setLocked } = useHearsStore();
-  const [showSplash, setShowSplash] = useState(true);
   const [mounted, setMounted] = useState(false);
   const pathname = usePathname();
 
@@ -19,25 +19,26 @@ export function RootWrapper({ children }: { children: React.ReactNode }) {
 
   if (!mounted) return null;
 
-  // Splash screen only on initial load of the portal or entire app
-  if (showSplash) {
-    return <SplashScreen onComplete={() => setShowSplash(false)} />;
-  }
-
   // Security lock
   if (isLocked) {
     return <PasscodeLock onSuccess={() => setLocked(false)} />;
   }
 
-  // Dashboard has no header, sub-pages have header
   const isEditor = pathname.startsWith('/editor');
 
   return (
-    <div className="min-h-screen bg-background flex flex-col">
-      {!isEditor && <AppHeader />}
-      <main className="flex-1 w-full">
-        {children}
-      </main>
+    <div className="min-h-screen bg-background flex">
+      {!isEditor && <Sidebar />}
+      
+      <div className="flex-1 flex flex-col min-w-0">
+        {!isEditor && <GlobalToolbar />}
+        <main className={cn(
+          "flex-1 w-full max-w-full overflow-y-auto",
+          !isEditor ? "p-6 sm:p-10 lg:p-12" : ""
+        )}>
+          {children}
+        </main>
+      </div>
     </div>
   );
 }

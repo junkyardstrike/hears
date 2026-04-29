@@ -9,8 +9,10 @@ import { GeneralTab } from '@/components/GeneralTab';
 import { ExportPanel } from '@/components/ExportPanel';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Button } from '@/components/ui/button';
-import { ArrowLeft, Save, Briefcase } from 'lucide-react';
+import { ArrowLeft, Save, Briefcase, FileText, ChevronLeft } from 'lucide-react';
 import { Input } from '@/components/ui/input';
+import { cn } from '@/lib/utils';
+import { Badge } from '@/components/ui/badge';
 
 export default function Editor() {
   const router = useRouter();
@@ -31,9 +33,9 @@ export default function Editor() {
 
   if (!project) {
     return (
-      <div className="min-h-screen flex flex-col items-center justify-center text-white bg-background">
-        <p className="text-xl mb-4">プロジェクトが見つかりません</p>
-        <Button onClick={() => router.push('/')}>ダッシュボードへ戻る</Button>
+      <div className="min-h-screen flex flex-col items-center justify-center text-foreground font-[family-name:var(--font-noto)] bg-background">
+        <p className="text-xl font-bold mb-4">プロジェクトが見つかりません</p>
+        <Button onClick={() => router.push('/')} className="bg-primary text-white font-bold h-12 px-8 rounded-2xl">ダッシュボードへ戻る</Button>
       </div>
     );
   }
@@ -44,77 +46,76 @@ export default function Editor() {
     });
   };
 
-  const persistStorage = async () => {
-    if (navigator.storage && navigator.storage.persist) {
-      const isPersisted = await navigator.storage.persist();
-      console.log(`Persisted storage status: ${isPersisted}`);
-    }
-  };
-
   return (
-    <main className="min-h-screen bg-background text-foreground pb-32 pt-4 sm:pt-8 px-4 sm:px-8 max-w-7xl mx-auto w-full">
+    <main className="min-h-screen bg-background text-[#2D3436] pb-40 pt-8 px-4 sm:px-8 max-w-7xl mx-auto w-full font-[family-name:var(--font-noto)]">
       
       {/* Header Area */}
-      <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4 border-b border-border/50 pb-6">
-        <div className="flex items-center gap-4 w-full md:w-auto">
-          <Button variant="ghost" size="icon" onClick={() => router.push('/')} className="hover:bg-white/5">
-            <ArrowLeft className="w-5 h-5" />
+      <div className="flex flex-col xl:flex-row justify-between items-start xl:items-center mb-12 gap-8 border-b border-border/50 pb-10">
+        <div className="flex items-center gap-6 w-full xl:w-auto min-w-0">
+          <Button variant="ghost" size="icon" onClick={() => router.push('/hearing')} className="hover:bg-primary/5 text-muted-foreground hover:text-primary rounded-2xl shrink-0">
+            <ChevronLeft className="w-8 h-8" />
           </Button>
-          <div className="flex-1">
-            <p className="text-[10px] text-primary mb-1 font-bold tracking-widest">案件名 / プロジェクト名</p>
+          <div className="flex-1 min-w-0">
+            <div className="flex items-center gap-3 mb-2">
+              <Badge className="bg-primary/10 text-primary border-none font-bold text-[9px] px-2.5 py-0.5 rounded-lg uppercase tracking-widest">
+                Editing Project
+              </Badge>
+              <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest opacity-40">ID: {project.id.toUpperCase().substring(0, 8)}</span>
+            </div>
             <Input 
               value={project.name} 
               onChange={handleNameChange} 
-              className="text-2xl font-bold bg-transparent border-none focus-visible:ring-1 focus-visible:ring-primary px-1 h-auto py-1 text-white w-full max-w-sm"
+              className="text-3xl sm:text-4xl font-bold italic tracking-tighter bg-transparent border-none focus-visible:ring-0 px-0 h-auto py-0 text-foreground w-full font-[family-name:var(--font-outfit)] uppercase"
+              placeholder="プロジェクト名を入力..."
             />
           </div>
         </div>
         
-        <div className="flex flex-wrap gap-2">
+        <div className="flex flex-wrap gap-4 w-full xl:w-auto">
           <Button 
             onClick={() => {
-              if (confirm('この内容で案件管理を作成しますか？\n（シートはバックアップフォルダへ移動します）')) {
+              if (confirm('この内容で案件管理を作成しますか？\n（シートはアーカイブフォルダへ移動します）')) {
                 useHearsStore.getState().convertToCase(project.id);
-                router.push('/');
+                router.push('/cases');
               }
             }} 
-            className="bg-blue-600 hover:bg-blue-700 text-white font-bold h-10 px-4 shadow-lg shadow-blue-500/20"
+            className="flex-1 sm:flex-none bg-blue-600 hover:bg-blue-700 text-white font-bold h-14 px-8 rounded-2xl shadow-xl shadow-blue-500/20 transition-all hover:scale-105 active:scale-95"
           >
-            <Briefcase className="w-4 h-4 mr-2" />
-            案件管理を作成
+            <Briefcase className="w-5 h-5 mr-2" />
+            案件管理に変換して作成
           </Button>
           
-          <Button onClick={persistStorage} variant="outline" className="border-border hover:bg-white/5 text-muted-foreground whitespace-nowrap h-10">
-            <Save className="w-4 h-4 mr-2" />
-            保存
+          <Button onClick={() => router.push('/hearing')} className="flex-1 sm:flex-none bg-primary hover:bg-primary/90 text-white font-bold h-14 px-10 rounded-2xl shadow-xl shadow-primary/20 transition-all hover:scale-105 active:scale-95">
+            <Save className="w-5 h-5 mr-2" />
+            保存して戻る
           </Button>
         </div>
       </div>
 
-      <BasicInfo project={project} />
+      <div className="mb-12">
+        <BasicInfo project={project} />
+      </div>
 
       <Tabs 
         defaultValue="loveHotel" 
-        className="w-full" 
+        className="w-full space-y-10" 
         onValueChange={(val) => setActiveTab(val as 'loveHotel' | 'general')}
       >
-        <TabsList className="grid w-full grid-cols-2 mb-8 bg-[#161618] border border-border h-14 p-1 rounded-xl shadow-lg">
-          <TabsTrigger value="loveHotel" className="h-full text-base font-medium data-[state=active]:bg-primary data-[state=active]:text-primary-foreground rounded-lg transition-all">
-            🏩 ラブホテル特化
+        <TabsList className="bg-secondary/50 border border-border p-1.5 h-16 rounded-[2rem] paper-shadow-sm flex overflow-hidden">
+          <TabsTrigger value="loveHotel" className="flex-1 h-full text-sm font-bold data-[state=active]:bg-white data-[state=active]:text-primary data-[state=active]:paper-shadow rounded-2xl transition-all gap-2">
+            🏩 ラブホテル特化テンプレート
           </TabsTrigger>
-          <TabsTrigger value="general" className="h-full text-base font-medium data-[state=active]:bg-secondary data-[state=active]:text-secondary-foreground rounded-lg transition-all">
-            🌍 汎用テンプレート
+          <TabsTrigger value="general" className="flex-1 h-full text-sm font-bold data-[state=active]:bg-white data-[state=active]:text-primary data-[state=active]:paper-shadow rounded-2xl transition-all gap-2">
+            🌍 汎用要件定義テンプレート
           </TabsTrigger>
         </TabsList>
         
-        <TabsContent value="loveHotel" className="mt-0 focus-visible:outline-none focus-visible:ring-0">
+        <TabsContent value="loveHotel" className="mt-0 focus-visible:outline-none focus-visible:ring-0 animate-in fade-in duration-500">
           <LoveHotelTab project={project} />
         </TabsContent>
         
-        <TabsContent value="general" className="mt-0 focus-visible:outline-none focus-visible:ring-0 w-full max-w-none">
-          <div className="w-full">
-            <GeneralTab project={project} />
-          </div>
+        <TabsContent value="general" className="mt-0 focus-visible:outline-none focus-visible:ring-0 w-full max-w-none animate-in fade-in duration-500">
+          <GeneralTab project={project} />
         </TabsContent>
       </Tabs>
 

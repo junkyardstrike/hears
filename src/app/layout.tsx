@@ -1,17 +1,20 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Outfit, Noto_Sans_JP } from "next/font/google";
 import "./globals.css";
 import { PwaRegister } from "@/components/PwaRegister";
 import { RootWrapper } from "@/components/layout/RootWrapper";
+import { cn } from "@/lib/utils";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
+const outfit = Outfit({
   subsets: ["latin"],
+  variable: "--font-outfit",
+  weight: ["400", "700", "900"],
 });
 
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
+const notoSansJp = Noto_Sans_JP({
   subsets: ["latin"],
+  variable: "--font-noto",
+  weight: ["400", "700", "900"],
 });
 
 export const metadata: Metadata = {
@@ -36,10 +39,9 @@ export default function RootLayout({
   return (
     <html
       lang="ja"
-      className={`${geistSans.variable} ${geistMono.variable} h-full antialiased dark`}
-      style={{ fontFamily: 'var(--font-geist-sans), system-ui, -apple-system, BlinkMacSystemFont, "Hiragino Kaku Gothic ProN", "Noto Sans JP", sans-serif' }}
+      className={cn(outfit.variable, notoSansJp.variable, "h-full antialiased")}
     >
-      <body className="min-h-full flex flex-col font-sans">
+      <body className="min-h-full flex flex-col font-[family-name:var(--font-noto)] bg-[#F5F5F0] text-[#2D3436]">
         <PwaRegister />
         <RootWrapper>
           {children}

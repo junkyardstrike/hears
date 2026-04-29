@@ -4,6 +4,8 @@ import { useHearsStore, ProjectData } from '@/store/useHearsStore';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { Info, User, Mail, Globe, Calendar, DollarSign, Building, FileText } from 'lucide-react';
+import { cn } from '@/lib/utils';
 
 interface Props {
   project: ProjectData;
@@ -20,38 +22,107 @@ export function BasicInfo({ project }: Props) {
   };
 
   return (
-    <Card className="w-full mb-8 bg-card text-card-foreground border-border shadow-lg">
-      <CardHeader className="bg-black/20 border-b border-border/50">
-        <CardTitle className="text-xl font-bold tracking-tight text-primary">基本情報</CardTitle>
+    <Card className="w-full mb-12 bg-white border-none paper-shadow-lg rounded-[2.5rem] overflow-hidden font-[family-name:var(--font-noto)]">
+      <CardHeader className="p-8 pb-4">
+        <CardTitle className="text-xl font-bold italic tracking-tighter text-foreground flex items-center gap-3 uppercase font-[family-name:var(--font-outfit)]">
+          <Info className="w-8 h-8 text-primary" /> クライアント基本情報
+        </CardTitle>
       </CardHeader>
-      <CardContent className="grid grid-cols-1 md:grid-cols-2 gap-6 pt-6">
-        <div className="space-y-2">
-          <Label htmlFor="clientName">クライアント名（会社名・屋号）</Label>
-          <Input id="clientName" name="clientName" value={project.basicInfo.clientName} onChange={handleChange} placeholder="株式会社サンプル" />
-        </div>
-        <div className="space-y-2">
-          <Label htmlFor="managerName">担当者名</Label>
-          <Input id="managerName" name="managerName" value={project.basicInfo.managerName} onChange={handleChange} placeholder="山田 太郎" />
-        </div>
-        <div className="space-y-2">
-          <Label htmlFor="contact">メールアドレス</Label>
-          <Input id="contact" name="contact" value={project.basicInfo.contact} onChange={handleChange} placeholder="sample@example.com" />
-        </div>
-        <div className="space-y-2">
-          <Label htmlFor="siteName">サイト名（正式・仮称）</Label>
-          <Input id="siteName" name="siteName" value={project.basicInfo.siteName} onChange={handleChange} placeholder="サンプルサイト" />
-        </div>
-        <div className="space-y-2">
-          <Label htmlFor="urlOrDomain">既存URL / 希望ドメイン</Label>
-          <Input id="urlOrDomain" name="urlOrDomain" value={project.basicInfo.urlOrDomain} onChange={handleChange} placeholder="https://example.com" />
-        </div>
-        <div className="space-y-2">
-          <Label htmlFor="deadline">希望納期</Label>
-          <Input id="deadline" name="deadline" value={project.basicInfo.deadline} onChange={handleChange} placeholder="202X年X月頃" />
-        </div>
-        <div className="space-y-2">
-          <Label htmlFor="budget">概算予算</Label>
-          <Input id="budget" name="budget" value={project.basicInfo.budget} onChange={handleChange} placeholder="約100万円" />
+      <CardContent className="p-8 pt-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-10 gap-y-8">
+          <div className="space-y-3">
+            <Label htmlFor="clientName" className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest flex items-center gap-2">
+              <Building className="w-3.5 h-3.5" /> 会社名・屋号
+            </Label>
+            <Input 
+              id="clientName" 
+              name="clientName" 
+              value={project.basicInfo.clientName} 
+              onChange={handleChange} 
+              placeholder="株式会社サンプル" 
+              className="h-14 bg-secondary/30 border-none rounded-2xl px-6 font-bold text-[#2D3436] focus-visible:ring-primary/20"
+            />
+          </div>
+          <div className="space-y-3">
+            <Label htmlFor="managerName" className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest flex items-center gap-2">
+              <User className="w-3.5 h-3.5" /> 担当者名
+            </Label>
+            <Input 
+              id="managerName" 
+              name="managerName" 
+              value={project.basicInfo.managerName} 
+              onChange={handleChange} 
+              placeholder="山田 太郎" 
+              className="h-14 bg-secondary/30 border-none rounded-2xl px-6 font-bold text-[#2D3436] focus-visible:ring-primary/20"
+            />
+          </div>
+          <div className="space-y-3">
+            <Label htmlFor="contact" className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest flex items-center gap-2">
+              <Mail className="w-3.5 h-3.5" /> メールアドレス
+            </Label>
+            <Input 
+              id="contact" 
+              name="contact" 
+              value={project.basicInfo.contact} 
+              onChange={handleChange} 
+              placeholder="sample@example.com" 
+              className="h-14 bg-secondary/30 border-none rounded-2xl px-6 font-bold text-[#2D3436] focus-visible:ring-primary/20"
+            />
+          </div>
+          <div className="space-y-3">
+            <Label htmlFor="siteName" className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest flex items-center gap-2">
+              <FileText className="w-3.5 h-3.5" /> サイト名
+            </Label>
+            <Input 
+              id="siteName" 
+              name="siteName" 
+              value={project.basicInfo.siteName} 
+              onChange={handleChange} 
+              placeholder="サンプルサイト" 
+              className="h-14 bg-secondary/30 border-none rounded-2xl px-6 font-bold text-[#2D3436] focus-visible:ring-primary/20"
+            />
+          </div>
+          <div className="space-y-3">
+            <Label htmlFor="urlOrDomain" className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest flex items-center gap-2">
+              <Globe className="w-3.5 h-3.5" /> 既存URL / ドメイン
+            </Label>
+            <Input 
+              id="urlOrDomain" 
+              name="urlOrDomain" 
+              value={project.basicInfo.urlOrDomain} 
+              onChange={handleChange} 
+              placeholder="https://example.com" 
+              className="h-14 bg-secondary/30 border-none rounded-2xl px-6 font-bold text-[#2D3436] focus-visible:ring-primary/20"
+            />
+          </div>
+          <div className="grid grid-cols-2 gap-4">
+            <div className="space-y-3">
+              <Label htmlFor="deadline" className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest flex items-center gap-2">
+                <Calendar className="w-3.5 h-3.5" /> 納期
+              </Label>
+              <Input 
+                id="deadline" 
+                name="deadline" 
+                value={project.basicInfo.deadline} 
+                onChange={handleChange} 
+                placeholder="202X年X月" 
+                className="h-14 bg-secondary/30 border-none rounded-2xl px-6 font-bold text-[#2D3436] focus-visible:ring-primary/20"
+              />
+            </div>
+            <div className="space-y-3">
+              <Label htmlFor="budget" className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest flex items-center gap-2">
+                <DollarSign className="w-3.5 h-3.5" /> 予算
+              </Label>
+              <Input 
+                id="budget" 
+                name="budget" 
+                value={project.basicInfo.budget} 
+                onChange={handleChange} 
+                placeholder="100万" 
+                className="h-14 bg-secondary/30 border-none rounded-2xl px-6 font-bold text-[#2D3436] focus-visible:ring-primary/20"
+              />
+            </div>
+          </div>
         </div>
       </CardContent>
     </Card>

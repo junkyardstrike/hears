@@ -6,8 +6,10 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
-import { Plus, Trash2, Link as LinkIcon } from 'lucide-react';
+import { Badge } from '@/components/ui/badge';
+import { Plus, Trash2, Link as LinkIcon, Info, Bed, Utensils, CreditCard, MapPin, MessageSquare, X } from 'lucide-react';
 import { ImageUploader } from './ImageUploader';
+import { cn } from '@/lib/utils';
 
 interface Props {
   project: ProjectData;
@@ -34,7 +36,7 @@ export function LoveHotelTab({ project }: Props) {
     p.loveHotel[key] = value;
   });
 
-  // --- Rooms Section Handlers ---
+  // --- Handlers ---
   const addCommonEq = () => updateProject(project.id, (p) => { p.loveHotel.commonEquipments.push({ id: generateId(), name: '' }); });
   const removeCommonEq = (id: string) => updateProject(project.id, (p) => { p.loveHotel.commonEquipments = p.loveHotel.commonEquipments.filter(e => e.id !== id); });
   const updateCommonEq = (id: string, name: string) => updateProject(project.id, (p) => { const eq = p.loveHotel.commonEquipments.find(e => e.id === id); if (eq) eq.name = name; });
@@ -44,15 +46,12 @@ export function LoveHotelTab({ project }: Props) {
     let nextRoomNumber = '201';
     if (rooms.length > 0) {
       const lastRoomNumber = rooms[rooms.length - 1].roomNumber;
-      if (lastRoomNumber) {
-        nextRoomNumber = generateNextRoomNumber(lastRoomNumber);
-      }
+      if (lastRoomNumber) nextRoomNumber = generateNextRoomNumber(lastRoomNumber);
     }
     rooms.push({ id: generateId(), roomNumber: nextRoomNumber, rank: '', specialEquipments: [] });
   });
   
   const removeRoom = (id: string) => updateProject(project.id, (p) => { p.loveHotel.rooms = p.loveHotel.rooms.filter(r => r.id !== id); });
-  
   const updateRoom = (id: string, key: 'roomNumber'|'rank', value: string) => updateProject(project.id, (p) => {
     const room = p.loveHotel.rooms.find(r => r.id === id);
     if (room) room[key] = value;
@@ -73,28 +72,19 @@ export function LoveHotelTab({ project }: Props) {
 
   const removeSpecialEq = (roomId: string, eqId: string) => updateProject(project.id, (p) => {
     const room = p.loveHotel.rooms.find(r => r.id === roomId);
-    if (room) {
-      room.specialEquipments = room.specialEquipments.filter(e => e.id !== eqId);
-    }
+    if (room) room.specialEquipments = room.specialEquipments.filter(e => e.id !== eqId);
   });
 
-  // --- Pricing Handlers ---
   const updatePricing = (key: 'rest' | 'stay' | 'freeTime' | 'shortTime' | 'extension' | 'image', value: string) => updateProject(project.id, p => {
-    if (!p.loveHotel.pricing) {
-      p.loveHotel.pricing = { rest: '', stay: '', freeTime: '', shortTime: '', extension: '', image: null };
-    }
-    if (key !== 'image') {
-      p.loveHotel.pricing[key] = value;
-    }
+    if (!p.loveHotel.pricing) p.loveHotel.pricing = { rest: '', stay: '', freeTime: '', shortTime: '', extension: '', image: null };
+    if (key !== 'image') p.loveHotel.pricing[key] = value;
   });
 
   const pricing = data.pricing || { rest: '', stay: '', freeTime: '', shortTime: '', extension: '', image: null };
   const access = data.access || { entryEase: '', parkingHiding: '', highRoof: false };
 
-  // --- Food Section Handlers ---
   const handleFoodCheckbox = (key: 'welcomeService' | 'midnightMenu' | 'memberPrice') => updateProject(project.id, (p) => { p.loveHotel.food[key] = !p.loveHotel.food[key]; });
 
-  // --- System Section Handlers ---
   const handleHotenaviToggle = (key: 'member'|'price'|'service'|'food', current: string) => {
     const nextVal = current === 'ホテナビで表示' ? 'HPで表示' : current === 'HPで表示' ? '両方' : 'ホテナビで表示';
     updateProject(project.id, p => { p.loveHotel.system.hotenavi.displays[key] = nextVal; });
@@ -119,114 +109,115 @@ export function LoveHotelTab({ project }: Props) {
     if (sale) sale[key] = value;
   });
 
-  // --- Access Section Handlers ---
   const updateAccess = (key: 'entryEase'|'parkingHiding', value: string) => updateProject(project.id, p => { 
-    if (!p.loveHotel.access) {
-      p.loveHotel.access = { entryEase: '', parkingHiding: '', highRoof: false };
-    }
+    if (!p.loveHotel.access) p.loveHotel.access = { entryEase: '', parkingHiding: '', highRoof: false };
     p.loveHotel.access[key] = value; 
   });
   const toggleHighRoof = () => updateProject(project.id, p => { 
-    if (!p.loveHotel.access) {
-      p.loveHotel.access = { entryEase: '', parkingHiding: '', highRoof: false };
-    }
+    if (!p.loveHotel.access) p.loveHotel.access = { entryEase: '', parkingHiding: '', highRoof: false };
     p.loveHotel.access.highRoof = !p.loveHotel.access.highRoof; 
   });
   
   const updateAccessBasicInfo = (key: 'location'|'phone'|'parking', value: string) => updateProject(project.id, p => { p.basicInfo[key] = value; });
 
-  const cardStyle = "bg-card border-l-4 border-l-primary/60 border-y border-r border-border/50 shadow-lg mb-8";
+  const sectionCardStyle = "bg-white border-none paper-shadow-lg rounded-[2.5rem] overflow-hidden mb-12 font-[family-name:var(--font-noto)]";
 
   return (
-    <div className="animate-in fade-in slide-in-from-bottom-4 duration-500">
+    <div className="space-y-4 animate-in fade-in slide-in-from-bottom-4 duration-500 pb-20">
       
       {/* --- ① 推しポイント --- */}
-      <Card className={cardStyle}>
-        <CardHeader className="bg-black/20 border-b border-border/30">
-          <CardTitle className="text-xl text-primary font-bold">① ホテルの推しポイント</CardTitle>
+      <Card className={sectionCardStyle}>
+        <CardHeader className="p-8 pb-4">
+          <CardTitle className="text-xl font-bold italic tracking-tighter text-foreground flex items-center gap-3 uppercase font-[family-name:var(--font-outfit)]">
+            <Info className="w-8 h-8 text-primary" /> ① ホテルの推しポイント
+          </CardTitle>
         </CardHeader>
-        <CardContent className="pt-6 space-y-6">
+        <CardContent className="p-8 pt-4">
           <Textarea 
             value={sellingPoints} 
             onChange={(e) => updateRootString('sellingPoints', e.target.value)}
             placeholder="例: 客室露天風呂からの夜景、最新カラオケ機種導入、有名シェフ監修のフードメニュー など" 
-            className="bg-black/50 min-h-[100px]"
+            className="bg-secondary/30 min-h-[120px] border-none rounded-2xl p-6 font-bold text-lg leading-relaxed placeholder:opacity-30"
           />
         </CardContent>
       </Card>
 
       {/* --- ② 部屋詳細 --- */}
-      <Card className={cardStyle}>
-        <CardHeader className="bg-black/20 border-b border-border/30 flex flex-row items-center justify-between">
-          <CardTitle className="text-xl text-primary font-bold">② 部屋詳細</CardTitle>
-          <div className="text-sm font-semibold bg-primary/10 text-primary px-4 py-1.5 rounded-full border border-primary/20">
+      <Card className={sectionCardStyle}>
+        <CardHeader className="p-8 pb-4 flex flex-row items-center justify-between flex-wrap gap-4">
+          <CardTitle className="text-xl font-bold italic tracking-tighter text-foreground flex items-center gap-3 uppercase font-[family-name:var(--font-outfit)]">
+            <Bed className="w-8 h-8 text-primary" /> ② 客室・設備詳細
+          </CardTitle>
+          <Badge className="bg-primary/10 text-primary border-none font-bold py-1.5 px-4 rounded-xl">
             登録済み：計 {data.rooms.length} 室
-          </div>
+          </Badge>
         </CardHeader>
-        <CardContent className="pt-8 space-y-10">
+        <CardContent className="p-8 pt-4 space-y-10">
           
-          <div className="bg-[#0c0c0e] p-5 rounded-lg border border-border/50">
-            <div className="flex items-center justify-between mb-4">
-              <Label className="text-lg font-bold text-white">全室共通設備</Label>
-              <Button size="sm" variant="outline" onClick={addCommonEq} className="border-primary/50 text-primary hover:bg-primary/10">
-                <Plus className="w-4 h-4 mr-1"/> 設備追加
+          <div className="bg-secondary/20 p-6 rounded-[2rem] border border-border/50">
+            <div className="flex items-center justify-between mb-6">
+              <Label className="text-sm font-bold text-foreground flex items-center gap-2">
+                <div className="w-2 h-2 bg-primary rounded-full" /> 全室共通設備
+              </Label>
+              <Button size="sm" variant="ghost" onClick={addCommonEq} className="text-primary hover:bg-primary/5 font-bold">
+                <Plus className="w-4 h-4 mr-1"/> 設備を追加
               </Button>
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
               {data.commonEquipments.map((eq) => (
-                <div key={eq.id} className="flex items-center gap-2 bg-black/40 p-2 rounded-md border border-border/50 focus-within:border-primary/50 transition-colors">
-                  <Input value={eq.name} onChange={(e) => updateCommonEq(eq.id, e.target.value)} placeholder="設備名" className="flex-1 bg-transparent border-none focus-visible:ring-0 px-2" />
-                  <Button variant="ghost" size="icon" onClick={() => removeCommonEq(eq.id)} className="text-muted-foreground hover:text-destructive w-8 h-8"><Trash2 className="w-4 h-4"/></Button>
+                <div key={eq.id} className="flex items-center gap-2 bg-white p-2 rounded-xl border border-border shadow-sm focus-within:ring-2 focus-within:ring-primary/10 transition-all">
+                  <Input value={eq.name} onChange={(e) => updateCommonEq(eq.id, e.target.value)} placeholder="設備名" className="flex-1 bg-transparent border-none focus-visible:ring-0 px-3 font-bold" />
+                  <Button variant="ghost" size="icon" onClick={() => removeCommonEq(eq.id)} className="text-muted-foreground hover:text-destructive w-9 h-9 rounded-lg"><Trash2 className="w-4 h-4"/></Button>
                 </div>
               ))}
             </div>
           </div>
 
-          <div className="space-y-4">
+          <div className="space-y-6">
             <div className="flex items-center justify-between pb-2 border-b border-border/30">
-              <Label className="text-lg font-bold text-white">部屋リスト管理</Label>
-              <Button size="sm" onClick={addRoom} className="bg-primary text-primary-foreground hover:bg-primary/90 font-bold">
-                <Plus className="w-4 h-4 mr-1"/> 次の部屋を追加
+              <Label className="text-base font-bold text-foreground">個別客室リスト管理</Label>
+              <Button size="sm" onClick={addRoom} className="bg-primary text-white hover:bg-primary/90 font-bold px-6 rounded-xl shadow-lg shadow-primary/20">
+                <Plus className="w-4 h-4 mr-2"/> 次の部屋を追加
               </Button>
             </div>
             
-            <div className="space-y-4">
+            <div className="space-y-6">
               {data.rooms.map((room) => (
-                <div key={room.id} className="flex flex-col md:flex-row items-start gap-4 p-5 bg-[#0c0c0e] border border-border/50 rounded-lg group hover:border-primary/30 transition-colors">
-                  <div className="flex gap-4 w-full md:w-1/3">
+                <div key={room.id} className="flex flex-col lg:flex-row items-start gap-6 p-6 bg-white border border-border rounded-[2rem] paper-shadow-sm group hover:border-primary/20 transition-all">
+                  <div className="flex gap-4 w-full lg:w-1/3">
                     <div className="flex-1">
-                      <Label className="text-xs text-muted-foreground mb-1.5 block">部屋番号</Label>
-                      <Input value={room.roomNumber} onChange={(e) => updateRoom(room.id, 'roomNumber', e.target.value)} placeholder="例: 201" className="bg-black/50 font-bold text-lg" />
+                      <Label className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest mb-2 block ml-1">部屋番号</Label>
+                      <Input value={room.roomNumber} onChange={(e) => updateRoom(room.id, 'roomNumber', e.target.value)} placeholder="201" className="bg-secondary/30 border-none font-bold text-xl h-14 rounded-xl px-4 font-[family-name:var(--font-outfit)]" />
                     </div>
                     <div className="flex-1">
-                      <Label className="text-xs text-muted-foreground mb-1.5 block">ランク</Label>
-                      <Input value={room.rank} onChange={(e) => updateRoom(room.id, 'rank', e.target.value)} placeholder="例: A" className="bg-black/50" />
+                      <Label className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest mb-2 block ml-1">ランク</Label>
+                      <Input value={room.rank} onChange={(e) => updateRoom(room.id, 'rank', e.target.value)} placeholder="A" className="bg-secondary/30 border-none font-bold text-xl h-14 rounded-xl px-4" />
                     </div>
                   </div>
                   
-                  <div className="flex-1 w-full space-y-2">
+                  <div className="flex-1 w-full space-y-3">
                     <div className="flex justify-between items-center">
-                      <Label className="text-xs text-muted-foreground">限定設備</Label>
-                      <Button variant="ghost" size="sm" onClick={() => addSpecialEq(room.id)} className="h-6 px-2 text-xs text-primary hover:bg-primary/10">
+                      <Label className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest ml-1">限定設備・特徴</Label>
+                      <Button variant="ghost" size="sm" onClick={() => addSpecialEq(room.id)} className="h-7 px-3 text-[10px] font-bold text-primary hover:bg-primary/5 rounded-lg border border-primary/10">
                         <Plus className="w-3 h-3 mr-1"/> 設備追加
                       </Button>
                     </div>
-                    {room.specialEquipments.length === 0 && (
-                      <p className="text-sm text-muted-foreground/50 italic py-2">限定設備はありません</p>
-                    )}
-                    <div className="flex flex-wrap gap-2">
+                    <div className="flex flex-wrap gap-2 min-h-[40px] p-2 rounded-xl bg-secondary/10 border border-dashed border-border/50">
+                      {room.specialEquipments.length === 0 && (
+                        <p className="text-[10px] text-muted-foreground/30 italic py-1 px-2 uppercase tracking-widest font-bold">No special equipments</p>
+                      )}
                       {room.specialEquipments.map(eq => (
-                        <div key={eq.id} className="flex items-center bg-black border border-primary/30 rounded px-2 py-1 gap-1">
-                          <Input value={eq.name} onChange={(e) => updateSpecialEq(room.id, eq.id, e.target.value)} placeholder="設備名" className="h-6 text-sm border-none bg-transparent p-0 w-24 focus-visible:ring-0" />
-                          <button onClick={() => removeSpecialEq(room.id, eq.id)} className="text-muted-foreground hover:text-destructive"><XIcon /></button>
+                        <div key={eq.id} className="flex items-center bg-white border border-border rounded-lg pl-3 pr-1 py-1 gap-2 shadow-sm group/item">
+                          <Input value={eq.name} onChange={(e) => updateSpecialEq(room.id, eq.id, e.target.value)} placeholder="設備名" className="h-6 text-xs font-bold border-none bg-transparent p-0 w-24 focus-visible:ring-0" />
+                          <button onClick={() => removeSpecialEq(room.id, eq.id)} className="text-muted-foreground hover:text-destructive p-1 rounded-md hover:bg-destructive/5 transition-all"><X className="w-3.5 h-3.5" /></button>
                         </div>
                       ))}
                     </div>
                   </div>
                   
-                  <div className="w-full md:w-auto md:pt-6 flex justify-end">
-                    <Button variant="ghost" size="sm" onClick={() => removeRoom(room.id)} className="text-destructive bg-destructive/10 hover:bg-destructive/20 md:bg-transparent md:hover:bg-destructive/10">
-                      <Trash2 className="w-4 h-4 mr-2 md:mr-0"/> <span className="md:hidden">削除</span>
+                  <div className="w-full lg:w-auto lg:pt-6 flex justify-end shrink-0">
+                    <Button variant="ghost" size="icon" onClick={() => removeRoom(room.id)} className="text-muted-foreground hover:text-destructive hover:bg-destructive/5 h-12 w-12 rounded-xl">
+                      <Trash2 className="w-5 h-5"/>
                     </Button>
                   </div>
                 </div>
@@ -234,77 +225,68 @@ export function LoveHotelTab({ project }: Props) {
             </div>
           </div>
           
-          <ImageUploader value={data.images.rooms} onChange={(val) => updateProject(project.id, p => { p.loveHotel.images.rooms = val; })} label="部屋詳細 関連画像アップロード" />
+          <div className="pt-6 border-t border-border/50">
+            <ImageUploader value={data.images.rooms} onChange={(val) => updateProject(project.id, p => { p.loveHotel.images.rooms = val; })} label="部屋詳細に関連する写真 (複数可)" />
+          </div>
         </CardContent>
       </Card>
 
       {/* --- ③ 料金システム --- */}
-      <Card className={cardStyle}>
-        <CardHeader className="bg-black/20 border-b border-border/30">
-          <CardTitle className="text-xl text-primary font-bold">③ 料金システム</CardTitle>
+      <Card className={sectionCardStyle}>
+        <CardHeader className="p-8 pb-4">
+          <CardTitle className="text-xl font-bold italic tracking-tighter text-foreground flex items-center gap-3 uppercase font-[family-name:var(--font-outfit)]">
+            <CreditCard className="w-8 h-8 text-primary" /> ③ 料金・システム
+          </CardTitle>
         </CardHeader>
-        <CardContent className="pt-6 space-y-6">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div className="space-y-2">
-              <Label className="text-white">休憩</Label>
-              <Input value={pricing.rest} onChange={(e) => updatePricing('rest', e.target.value)} placeholder="例: 2時間 3,980円〜" className="bg-black/50" />
-            </div>
-            <div className="space-y-2">
-              <Label className="text-white">宿泊</Label>
-              <Input value={pricing.stay} onChange={(e) => updatePricing('stay', e.target.value)} placeholder="例: 20:00〜翌12:00 7,980円〜" className="bg-black/50" />
-            </div>
-            <div className="space-y-2">
-              <Label className="text-white">フリータイム</Label>
-              <Input value={pricing.freeTime} onChange={(e) => updatePricing('freeTime', e.target.value)} placeholder="例: 最大12時間 4,980円〜" className="bg-black/50" />
-            </div>
-            <div className="space-y-2">
-              <Label className="text-white">ショートタイム</Label>
-              <Input value={pricing.shortTime} onChange={(e) => updatePricing('shortTime', e.target.value)} placeholder="例: 90分 2,980円〜" className="bg-black/50" />
-            </div>
-            <div className="space-y-2">
-              <Label className="text-white">延長料金</Label>
-              <Input value={pricing.extension} onChange={(e) => updatePricing('extension', e.target.value)} placeholder="例: 30分 1,000円" className="bg-black/50" />
-            </div>
+        <CardContent className="p-8 pt-4 space-y-10">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <PriceField label="休憩" value={pricing.rest} onChange={(v) => updatePricing('rest', v)} placeholder="例: 2時間 3,980円〜" />
+            <PriceField label="宿泊" value={pricing.stay} onChange={(v) => updatePricing('stay', v)} placeholder="例: 20:00〜翌12:00 7,980円〜" />
+            <PriceField label="フリータイム" value={pricing.freeTime} onChange={(v) => updatePricing('freeTime', v)} placeholder="例: 最大12時間 4,980円〜" />
+            <PriceField label="ショートタイム" value={pricing.shortTime} onChange={(v) => updatePricing('shortTime', v)} placeholder="例: 90分 2,980円〜" />
+            <PriceField label="延長料金" value={pricing.extension} onChange={(v) => updatePricing('extension', v)} placeholder="例: 30分 1,000円" />
           </div>
-          <ImageUploader value={pricing.image} onChange={(val) => updateProject(project.id, p => { p.loveHotel.pricing.image = val; })} label="料金表画像アップロード" />
+          <div className="pt-6 border-t border-border/50">
+            <ImageUploader value={pricing.image} onChange={(val) => updateProject(project.id, p => { p.loveHotel.pricing.image = val; })} label="料金表画像 (看板・案内等)" />
+          </div>
         </CardContent>
       </Card>
-
 
       {/* --- ④ フードセクション --- */}
-      <Card className={cardStyle}>
-        <CardHeader className="bg-black/20 border-b border-border/30">
-          <CardTitle className="text-xl text-primary font-bold">④ フード・飲食</CardTitle>
+      <Card className={sectionCardStyle}>
+        <CardHeader className="p-8 pb-4">
+          <CardTitle className="text-xl font-bold italic tracking-tighter text-foreground flex items-center gap-3 uppercase font-[family-name:var(--font-outfit)]">
+            <Utensils className="w-8 h-8 text-primary" /> ④ フード・飲食
+          </CardTitle>
         </CardHeader>
-        <CardContent className="pt-6 space-y-6">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <label className="flex items-center space-x-3 p-4 border border-border/50 rounded-lg cursor-pointer hover:bg-white/5 hover:border-primary/50 transition-all bg-[#0c0c0e]">
-              <input type="checkbox" checked={data.food.welcomeService} onChange={() => handleFoodCheckbox('welcomeService')} className="w-5 h-5 accent-primary" />
-              <span className="font-medium text-white tracking-wide">ウェルカムサービス</span>
-            </label>
-            <label className="flex items-center space-x-3 p-4 border border-border/50 rounded-lg cursor-pointer hover:bg-white/5 hover:border-primary/50 transition-all bg-[#0c0c0e]">
-              <input type="checkbox" checked={data.food.midnightMenu} onChange={() => handleFoodCheckbox('midnightMenu')} className="w-5 h-5 accent-primary" />
-              <span className="font-medium text-white tracking-wide">深夜メニュー</span>
-            </label>
-            <label className="flex items-center space-x-3 p-4 border border-border/50 rounded-lg cursor-pointer hover:bg-white/5 hover:border-primary/50 transition-all bg-[#0c0c0e]">
-              <input type="checkbox" checked={data.food.memberPrice} onChange={() => handleFoodCheckbox('memberPrice')} className="w-5 h-5 accent-primary" />
-              <span className="font-medium text-white tracking-wide">メンバー価格あり</span>
-            </label>
+        <CardContent className="p-8 pt-4 space-y-10">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <FoodCheckbox label="ウェルカムサービス" checked={data.food.welcomeService} onChange={() => handleFoodCheckbox('welcomeService')} />
+            <FoodCheckbox label="深夜メニュー" checked={data.food.midnightMenu} onChange={() => handleFoodCheckbox('midnightMenu')} />
+            <FoodCheckbox label="メンバー価格あり" checked={data.food.memberPrice} onChange={() => handleFoodCheckbox('memberPrice')} />
           </div>
-          <ImageUploader value={data.food.menuImageBase64} onChange={(val) => updateProject(project.id, p => { p.loveHotel.food.menuImageBase64 = val; })} label="メニュー画像・フード写真" />
+          <div className="pt-6 border-t border-border/50">
+            <ImageUploader value={data.food.menuImageBase64} onChange={(val) => updateProject(project.id, p => { p.loveHotel.food.menuImageBase64 = val; })} label="フードメニュー・料理写真" />
+          </div>
         </CardContent>
       </Card>
 
-
       {/* --- ⑤ システム・サービス --- */}
-      <Card className={cardStyle}>
-        <CardHeader className="bg-black/20 border-b border-border/30">
-          <CardTitle className="text-xl text-primary font-bold">⑤ システム・サービス</CardTitle>
+      <Card className={sectionCardStyle}>
+        <CardHeader className="p-8 pb-4">
+          <CardTitle className="text-xl font-bold italic tracking-tighter text-foreground flex items-center gap-3 uppercase font-[family-name:var(--font-outfit)]">
+            <LinkIcon className="w-8 h-8 text-primary" /> ⑤ 連携・サービス設定
+          </CardTitle>
         </CardHeader>
-        <CardContent className="pt-8 space-y-10">
+        <CardContent className="p-8 pt-4 space-y-12">
           
-          <div className="space-y-5 bg-[#0c0c0e] p-5 rounded-lg border border-border/50">
-            <Label className="text-lg font-bold text-white flex items-center gap-2"><LinkIcon className="w-5 h-5 text-primary"/> ホテナビ連携</Label>
+          <div className="bg-secondary/20 p-8 rounded-[2.5rem] border border-border/50">
+            <Label className="text-base font-bold text-foreground flex items-center gap-3 mb-6">
+              <div className="w-10 h-10 rounded-xl bg-white flex items-center justify-center shadow-sm border border-border">
+                <LinkIcon className="w-5 h-5 text-primary"/>
+              </div>
+              ホテナビ連携設定
+            </Label>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {([
                 { key: 'member', label: 'メンバー特典' },
@@ -312,207 +294,121 @@ export function LoveHotelTab({ project }: Props) {
                 { key: 'service', label: 'サービス・設備情報' },
                 { key: 'food', label: 'フードメニュー' }
               ] as const).map(item => (
-                <div key={item.key} className="flex items-center justify-between bg-black/40 p-3 rounded border border-border/30">
-                  <span className="text-sm font-medium">{item.label}</span>
+                <div key={item.key} className="flex items-center justify-between bg-white p-4 rounded-2xl border border-border shadow-sm">
+                  <span className="text-xs font-bold text-muted-foreground uppercase tracking-widest">{item.label}</span>
                   <Button 
-                    variant="outline" 
+                    variant="ghost" 
                     size="sm" 
                     onClick={() => handleHotenaviToggle(item.key, data.system.hotenavi.displays[item.key])}
-                    className={`w-32 border-primary/50 ${data.system.hotenavi.displays[item.key] === 'ホテナビで表示' ? 'text-[#ff4b4b]' : data.system.hotenavi.displays[item.key] === 'HPで表示' ? 'text-[#4169E1]' : 'text-primary'}`}
+                    className={cn(
+                      "min-w-[120px] font-bold text-[10px] uppercase tracking-widest rounded-xl transition-all",
+                      data.system.hotenavi.displays[item.key] === 'ホテナビで表示' ? 'bg-red-50 text-red-600' : 
+                      data.system.hotenavi.displays[item.key] === 'HPで表示' ? 'bg-blue-50 text-blue-600' : 
+                      'bg-emerald-50 text-emerald-600'
+                    )}
                   >
                     {data.system.hotenavi.displays[item.key]}
                   </Button>
                 </div>
               ))}
             </div>
-            <div className="pt-2">
-              <Label className="text-sm text-muted-foreground mb-2 block">逆連携（HPからホテナビへリンクさせる項目・URLなど）</Label>
-              <Input 
-                value={data.system.hotenavi.reverseLinks} 
-                onChange={(e) => updateProject(project.id, p => { p.loveHotel.system.hotenavi.reverseLinks = e.target.value })}
-                placeholder="例: 空室情報リンク -> https://..." 
-                className="bg-black/50"
+          </div>
+
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-10">
+            {/* Member System */}
+            <div className="space-y-4">
+              <div className="flex justify-between items-center px-2">
+                <Label className="text-sm font-bold text-foreground">メンバーシステム</Label>
+                <div className="flex bg-secondary/50 p-1 rounded-xl">
+                  <button onClick={() => handleSystemRadio('hasMemberSystem', true)} className={cn("px-4 py-1.5 rounded-lg text-[10px] font-bold uppercase transition-all", data.system.hasMemberSystem ? "bg-white text-primary paper-shadow" : "text-muted-foreground")}>有り</button>
+                  <button onClick={() => handleSystemRadio('hasMemberSystem', false)} className={cn("px-4 py-1.5 rounded-lg text-[10px] font-bold uppercase transition-all", !data.system.hasMemberSystem ? "bg-white text-primary paper-shadow" : "text-muted-foreground")}>無し</button>
+                </div>
+              </div>
+              <Textarea 
+                value={data.system.memberDetails}
+                onChange={(e) => updateProject(project.id, p => { p.loveHotel.system.memberDetails = e.target.value })}
+                disabled={!data.system.hasMemberSystem}
+                placeholder="特典詳細 (ポイント・割引など)"
+                className="bg-secondary/30 border-none rounded-2xl p-6 font-bold text-sm min-h-[120px] focus-visible:ring-primary/20 disabled:opacity-30 transition-all"
               />
             </div>
-          </div>
 
-          <div className={`space-y-4 p-5 border border-border/50 rounded-lg transition-all ${data.system.hasMemberSystem ? 'bg-[#0c0c0e]' : 'bg-black/20 opacity-70'}`}>
-            <div className="flex justify-between items-center mb-2">
-              <Label className="text-lg font-bold text-white block">メンバーシステム</Label>
-              <div className="flex gap-4">
-                <label className="flex items-center space-x-2 cursor-pointer">
-                  <input type="radio" checked={data.system.hasMemberSystem} onChange={() => handleSystemRadio('hasMemberSystem', true)} className="w-4 h-4 accent-primary" />
-                  <span className="font-bold">有り</span>
-                </label>
-                <label className="flex items-center space-x-2 cursor-pointer">
-                  <input type="radio" checked={!data.system.hasMemberSystem} onChange={() => handleSystemRadio('hasMemberSystem', false)} className="w-4 h-4 accent-primary" />
-                  <span>無し</span>
-                </label>
-              </div>
-            </div>
-            <Textarea 
-              value={data.system.memberDetails}
-              onChange={(e) => updateProject(project.id, p => { p.loveHotel.system.memberDetails = e.target.value })}
-              disabled={!data.system.hasMemberSystem}
-              placeholder="メンバー特典の詳細（ポイント、割引率など）"
-              className={`min-h-[100px] bg-black/50 ${!data.system.hasMemberSystem ? 'cursor-not-allowed border-dashed' : 'border-primary/30 focus-visible:ring-primary'}`}
-            />
-          </div>
-
-          <div className={`space-y-4 p-5 border border-border/50 rounded-lg transition-all ${data.system.hasRental ? 'bg-[#0c0c0e]' : 'bg-black/20 opacity-70'}`}>
-            <div className="flex justify-between items-center mb-2">
-              <Label className="text-lg font-bold text-white block">レンタル品</Label>
-              <div className="flex gap-4">
-                <label className="flex items-center space-x-2 cursor-pointer">
-                  <input type="radio" checked={data.system.hasRental} onChange={() => handleSystemRadio('hasRental', true)} className="w-4 h-4 accent-primary" />
-                  <span className="font-bold">有り</span>
-                </label>
-                <label className="flex items-center space-x-2 cursor-pointer">
-                  <input type="radio" checked={!data.system.hasRental} onChange={() => handleSystemRadio('hasRental', false)} className="w-4 h-4 accent-primary" />
-                  <span>無し</span>
-                </label>
-              </div>
-            </div>
-            
-            {data.system.hasRental && (
-              <div className="space-y-3 animate-in fade-in duration-300">
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
-                  {data.system.rentals.map((rental) => (
-                    <div key={rental.id} className="flex items-center gap-1 bg-black/50 p-2 rounded border border-border/50 focus-within:border-primary/50">
-                      <Input value={rental.name} onChange={(e) => updateRental(rental.id, 'name', e.target.value)} placeholder="品名" className="flex-1 bg-transparent border-none focus-visible:ring-0 px-2 text-sm" />
-                      <Input value={rental.price} onChange={(e) => updateRental(rental.id, 'price', e.target.value)} placeholder="金額(無料等)" className="w-20 bg-transparent border-none border-l border-border/50 rounded-none focus-visible:ring-0 px-2 text-sm" />
-                      <Button variant="ghost" size="icon" onClick={() => removeRental(rental.id)} className="text-muted-foreground hover:text-destructive w-6 h-6"><Trash2 className="w-3 h-3"/></Button>
-                    </div>
-                  ))}
+            {/* Rental Items */}
+            <div className="space-y-4">
+              <div className="flex justify-between items-center px-2">
+                <Label className="text-sm font-bold text-foreground">レンタル品管理</Label>
+                <div className="flex bg-secondary/50 p-1 rounded-xl">
+                  <button onClick={() => handleSystemRadio('hasRental', true)} className={cn("px-4 py-1.5 rounded-lg text-[10px] font-bold uppercase transition-all", data.system.hasRental ? "bg-white text-primary paper-shadow" : "text-muted-foreground")}>有り</button>
+                  <button onClick={() => handleSystemRadio('hasRental', false)} className={cn("px-4 py-1.5 rounded-lg text-[10px] font-bold uppercase transition-all", !data.system.hasRental ? "bg-white text-primary paper-shadow" : "text-muted-foreground")}>無し</button>
                 </div>
-                <Button size="sm" variant="outline" onClick={addRental} className="mt-3 border-primary/50 text-primary hover:bg-primary/10"><Plus className="w-4 h-4 mr-1"/> 品目追加</Button>
               </div>
-            )}
-          </div>
-
-          <div className={`space-y-4 p-5 border border-border/50 rounded-lg transition-all ${(data.system.hasSale ?? true) ? 'bg-[#0c0c0e]' : 'bg-black/20 opacity-70'}`}>
-            <div className="flex justify-between items-center mb-2">
-              <Label className="text-lg font-bold text-white block">販売品</Label>
-              <div className="flex gap-4">
-                <label className="flex items-center space-x-2 cursor-pointer">
-                  <input type="radio" checked={(data.system.hasSale ?? true)} onChange={() => handleSystemRadio('hasSale', true)} className="w-4 h-4 accent-primary" />
-                  <span className="font-bold">有り</span>
-                </label>
-                <label className="flex items-center space-x-2 cursor-pointer">
-                  <input type="radio" checked={!(data.system.hasSale ?? true)} onChange={() => handleSystemRadio('hasSale', false)} className="w-4 h-4 accent-primary" />
-                  <span>無し</span>
-                </label>
-              </div>
-            </div>
-            
-            {(data.system.hasSale ?? true) && (
-              <div className="space-y-3 animate-in fade-in duration-300">
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
-                  {(data.system.sales || []).map((sale) => (
-                    <div key={sale.id} className="flex items-center gap-1 bg-black/50 p-2 rounded border border-border/50 focus-within:border-primary/50">
-                      <Input value={sale.name} onChange={(e) => updateSale(sale.id, 'name', e.target.value)} placeholder="品名" className="flex-1 bg-transparent border-none focus-visible:ring-0 px-2 text-sm" />
-                      <Input value={sale.price} onChange={(e) => updateSale(sale.id, 'price', e.target.value)} placeholder="金額(500円等)" className="w-20 bg-transparent border-none border-l border-border/50 rounded-none focus-visible:ring-0 px-2 text-sm" />
-                      <Button variant="ghost" size="icon" onClick={() => removeSale(sale.id)} className="text-muted-foreground hover:text-destructive w-6 h-6"><Trash2 className="w-3 h-3"/></Button>
-                    </div>
-                  ))}
+              {data.system.hasRental && (
+                <div className="space-y-3 animate-in fade-in duration-300">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    {data.system.rentals.map((rental) => (
+                      <div key={rental.id} className="flex items-center gap-2 bg-white p-2 rounded-xl border border-border shadow-sm">
+                        <Input value={rental.name} onChange={(e) => updateRental(rental.id, 'name', e.target.value)} placeholder="品名" className="flex-1 bg-transparent border-none focus-visible:ring-0 px-2 font-bold text-xs" />
+                        <Input value={rental.price} onChange={(e) => updateRental(rental.id, 'price', e.target.value)} placeholder="金額" className="w-20 bg-secondary/20 border-none rounded-lg focus-visible:ring-0 px-2 text-[10px] font-bold text-center h-8" />
+                        <Button variant="ghost" size="icon" onClick={() => removeRental(rental.id)} className="text-muted-foreground hover:text-destructive w-8 h-8 rounded-lg"><Trash2 className="w-4 h-4"/></Button>
+                      </div>
+                    ))}
+                  </div>
+                  <Button size="sm" variant="ghost" onClick={addRental} className="text-primary hover:bg-primary/5 font-bold"><Plus className="w-4 h-4 mr-1"/> 品目を追加</Button>
                 </div>
-                <Button size="sm" variant="outline" onClick={addSale} className="mt-3 border-primary/50 text-primary hover:bg-primary/10"><Plus className="w-4 h-4 mr-1"/> 販売品追加</Button>
-              </div>
-            )}
+              )}
+            </div>
           </div>
-
-          <div className="space-y-3">
-            <Label className="text-lg font-bold text-white">クーポン情報</Label>
-            <Textarea 
-              value={data.system.couponInfo} 
-              onChange={(e) => updateProject(project.id, p => { p.loveHotel.system.couponInfo = e.target.value })}
-              placeholder="クーポンの種類、利用条件、配布媒体など" 
-              className="bg-black/50"
-            />
-          </div>
-
-          <ImageUploader value={data.images.system} onChange={(val) => updateProject(project.id, p => { p.loveHotel.images.system = val; })} label="システム・サービス 関連画像" />
         </CardContent>
       </Card>
 
-
-      {/* --- ⑥ アクセス・立地 --- */}
-      <Card className={cardStyle}>
-        <CardHeader className="bg-black/20 border-b border-border/30">
-          <CardTitle className="text-xl text-primary font-bold">⑥ アクセス・立地情報</CardTitle>
+      {/* --- ⑥ アクセス --- */}
+      <Card className={sectionCardStyle}>
+        <CardHeader className="p-8 pb-4">
+          <CardTitle className="text-xl font-bold italic tracking-tighter text-foreground flex items-center gap-3 uppercase font-[family-name:var(--font-outfit)]">
+            <MapPin className="w-8 h-8 text-primary" /> ⑥ アクセス・立地
+          </CardTitle>
         </CardHeader>
-        <CardContent className="pt-6 space-y-6">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 bg-[#0c0c0e] p-5 rounded-lg border border-border/50">
-            <div className="space-y-2 md:col-span-2">
-              <Label className="text-white">所在地（住所）</Label>
-              <Input 
-                value={basicInfo.location} 
-                onChange={(e) => updateAccessBasicInfo('location', e.target.value)}
-                placeholder="東京都渋谷区..." 
-                className="bg-black/50"
-              />
+        <CardContent className="p-8 pt-4 space-y-10">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <div className="space-y-3">
+              <Label className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest ml-1">車での入りやすさ</Label>
+              <Input value={access.entryEase} onChange={(e) => updateAccess('entryEase', e.target.value)} placeholder="例: 大通りから直接、裏道から 等" className="h-14 bg-secondary/30 border-none rounded-2xl px-6 font-bold" />
             </div>
-            <div className="space-y-2">
-              <Label className="text-white">電話番号</Label>
-              <Input 
-                value={basicInfo.phone} 
-                onChange={(e) => updateAccessBasicInfo('phone', e.target.value)}
-                placeholder="090-XXXX-XXXX" 
-                className="bg-black/50"
-              />
-            </div>
-            <div className="space-y-2">
-              <Label className="text-white">駐車場台数</Label>
-              <Input 
-                value={basicInfo.parking} 
-                onChange={(e) => updateAccessBasicInfo('parking', e.target.value)}
-                placeholder="30台 / なし" 
-                className="bg-black/50"
-              />
+            <div className="space-y-3">
+              <Label className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest ml-1">駐車場の隠蔽性</Label>
+              <Input value={access.parkingHiding} onChange={(e) => updateAccess('parkingHiding', e.target.value)} placeholder="例: シャッター付き、暖簾あり 等" className="h-14 bg-secondary/30 border-none rounded-2xl px-6 font-bold" />
             </div>
           </div>
-          
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div className="space-y-2">
-              <Label className="text-white">車での入りやすさ</Label>
-              <Input 
-                value={access.entryEase} 
-                onChange={(e) => updateAccess('entryEase', e.target.value)}
-                placeholder="例: 大通りから直接、裏道から 等" 
-                className="bg-black/50"
-              />
-            </div>
-            <div className="space-y-2">
-              <Label className="text-white">駐車場の隠蔽性</Label>
-              <Input 
-                value={access.parkingHiding} 
-                onChange={(e) => updateAccess('parkingHiding', e.target.value)}
-                placeholder="例: シャッター付き、暖簾あり 等" 
-                className="bg-black/50"
-              />
-            </div>
+          <div className="flex items-center gap-6">
+            <Badge 
+              onClick={toggleHighRoof}
+              className={cn(
+                "cursor-pointer px-6 py-3 rounded-2xl text-[10px] font-bold uppercase tracking-widest border-2 transition-all",
+                access.highRoof ? "bg-primary text-white border-primary shadow-lg shadow-primary/20" : "bg-white text-muted-foreground border-border hover:border-primary/20"
+              )}
+            >
+              ハイルーフ車対応 {access.highRoof ? '✓' : '✗'}
+            </Badge>
           </div>
-          <label className="flex items-center space-x-3 p-4 border border-border/50 rounded-lg cursor-pointer hover:bg-white/5 hover:border-primary/50 transition-all bg-[#0c0c0e] w-full md:w-auto md:inline-flex">
-            <input type="checkbox" checked={access.highRoof} onChange={toggleHighRoof} className="w-5 h-5 accent-primary" />
-            <span className="font-medium text-white tracking-wide">ハイルーフ車対応</span>
-          </label>
-
-          <ImageUploader value={data.images.access} onChange={(val) => updateProject(project.id, p => { p.loveHotel.images.access = val; })} label="外観・駐車場 関連画像" />
+          <div className="pt-6 border-t border-border/50">
+            <ImageUploader value={data.images.access} onChange={(val) => updateProject(project.id, p => { p.loveHotel.images.access = val; })} label="外観・駐車場に関連する写真" />
+          </div>
         </CardContent>
       </Card>
-
 
       {/* --- ⑦ 担当者メモ --- */}
-      <Card className={cardStyle}>
-        <CardHeader className="bg-black/20 border-b border-border/30">
-          <CardTitle className="text-xl text-primary font-bold">⑦ 担当者メモ</CardTitle>
+      <Card className={sectionCardStyle}>
+        <CardHeader className="p-8 pb-4">
+          <CardTitle className="text-xl font-bold italic tracking-tighter text-foreground flex items-center gap-3 uppercase font-[family-name:var(--font-outfit)]">
+            <MessageSquare className="w-8 h-8 text-primary" /> ⑦ 担当者メモ
+          </CardTitle>
         </CardHeader>
-        <CardContent className="pt-6 space-y-6">
+        <CardContent className="p-8 pt-4">
           <Textarea 
             value={memo} 
             onChange={(e) => updateRootString('memo', e.target.value)}
-            placeholder="その他の連絡事項、懸念点、要望など自由に記載してください" 
-            className="bg-black/50 min-h-[150px]"
+            placeholder="その他の連絡事項、懸念点、要望など..." 
+            className="bg-secondary/30 min-h-[150px] border-none rounded-[2rem] p-8 font-bold text-lg leading-relaxed placeholder:opacity-30"
           />
         </CardContent>
       </Card>
@@ -521,9 +417,28 @@ export function LoveHotelTab({ project }: Props) {
   );
 }
 
-// X icon
-function XIcon() {
+function PriceField({ label, value, onChange, placeholder }: any) {
   return (
-    <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+    <div className="space-y-3">
+      <Label className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest ml-1">{label}</Label>
+      <Input value={value} onChange={(e) => onChange(e.target.value)} placeholder={placeholder} className="h-14 bg-secondary/30 border-none rounded-2xl px-6 font-bold text-[#2D3436]" />
+    </div>
+  );
+}
+
+function FoodCheckbox({ label, checked, onChange }: any) {
+  return (
+    <div 
+      onClick={onChange}
+      className={cn(
+        "flex items-center justify-between p-5 rounded-2xl border-2 transition-all cursor-pointer group",
+        checked ? "bg-primary/5 border-primary shadow-sm" : "bg-white border-border hover:border-primary/20"
+      )}
+    >
+      <span className={cn("text-xs font-bold transition-colors", checked ? "text-primary" : "text-muted-foreground group-hover:text-foreground")}>{label}</span>
+      <div className={cn("w-6 h-6 rounded-lg border-2 flex items-center justify-center transition-all", checked ? "bg-primary border-primary" : "border-border")}>
+        {checked && <Plus className="w-4 h-4 text-white rotate-45" />}
+      </div>
+    </div>
   );
 }
