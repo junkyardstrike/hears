@@ -166,6 +166,8 @@ export interface HearsState {
   isLocked: boolean;
   setPinCode: (pin: string) => void;
   setLocked: (locked: boolean) => void;
+  mobileMenuOpen: boolean;
+  setMobileMenuOpen: (open: boolean) => void;
 
   globalFinance: {
     baseSalary: number;
@@ -294,13 +296,15 @@ export const useHearsStore = create<HearsState>()(
       ],
       pinCode: '0000',
       isLocked: true,
+      mobileMenuOpen: false,
       globalFinance: {
         baseSalary: 200000,
         baseSalaryOverrides: {},
       },
 
       setPinCode: (pin) => set({ pinCode: pin }),
-      setLocked: (locked) => set({ isLocked: locked }),
+      setLocked: (locked: boolean) => set({ isLocked: locked }),
+      setMobileMenuOpen: (open: boolean) => set({ mobileMenuOpen: open }),
 
       updateGlobalFinance: (updater) => {
         set((state) => {

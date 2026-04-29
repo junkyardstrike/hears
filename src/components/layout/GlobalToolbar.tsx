@@ -16,10 +16,12 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { useHearsStore } from '@/store/useHearsStore';
 
 export function GlobalToolbar() {
   const pathname = usePathname();
   const router = useRouter();
+  const { setMobileMenuOpen } = useHearsStore();
   
   const getPageTitle = (path: string) => {
     if (path === '/') return 'ダッシュボード';
@@ -32,29 +34,29 @@ export function GlobalToolbar() {
   };
 
   return (
-    <header className="h-20 bg-white border-b border-border sticky top-0 z-40 px-8 flex items-center justify-between paper-shadow-sm font-[family-name:var(--font-noto)]">
+    <header className="h-16 lg:h-20 bg-white border-b border-border sticky top-0 z-40 px-4 lg:px-8 flex items-center justify-between paper-shadow-sm font-[family-name:var(--font-noto)]">
       {/* Left: Page Title */}
-      <div className="flex items-center gap-6 min-w-0">
+      <div className="flex items-center gap-2 lg:gap-6 min-w-0">
         <div className="lg:hidden">
-          <Button variant="ghost" size="icon">
+          <Button variant="ghost" size="icon" onClick={() => setMobileMenuOpen(true)}>
             <Menu className="w-6 h-6" />
           </Button>
         </div>
         <div className="flex flex-col min-w-0">
-          <h2 className="text-xl font-bold italic tracking-tighter text-foreground uppercase font-[family-name:var(--font-outfit)] truncate">
+          <h2 className="text-sm lg:text-xl font-bold italic tracking-tighter text-foreground uppercase font-[family-name:var(--font-outfit)] truncate">
             {getPageTitle(pathname)}
           </h2>
           <div className="flex items-center gap-2">
-            <Badge variant="outline" className="bg-primary/5 text-primary border-primary/20 text-[9px] font-bold uppercase tracking-widest px-2 py-0 font-[family-name:var(--font-outfit)]">
+            <Badge variant="outline" className="bg-primary/5 text-primary border-primary/20 text-[8px] lg:text-[9px] font-bold uppercase tracking-widest px-2 py-0 font-[family-name:var(--font-outfit)]">
               Ver 6.3.0
             </Badge>
-            <span className="text-[9px] font-medium text-muted-foreground uppercase tracking-widest opacity-60 hidden sm:inline">System Active</span>
+            <span className="text-[8px] lg:text-[9px] font-medium text-muted-foreground uppercase tracking-widest opacity-60 hidden sm:inline">System Active</span>
           </div>
         </div>
       </div>
 
       {/* Right: Actions */}
-      <div className="flex items-center gap-4 shrink-0">
+      <div className="flex items-center gap-2 lg:gap-4 shrink-0">
         {/* Search / Command Menu */}
         <div className="hidden xl:flex items-center gap-3 bg-secondary/50 px-4 py-2 rounded-2xl border border-border group focus-within:bg-white focus-within:ring-2 focus-within:ring-primary/20 transition-all">
           <Search className="w-4 h-4 text-muted-foreground" />
@@ -69,8 +71,8 @@ export function GlobalToolbar() {
           </div>
         </div>
 
-        <div className="flex items-center gap-1 border-l border-border pl-4">
-          <Button variant="ghost" size="icon" className="text-muted-foreground hover:text-primary rounded-xl" title="ヘルプ">
+        <div className="flex items-center gap-1 lg:border-l border-border lg:pl-4">
+          <Button variant="ghost" size="icon" className="hidden sm:flex text-muted-foreground hover:text-primary rounded-xl" title="ヘルプ">
             <HelpCircle className="w-5 h-5" />
           </Button>
           
@@ -102,12 +104,12 @@ export function GlobalToolbar() {
         {/* User Profile */}
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <div className="flex items-center gap-3 bg-secondary/30 pl-4 pr-2 py-1.5 rounded-2xl border border-border hover:bg-secondary/50 transition-all cursor-pointer group">
-              <div className="flex flex-col items-end hidden sm:flex">
+            <div className="flex items-center gap-2 lg:gap-3 bg-secondary/30 pl-2 lg:pl-4 pr-2 py-1.5 rounded-2xl border border-border hover:bg-secondary/50 transition-all cursor-pointer group">
+              <div className="flex flex-col items-end hidden md:flex">
                 <span className="text-[10px] font-bold text-foreground uppercase tracking-tighter italic font-[family-name:var(--font-outfit)]">ADMIN</span>
                 <span className="text-[8px] font-medium text-primary uppercase tracking-widest">管理者</span>
               </div>
-              <div className="w-9 h-9 rounded-xl bg-primary flex items-center justify-center text-white font-bold text-xs shadow-lg shadow-primary/20 group-hover:scale-105 transition-transform font-[family-name:var(--font-outfit)]">
+              <div className="w-8 h-8 lg:w-9 lg:h-9 rounded-xl bg-primary flex items-center justify-center text-white font-bold text-xs shadow-lg shadow-primary/20 group-hover:scale-105 transition-transform font-[family-name:var(--font-outfit)]">
                 AU
               </div>
               <ChevronDown className="w-4 h-4 text-muted-foreground opacity-40 group-hover:opacity-100" />

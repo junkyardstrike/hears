@@ -19,7 +19,7 @@ const menuItems = [
   { label: 'TASKS', jpLabel: '全体タスク', icon: ListTodo, href: '/todo', color: 'text-white' },
 ];
 
-export function Sidebar() {
+export function Sidebar({ isMobile = false }: { isMobile?: boolean }) {
   const pathname = usePathname();
   const { setLocked, cases, globalFinance } = useHearsStore();
   
@@ -31,7 +31,10 @@ export function Sidebar() {
   const progressPercent = Math.min(Math.round((currentRevenue / revenueGoal) * 100), 100);
 
   return (
-    <aside className="hidden lg:flex flex-col w-72 bg-[var(--sidebar-bg)] text-[var(--sidebar-fg)] h-screen sticky top-0 z-50 shadow-2xl font-[family-name:var(--font-noto)]">
+    <aside className={cn(
+      "flex flex-col w-72 bg-[var(--sidebar-bg)] text-[var(--sidebar-fg)] h-screen sticky top-0 z-50 shadow-2xl font-[family-name:var(--font-noto)]",
+      !isMobile && "hidden lg:flex"
+    )}>
       {/* Branding */}
       <div className="p-10">
         <Link href="/" className="group inline-block">
