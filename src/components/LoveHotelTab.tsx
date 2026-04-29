@@ -240,11 +240,11 @@ export function LoveHotelTab({ project }: Props) {
         </CardHeader>
         <CardContent className="p-8 pt-4 space-y-10">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            <PriceField label="休憩" value={pricing.rest} onChange={(v) => updatePricing('rest', v)} placeholder="例: 2時間 3,980円〜" />
-            <PriceField label="宿泊" value={pricing.stay} onChange={(v) => updatePricing('stay', v)} placeholder="例: 20:00〜翌12:00 7,980円〜" />
-            <PriceField label="フリータイム" value={pricing.freeTime} onChange={(v) => updatePricing('freeTime', v)} placeholder="例: 最大12時間 4,980円〜" />
-            <PriceField label="ショートタイム" value={pricing.shortTime} onChange={(v) => updatePricing('shortTime', v)} placeholder="例: 90分 2,980円〜" />
-            <PriceField label="延長料金" value={pricing.extension} onChange={(v) => updatePricing('extension', v)} placeholder="例: 30分 1,000円" />
+            <PriceField label="休憩" value={pricing.rest} onChange={(v: string) => updatePricing('rest', v)} placeholder="例: 2時間 3,980円〜" />
+            <PriceField label="宿泊" value={pricing.stay} onChange={(v: string) => updatePricing('stay', v)} placeholder="例: 20:00〜翌12:00 7,980円〜" />
+            <PriceField label="フリータイム" value={pricing.freeTime} onChange={(v: string) => updatePricing('freeTime', v)} placeholder="例: 最大12時間 4,980円〜" />
+            <PriceField label="ショートタイム" value={pricing.shortTime} onChange={(v: string) => updatePricing('shortTime', v)} placeholder="例: 90分 2,980円〜" />
+            <PriceField label="延長料金" value={pricing.extension} onChange={(v: string) => updatePricing('extension', v)} placeholder="例: 30分 1,000円" />
           </div>
           <div className="pt-6 border-t border-border/50">
             <ImageUploader value={pricing.image} onChange={(val) => updateProject(project.id, p => { p.loveHotel.pricing.image = val; })} label="料金表画像 (看板・案内等)" />
