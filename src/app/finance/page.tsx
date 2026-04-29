@@ -252,7 +252,7 @@ export default function FinancePage() {
         />
       </div>
 
-      <div className="flex justify-between items-center bg-white p-5 rounded-[1.8rem] paper-shadow">
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 bg-white p-5 rounded-[1.8rem] paper-shadow">
         <div className="flex items-center gap-3">
           <div className="p-2.5 bg-primary/10 rounded-xl"><BarChart3 className="w-5 h-5 text-primary" /></div>
           <div>
@@ -260,16 +260,18 @@ export default function FinancePage() {
             <p className="text-[9px] font-bold text-muted-foreground uppercase tracking-[0.2em] opacity-40">収益分析 ・ 経営目標管理</p>
           </div>
         </div>
-        <div className="flex items-center gap-4">
-          <div className="flex bg-secondary/50 p-0.5 rounded-lg border border-border">
+        <div className="flex flex-wrap items-center gap-3 w-full md:w-auto">
+          <div className="flex bg-secondary/50 p-0.5 rounded-lg border border-border shrink-0">
             {[viewYear - 1, viewYear, viewYear + 1].map(y => (
               <button key={y} onClick={() => setViewYear(y)} className={cn("px-3 py-1 rounded-md text-[9px] font-bold uppercase transition-all", viewYear === y ? "bg-white text-primary shadow-sm" : "text-muted-foreground hover:text-foreground")}>{y}年度</button>
             ))}
           </div>
-          <div className="flex items-center gap-2.5 bg-secondary/20 px-3 py-1 rounded-lg border border-border">
+          <div className="flex items-center gap-2.5 bg-secondary/20 px-3 py-1 rounded-lg border border-border flex-1 md:flex-none justify-between md:justify-start">
              <span className="text-[9px] font-bold text-muted-foreground uppercase tracking-widest opacity-60 leading-none">基本給設定</span>
-             <Input type="number" value={baseSalaryInput} onChange={(e) => setBaseSalaryInput(e.target.value)} className="h-5 w-16 border-none bg-transparent font-bold text-sm p-0 focus-visible:ring-0 text-foreground font-[family-name:var(--font-outfit)] text-right" />
-             <Button size="icon" variant="ghost" onClick={handleSaveBaseSalary} className="h-6 w-6 hover:bg-primary/10 rounded-md">{isSalarySaved ? <Check className="w-3 h-3 text-emerald-500" /> : <Settings2 className="w-3 h-3" />}</Button>
+             <div className="flex items-center gap-1">
+               <Input type="number" value={baseSalaryInput} onChange={(e) => setBaseSalaryInput(e.target.value)} className="h-5 w-16 border-none bg-transparent font-bold text-sm p-0 focus-visible:ring-0 text-foreground font-[family-name:var(--font-outfit)] text-right" />
+               <Button size="icon" variant="ghost" onClick={handleSaveBaseSalary} className="h-6 w-6 hover:bg-primary/10 rounded-md">{isSalarySaved ? <Check className="w-3 h-3 text-emerald-500" /> : <Settings2 className="w-3 h-3" />}</Button>
+             </div>
           </div>
         </div>
       </div>
