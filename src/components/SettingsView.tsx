@@ -45,7 +45,8 @@ export function SettingsView() {
     try {
       const handle = await (window as any).showDirectoryPicker({ mode: 'readwrite' });
       setBackupSettings({ syncDirHandle: handle, enabled: true });
-    } catch (e) {
+    } catch (e: any) {
+      if (e.name === 'AbortError') return;
       console.error('Directory selection failed:', e);
     }
   };
@@ -85,8 +86,9 @@ export function SettingsView() {
       } else {
         alert(res.error);
       }
-    } catch (e) {
-      console.error('Import aborted');
+    } catch (e: any) {
+      if (e.name === 'AbortError') return;
+      console.error('Import failed:', e);
     }
   };
 
