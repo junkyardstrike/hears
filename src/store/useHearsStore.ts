@@ -287,13 +287,13 @@ const createInitialProject = (name: string): ProjectData => ({
 
 const idbStorage: StateStorage = {
   getItem: async (name: string): Promise<string | null> => {
-    return (await get(name)) || null;
+    return (await getIDB(name)) || null;
   },
   setItem: async (name: string, value: string): Promise<void> => {
-    await set(name, value);
+    await setIDB(name, value);
   },
   removeItem: async (name: string): Promise<void> => {
-    await del(name);
+    await delIDB(name);
   },
 };
 
