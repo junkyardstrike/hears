@@ -1,6 +1,11 @@
 import { create } from 'zustand';
 import { persist, createJSONStorage, StateStorage } from 'zustand/middleware';
 import { get, set, del } from 'idb-keyval';
+import { format } from 'date-fns';
+import { 
+  encryptData, decryptData, 
+  saveEncryptedFile, readEncryptedFile 
+} from '@/lib/syncService';
 
 // ---------------------------------------------------------
 // Types
@@ -192,6 +197,8 @@ export interface HearsState {
   deleteGenre: (name: string) => void;
 
   importData: (rawData: any) => void;
+  importDatabase: (fileHandle: FileSystemFileHandle, password: string) => Promise<{ success: boolean; error?: string }>;
+  exportDatabase: (directoryHandle: FileSystemDirectoryHandle, password: string) => Promise<{ success: boolean; fileName?: string; error?: string }>;
 }
 
 export const generateId = () => {
@@ -324,6 +331,46 @@ export const useHearsStore = create<HearsState>()(
         set((state) => ({ projects: state.projects.filter(p => p.id !== id) }));
       },
       
+      importDatabase: async (fileHandle: FileSystemFileHandle, password: string) => {
+        try {
+          const encryptedBuffer = await readEncryptedFile(fileHandle);
+          const decryptedJson = await decryptData(encryptedBuffer, password);
+          const data = JSON.parse(decryptedJson);
+          
+          set({
+            projects: data.projects || [],
+            cases: data.cases || [],
+            clients: data.clients || [],
+            globalFinance: data.globalFinance || { baseSalary: 200000, baseSalaryOverrides: {} }
+          });
+          return { success: true };
+        } catch (e) {
+          console.error('Import failed:', e);
+          return { success: false, error: '復号に失敗しました。パスワードが違うか、ファイルが破損しています。' };
+        }
+      },
+
+      exportDatabase: async (directoryHandle: FileSystemDirectoryHandle, password: string) => {
+        try {
+          const state = get();
+          const plainData = JSON.stringify({
+            projects: state.projects,
+            cases: state.cases,
+            clients: state.clients,
+            globalFinance: state.globalFinance
+          });
+
+          const encryptedBuffer = await encryptData(plainData, password);
+          const fileName = `alchemist_db_${format(new Date(), 'yyyyMMdd_HHmmss')}.alchemist`;
+          
+          await saveEncryptedFile(directoryHandle, fileName, encryptedBuffer);
+          return { success: true, fileName };
+        } catch (e) {
+          console.error('Export failed:', e);
+          return { success: false, error: 'エクスポートに失敗しました。' };
+        }
+      },
+
       updateProject: (id: string, updater: (project: ProjectData) => void) => {
         set((state) => ({
           projects: state.projects.map(p => {
