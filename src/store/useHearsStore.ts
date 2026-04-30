@@ -366,7 +366,7 @@ export const useHearsStore = create<HearsState>()(
         set((state) => ({ projects: state.projects.filter(p => p.id !== id) }));
       },
       
-      importDatabase: async (fileHandle: FileSystemFileHandle, password: string) => {
+      importDatabase: async (fileHandle: any, password: string) => {
         try {
           const encryptedBuffer = await readEncryptedFile(fileHandle);
           const decryptedJson = await decryptData(encryptedBuffer, password);
@@ -385,7 +385,7 @@ export const useHearsStore = create<HearsState>()(
         }
       },
 
-      exportDatabase: async (directoryHandle: FileSystemDirectoryHandle, password: string) => {
+      exportDatabase: async (directoryHandle: any, password: string) => {
         try {
           const state = get();
           const plainData = JSON.stringify({
