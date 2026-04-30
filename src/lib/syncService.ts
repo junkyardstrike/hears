@@ -18,7 +18,7 @@ async function deriveKey(password: string, salt: Uint8Array) {
   return window.crypto.subtle.deriveKey(
     {
       name: 'PBKDF2',
-      salt: salt,
+      salt: salt as any,
       iterations: 100000,
       hash: 'SHA-256'
     },
@@ -40,7 +40,7 @@ export async function encryptData(plainText: string, password: string): Promise<
   const key = await deriveKey(password, salt);
 
   const encrypted = await window.crypto.subtle.encrypt(
-    { name: 'AES-GCM', iv },
+    { name: 'AES-GCM', iv: iv as any },
     key,
     enc.encode(plainText)
   );
@@ -66,7 +66,7 @@ export async function decryptData(encryptedBuffer: ArrayBuffer, password: string
   const dec = new TextDecoder();
 
   const decrypted = await window.crypto.subtle.decrypt(
-    { name: 'AES-GCM', iv },
+    { name: 'AES-GCM', iv: iv as any },
     key,
     ciphertext
   );
