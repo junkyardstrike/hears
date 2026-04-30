@@ -36,7 +36,7 @@ export function RootWrapper({ children }: { children: React.ReactNode }) {
         try {
           // 2. Point 2: Auto Load at startup
           // Find the latest .alchemist file in the directory
-          let latestFile: FileSystemFileHandle | null = null;
+          let latestFile: any = null;
           let latestTime = 0;
 
           for await (const entry of (syncDirHandle as any).values()) {

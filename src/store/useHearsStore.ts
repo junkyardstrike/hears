@@ -334,10 +334,10 @@ export const useHearsStore = create<HearsState>()(
       },
 
       loadSyncDirHandle: async () => {
-        const handle = await getIDB<FileSystemDirectoryHandle>('alchemist-sync-dir');
+        const handle = await getIDB<any>('alchemist-sync-dir');
         if (handle) {
           // Verify permission
-          const status = await handle.queryPermission({ mode: 'readwrite' });
+          const status = await (handle as any).queryPermission({ mode: 'readwrite' });
           if (status === 'granted') {
             set((state) => ({ backupSettings: { ...state.backupSettings, syncDirHandle: handle } }));
           }
