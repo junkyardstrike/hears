@@ -77,14 +77,14 @@ export async function decryptData(encryptedBuffer: ArrayBuffer, password: string
 /**
  * File System Helpers
  */
-export async function saveEncryptedFile(directoryHandle: FileSystemDirectoryHandle, fileName: string, data: ArrayBuffer) {
+export async function saveEncryptedFile(directoryHandle: any, fileName: string, data: ArrayBuffer) {
   const fileHandle = await directoryHandle.getFileHandle(fileName, { create: true });
   const writable = await fileHandle.createWritable();
   await writable.write(data);
   await writable.close();
 }
 
-export async function readEncryptedFile(fileHandle: FileSystemFileHandle): Promise<ArrayBuffer> {
+export async function readEncryptedFile(fileHandle: any): Promise<ArrayBuffer> {
   const file = await fileHandle.getFile();
   return await file.arrayBuffer();
 }

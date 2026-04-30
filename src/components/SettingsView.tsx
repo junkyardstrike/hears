@@ -43,7 +43,7 @@ export function SettingsView() {
 
   const handleSelectDir = async () => {
     try {
-      const handle = await window.showDirectoryPicker({ mode: 'readwrite' });
+      const handle = await (window as any).showDirectoryPicker({ mode: 'readwrite' });
       setBackupSettings({ syncDirHandle: handle, enabled: true });
     } catch (e) {
       console.error('Directory selection failed:', e);
@@ -72,7 +72,7 @@ export function SettingsView() {
       return;
     }
     try {
-      const [fileHandle] = await window.showOpenFilePicker({
+      const [fileHandle] = await (window as any).showOpenFilePicker({
         types: [{ description: 'Alchemist DB', accept: { 'application/octet-stream': ['.alchemist'] } }],
         multiple: false
       });

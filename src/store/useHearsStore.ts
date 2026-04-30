@@ -182,7 +182,7 @@ export interface HearsState {
 
   backupSettings: {
     enabled: boolean;
-    syncDirHandle?: FileSystemDirectoryHandle;
+    syncDirHandle?: any;
     masterPassword?: string;
     lastBackupDate?: number;
   };
@@ -206,8 +206,8 @@ export interface HearsState {
   deleteGenre: (name: string) => void;
 
   importData: (rawData: any) => void;
-  importDatabase: (fileHandle: FileSystemFileHandle, password: string) => Promise<{ success: boolean; error?: string }>;
-  exportDatabase: (directoryHandle: FileSystemDirectoryHandle, password: string) => Promise<{ success: boolean; fileName?: string; error?: string }>;
+  importDatabase: (fileHandle: any, password: string) => Promise<{ success: boolean; error?: string }>;
+  exportDatabase: (directoryHandle: any, password: string) => Promise<{ success: boolean; fileName?: string; error?: string }>;
 }
 
 export const generateId = () => {
