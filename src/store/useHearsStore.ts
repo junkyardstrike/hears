@@ -1,6 +1,6 @@
 import { create } from 'zustand';
 import { persist, createJSONStorage, StateStorage } from 'zustand/middleware';
-import { get, set, del } from 'idb-keyval';
+import { get as getIDB, set as setIDB, del as delIDB } from 'idb-keyval';
 import { format } from 'date-fns';
 import { 
   encryptData, decryptData, 
@@ -180,6 +180,15 @@ export interface HearsState {
   };
   updateGlobalFinance: (updater: (f: HearsState['globalFinance']) => void) => void;
 
+  backupSettings: {
+    enabled: boolean;
+    syncDirHandle?: FileSystemDirectoryHandle;
+    masterPassword?: string;
+    lastBackupDate?: number;
+  };
+  setBackupSettings: (settings: Partial<HearsState['backupSettings']>) => void;
+  loadSyncDirHandle: () => Promise<void>;
+
   createProject: (name: string) => string;
   deleteProject: (id: string) => void;
   updateProject: (id: string, updater: (project: ProjectData) => void) => void;
@@ -307,6 +316,32 @@ export const useHearsStore = create<HearsState>()(
       globalFinance: {
         baseSalary: 200000,
         baseSalaryOverrides: {},
+      },
+      backupSettings: {
+        enabled: false,
+        lastBackupDate: undefined,
+      },
+
+      setBackupSettings: (settings) => {
+        set((state) => {
+          const newSettings = { ...state.backupSettings, ...settings };
+          // If we have a handle, persist it specifically in IDB since persist middleware can't handle it
+          if (settings.syncDirHandle) {
+            setIDB('alchemist-sync-dir', settings.syncDirHandle);
+          }
+          return { backupSettings: newSettings };
+        });
+      },
+
+      loadSyncDirHandle: async () => {
+        const handle = await getIDB<FileSystemDirectoryHandle>('alchemist-sync-dir');
+        if (handle) {
+          // Verify permission
+          const status = await handle.queryPermission({ mode: 'readwrite' });
+          if (status === 'granted') {
+            set((state) => ({ backupSettings: { ...state.backupSettings, syncDirHandle: handle } }));
+          }
+        }
       },
 
       setPinCode: (pin) => set({ pinCode: pin }),
