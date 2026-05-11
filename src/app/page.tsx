@@ -48,9 +48,9 @@ export default function ClientsDashboard() {
   };
 
   return (
-    <div className="space-y-8 animate-in fade-in duration-500 pb-20 font-[family-name:var(--font-noto)]">
+    <div className="space-y-8 animate-in fade-in duration-500 pb-20 font-sans">
       {/* ヘッダー */}
-      <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-8 bg-white p-8 lg:p-10 rounded-[3rem] paper-shadow">
+      <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-8 bg-card p-6 lg:p-8 rounded-lg border border-border">
         <div className="min-w-0 flex-1">
           <div className="flex items-center gap-4 mb-2">
             <h2 className="text-3xl font-bold italic tracking-tighter text-foreground flex items-center gap-4 uppercase font-[family-name:var(--font-outfit)]">
@@ -67,10 +67,10 @@ export default function ClientsDashboard() {
               placeholder="法人名で検索... / SEARCH" 
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              className="pl-12 h-16 bg-secondary/30 border-none rounded-2xl font-bold text-xs"
+              className="pl-12 h-14 bg-input border-none rounded-md font-bold text-xs"
             />
           </div>
-          <Button onClick={handleAdd} className="bg-primary hover:bg-primary/90 text-white font-bold h-16 px-10 rounded-2xl shadow-2xl shadow-primary/30 transition-all hover:scale-105 active:scale-95 shrink-0 flex items-center gap-3">
+          <Button onClick={handleAdd} className="bg-primary hover:brightness-110 text-primary-foreground font-bold h-14 px-8 rounded-md transition-all active:scale-95 shrink-0 flex items-center gap-3">
             <Plus className="w-7 h-7" />
             <span className="flex flex-col items-start leading-none uppercase italic tracking-tight text-left">
               <span className="text-[12px] font-black">NEW CLIENT</span>
@@ -83,7 +83,7 @@ export default function ClientsDashboard() {
       {/* 一覧 */}
       <div className="grid grid-cols-1 gap-4">
         {filteredClients.length === 0 ? (
-          <div className="py-32 text-center bg-white/50 border-2 border-dashed border-border rounded-[3rem] animate-in fade-in duration-700">
+          <div className="py-24 text-center bg-card border border-dashed border-border rounded-lg animate-in fade-in duration-700">
              <Building2 className="w-16 h-16 text-muted-foreground mx-auto opacity-10 mb-6" />
              <h3 className="text-xl font-bold italic tracking-tighter text-foreground mb-1">NO CLIENTS REGISTERED</h3>
              <p className="text-muted-foreground font-bold text-[10px] uppercase tracking-widest opacity-40">取引先が登録されていません</p>
@@ -95,8 +95,8 @@ export default function ClientsDashboard() {
 
             return (
               <div key={c.id} className={cn(
-                "bg-white rounded-[2.5rem] paper-shadow transition-all border border-transparent overflow-hidden",
-                isExpanded ? "border-primary/20 ring-4 ring-primary/5" : "hover:paper-shadow-lg hover:border-primary/10"
+                "bg-card rounded-lg border overflow-hidden transition-all",
+                isExpanded ? "border-primary ring-1 ring-primary" : "border-border hover:border-primary/50"
               )}>
                 <div 
                   className="p-8 flex flex-col lg:flex-row items-center gap-8 group relative cursor-pointer"
@@ -107,16 +107,16 @@ export default function ClientsDashboard() {
                    {editingId === c.id ? (
                      <div className="flex-1 w-full grid grid-cols-1 md:grid-cols-2 gap-6 animate-in slide-in-from-left-2 duration-300" onClick={e => e.stopPropagation()}>
                         <div className="space-y-3">
-                          <label className="text-[9px] font-bold text-primary/60 uppercase tracking-widest ml-1">ENTITY NAME / 法人名</label>
-                          <Input value={editForm.name} onChange={(e) => setEditForm({...editForm, name: e.target.value})} className="h-14 bg-secondary/30 border-none rounded-xl font-bold" />
+                          <label className="text-[9px] font-bold text-primary/80 uppercase tracking-widest ml-1">ENTITY NAME / 法人名</label>
+                          <Input value={editForm.name} onChange={(e) => setEditForm({...editForm, name: e.target.value})} className="h-12 bg-input border-none rounded-md font-bold" />
                         </div>
                         <div className="space-y-3">
-                          <label className="text-[9px] font-bold text-primary/60 uppercase tracking-widest ml-1">MANAGER / 担当者名</label>
-                          <Input value={editForm.managerName} onChange={(e) => setEditForm({...editForm, managerName: e.target.value})} className="h-14 bg-secondary/30 border-none rounded-xl font-bold" />
+                          <label className="text-[9px] font-bold text-primary/80 uppercase tracking-widest ml-1">MANAGER / 担当者名</label>
+                          <Input value={editForm.managerName} onChange={(e) => setEditForm({...editForm, managerName: e.target.value})} className="h-12 bg-input border-none rounded-md font-bold" />
                         </div>
                         <div className="md:col-span-2 space-y-3">
-                          <label className="text-[9px] font-bold text-primary/60 uppercase tracking-widest ml-1">MEMO / メモ</label>
-                          <Input value={editForm.memo} onChange={(e) => setEditForm({...editForm, memo: e.target.value})} className="h-14 bg-secondary/30 border-none rounded-xl font-bold" />
+                          <label className="text-[9px] font-bold text-primary/80 uppercase tracking-widest ml-1">MEMO / メモ</label>
+                          <Input value={editForm.memo} onChange={(e) => setEditForm({...editForm, memo: e.target.value})} className="h-12 bg-input border-none rounded-md font-bold" />
                         </div>
                      </div>
                    ) : (
@@ -145,10 +145,10 @@ export default function ClientsDashboard() {
                    <div className="flex items-center gap-3 shrink-0 relative z-10">
                      {editingId === c.id ? (
                        <>
-                         <Button variant="ghost" size="icon" onClick={(e) => { e.stopPropagation(); setEditingId(null); }} className="h-12 w-12 rounded-2xl text-muted-foreground hover:bg-secondary/50">
+                         <Button variant="ghost" size="icon" onClick={(e) => { e.stopPropagation(); setEditingId(null); }} className="h-10 w-10 rounded-md text-muted-foreground hover:bg-secondary">
                            <X className="w-5 h-5" />
                          </Button>
-                         <Button onClick={saveEdit} className="h-12 px-6 bg-primary text-white rounded-2xl font-bold flex items-center gap-2 shadow-lg">
+                         <Button onClick={saveEdit} className="h-10 px-4 bg-primary text-primary-foreground rounded-md font-bold flex items-center gap-2 hover:brightness-110">
                            <Check className="w-5 h-5" /> 保存
                          </Button>
                        </>
@@ -158,7 +158,7 @@ export default function ClientsDashboard() {
                            variant="ghost" 
                            size="icon" 
                            onClick={(e) => startEdit(c, e)}
-                           className="h-12 w-12 rounded-2xl text-muted-foreground hover:text-primary hover:bg-primary/5 transition-all"
+                           className="h-10 w-10 rounded-md text-muted-foreground hover:text-primary hover:bg-primary/10 transition-all"
                          >
                            <Edit className="w-5 h-5" />
                          </Button>
@@ -166,12 +166,12 @@ export default function ClientsDashboard() {
                            variant="ghost" 
                            size="icon" 
                            onClick={(e) => { e.stopPropagation(); if(confirm('取引先を削除しますか？')) deleteClient(c.id); }}
-                           className="h-12 w-12 rounded-2xl text-muted-foreground hover:text-destructive hover:bg-destructive/5 transition-all"
+                           className="h-10 w-10 rounded-md text-muted-foreground hover:text-destructive hover:bg-destructive/10 transition-all"
                          >
                            <Trash2 className="w-5 h-5" />
                          </Button>
-                         <div className="w-px h-8 bg-border mx-2" />
-                         <Button variant="ghost" size="icon" className="h-12 w-12 rounded-full text-muted-foreground">
+                         <div className="w-px h-6 bg-border mx-2" />
+                         <Button variant="ghost" size="icon" className="h-10 w-10 rounded-md text-muted-foreground hover:bg-secondary">
                             {isExpanded ? <ChevronUp className="w-6 h-6" /> : <ChevronDown className="w-6 h-6" />}
                          </Button>
                        </>
@@ -188,43 +188,43 @@ export default function ClientsDashboard() {
                       </h4>
                     </div>
                     {clientCases.length === 0 ? (
-                      <div className="text-center py-10 bg-white/50 rounded-2xl border border-dashed border-border/50">
+                      <div className="text-center py-10 bg-card rounded-lg border border-dashed border-border">
                         <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest opacity-50">紐づく案件はありません</p>
                       </div>
                     ) : (
-                      <div className="overflow-x-auto bg-white rounded-[2rem] paper-shadow-sm border border-border/30">
+                      <div className="overflow-x-auto bg-card rounded-lg border border-border">
                         <table className="w-full text-left">
                           <thead>
-                            <tr className="border-b border-border/50 bg-secondary/20">
-                              <th className="p-5 text-[9px] font-bold text-muted-foreground uppercase tracking-[0.3em] opacity-60">案件名 / CASE NAME</th>
-                              <th className="p-5 text-[9px] font-bold text-muted-foreground uppercase tracking-[0.3em] opacity-60">ステータス / STATUS</th>
-                              <th className="p-5 text-[9px] font-bold text-muted-foreground uppercase tracking-[0.3em] opacity-60 text-right">月額保守 / MONTHLY</th>
-                              <th className="p-5 w-16"></th>
+                            <tr className="border-b border-border bg-muted/50">
+                              <th className="p-4 text-[9px] font-bold text-muted-foreground uppercase tracking-widest">案件名 / CASE NAME</th>
+                              <th className="p-4 text-[9px] font-bold text-muted-foreground uppercase tracking-widest">ステータス / STATUS</th>
+                              <th className="p-4 text-[9px] font-bold text-muted-foreground uppercase tracking-widest text-right">月額保守 / MONTHLY</th>
+                              <th className="p-4 w-16"></th>
                             </tr>
                           </thead>
-                          <tbody className="divide-y divide-border/30">
+                          <tbody className="divide-y divide-border">
                             {clientCases.map((caseItem) => (
                               <tr 
                                 key={caseItem.id} 
-                                className="group hover:bg-primary/5 transition-colors cursor-pointer"
+                                className="group hover:bg-muted/50 transition-colors cursor-pointer"
                                 onClick={() => router.push(`/cases/${caseItem.id}`)}
                               >
-                                <td className="p-5">
-                                  <span className="text-sm font-bold italic tracking-tighter text-foreground font-[family-name:var(--font-outfit)]">{caseItem.name}</span>
+                                <td className="p-4">
+                                  <span className="text-sm font-bold tracking-tight text-foreground">{caseItem.name}</span>
                                 </td>
-                                <td className="p-5">
+                                <td className="p-4">
                                   <Badge className={cn("border-none font-bold text-[10px] uppercase tracking-widest px-3 py-1 rounded-md", 
                                     caseItem.status === 'active' ? "bg-emerald-500/10 text-emerald-600" : "bg-secondary text-muted-foreground"
                                   )}>
                                     {caseItem.status === 'active' ? '進行中' : 'アーカイブ'}
                                   </Badge>
                                 </td>
-                                <td className="p-5 text-right">
-                                  <span className="text-base font-bold italic tracking-tighter text-foreground font-[family-name:var(--font-outfit)]">
+                                <td className="p-4 text-right">
+                                  <span className="text-base font-bold tracking-tight text-foreground">
                                     ¥{((caseItem.finance?.maintenanceFee || 0)).toLocaleString()}
                                   </span>
                                 </td>
-                                <td className="p-5">
+                                <td className="p-4">
                                   <ArrowUpRight className="w-4 h-4 text-muted-foreground opacity-20 group-hover:opacity-100 transition-opacity ml-auto" />
                                 </td>
                               </tr>

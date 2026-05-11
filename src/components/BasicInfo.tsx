@@ -22,9 +22,9 @@ export function BasicInfo({ project }: Props) {
   };
 
   return (
-    <Card className="w-full mb-12 bg-white border-none paper-shadow-lg rounded-[2.5rem] overflow-hidden font-[family-name:var(--font-noto)]">
+    <Card className="w-full mb-10 bg-card border border-border shadow-none rounded-lg overflow-hidden font-sans">
       <CardHeader className="p-8 pb-4">
-        <CardTitle className="text-xl font-bold italic tracking-tighter text-foreground flex items-center gap-3 uppercase font-[family-name:var(--font-outfit)]">
+        <CardTitle className="text-xl font-bold tracking-tight text-foreground flex items-center gap-3 uppercase">
           <Info className="w-8 h-8 text-primary" /> クライアント基本情報
         </CardTitle>
       </CardHeader>
@@ -40,7 +40,7 @@ export function BasicInfo({ project }: Props) {
               value={project.basicInfo.clientName} 
               onChange={handleChange} 
               placeholder="株式会社サンプル" 
-              className="h-14 bg-secondary/30 border-none rounded-2xl px-6 font-bold text-[#2D3436] focus-visible:ring-primary/20"
+              className="h-12 bg-input border border-border rounded-md px-4 font-bold text-foreground focus-visible:ring-1 focus-visible:ring-primary"
             />
           </div>
           <div className="space-y-3">
@@ -53,7 +53,7 @@ export function BasicInfo({ project }: Props) {
               value={project.basicInfo.managerName} 
               onChange={handleChange} 
               placeholder="山田 太郎" 
-              className="h-14 bg-secondary/30 border-none rounded-2xl px-6 font-bold text-[#2D3436] focus-visible:ring-primary/20"
+              className="h-12 bg-input border border-border rounded-md px-4 font-bold text-foreground focus-visible:ring-1 focus-visible:ring-primary"
             />
           </div>
           <div className="space-y-3">
@@ -66,7 +66,7 @@ export function BasicInfo({ project }: Props) {
               value={project.basicInfo.contact} 
               onChange={handleChange} 
               placeholder="sample@example.com" 
-              className="h-14 bg-secondary/30 border-none rounded-2xl px-6 font-bold text-[#2D3436] focus-visible:ring-primary/20"
+              className="h-12 bg-input border border-border rounded-md px-4 font-bold text-foreground focus-visible:ring-1 focus-visible:ring-primary"
             />
           </div>
           <div className="space-y-3">
@@ -79,7 +79,7 @@ export function BasicInfo({ project }: Props) {
               value={project.basicInfo.siteName} 
               onChange={handleChange} 
               placeholder="サンプルサイト" 
-              className="h-14 bg-secondary/30 border-none rounded-2xl px-6 font-bold text-[#2D3436] focus-visible:ring-primary/20"
+              className="h-12 bg-input border border-border rounded-md px-4 font-bold text-foreground focus-visible:ring-1 focus-visible:ring-primary"
             />
           </div>
           <div className="space-y-3">
@@ -92,7 +92,7 @@ export function BasicInfo({ project }: Props) {
               value={project.basicInfo.urlOrDomain} 
               onChange={handleChange} 
               placeholder="https://example.com" 
-              className="h-14 bg-secondary/30 border-none rounded-2xl px-6 font-bold text-[#2D3436] focus-visible:ring-primary/20"
+              className="h-12 bg-input border border-border rounded-md px-4 font-bold text-foreground focus-visible:ring-1 focus-visible:ring-primary"
             />
           </div>
           <div className="grid grid-cols-2 gap-4">
@@ -106,7 +106,7 @@ export function BasicInfo({ project }: Props) {
                 value={project.basicInfo.deadline} 
                 onChange={handleChange} 
                 placeholder="202X年X月" 
-                className="h-14 bg-secondary/30 border-none rounded-2xl px-6 font-bold text-[#2D3436] focus-visible:ring-primary/20"
+                className="h-12 bg-input border border-border rounded-md px-4 font-bold text-foreground focus-visible:ring-1 focus-visible:ring-primary"
               />
             </div>
             <div className="space-y-3">
@@ -119,7 +119,7 @@ export function BasicInfo({ project }: Props) {
                 value={project.basicInfo.budget} 
                 onChange={handleChange} 
                 placeholder="100万" 
-                className="h-14 bg-secondary/30 border-none rounded-2xl px-6 font-bold text-[#2D3436] focus-visible:ring-primary/20"
+                className="h-12 bg-input border border-border rounded-md px-4 font-bold text-foreground focus-visible:ring-1 focus-visible:ring-primary"
               />
             </div>
           </div>

@@ -69,13 +69,13 @@ export function GlobalTaskModal({ isOpen, onClose, editingTodo }: GlobalTaskModa
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="sm:max-w-[500px] p-8 rounded-[2rem] bg-white border-none paper-shadow-lg font-[family-name:var(--font-noto)]">
+      <DialogContent className="sm:max-w-[500px] p-6 lg:p-8 rounded-lg bg-card border border-border shadow-2xl font-sans">
         <DialogHeader className="mb-6">
-          <DialogTitle className="text-2xl font-bold italic tracking-tighter text-foreground flex items-center gap-3 font-[family-name:var(--font-outfit)] uppercase">
-            <ListTodo className="w-6 h-6 text-primary" /> 
+          <DialogTitle className="text-xl font-bold tracking-tight text-foreground flex items-center gap-3 uppercase">
+            <ListTodo className="w-5 h-5 text-primary" /> 
             {editingTodo ? 'EDIT TASK' : 'NEW TASK'}
           </DialogTitle>
-          <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-[0.2em] opacity-60">
+          <p className="text-[10px] font-medium text-muted-foreground uppercase tracking-widest">
             {editingTodo ? 'タスクの編集' : '新規タスクの作成'}
           </p>
         </DialogHeader>
@@ -89,7 +89,7 @@ export function GlobalTaskModal({ isOpen, onClose, editingTodo }: GlobalTaskModa
               value={text} 
               onChange={(e) => setText(e.target.value)} 
               placeholder="何を行いますか？" 
-              className="h-14 bg-secondary/30 border-none rounded-2xl font-bold text-sm px-4 focus-visible:ring-primary/20"
+              className="h-12 bg-input border border-border rounded-md font-bold text-sm px-4 focus-visible:ring-1 focus-visible:ring-primary"
               autoFocus
             />
           </div>
@@ -103,7 +103,7 @@ export function GlobalTaskModal({ isOpen, onClose, editingTodo }: GlobalTaskModa
                 value={clientName} 
                 onChange={(e) => setClientName(e.target.value)} 
                 placeholder="法人名を入力..." 
-                className="h-14 bg-secondary/30 border-none rounded-2xl font-bold text-sm px-4 focus-visible:ring-primary/20"
+                className="h-12 bg-input border border-border rounded-md font-bold text-sm px-4 focus-visible:ring-1 focus-visible:ring-primary"
                 list="client-list"
               />
               <datalist id="client-list">
@@ -118,7 +118,7 @@ export function GlobalTaskModal({ isOpen, onClose, editingTodo }: GlobalTaskModa
                 type="date"
                 value={dueDate} 
                 onChange={(e) => setDueDate(e.target.value)} 
-                className="h-14 bg-secondary/30 border-none rounded-2xl font-bold text-sm px-4 focus-visible:ring-primary/20"
+                className="h-12 bg-input border border-border rounded-md font-bold text-sm px-4 focus-visible:ring-1 focus-visible:ring-primary"
               />
             </div>
           </div>
@@ -131,15 +131,15 @@ export function GlobalTaskModal({ isOpen, onClose, editingTodo }: GlobalTaskModa
               value={memo} 
               onChange={(e) => setMemo(e.target.value)} 
               placeholder="タスクの詳細や補足事項..." 
-              className="min-h-[120px] bg-secondary/30 border-none rounded-2xl font-medium text-sm p-4 focus-visible:ring-primary/20 resize-none"
+              className="min-h-[120px] bg-input border border-border rounded-md font-medium text-sm p-4 focus-visible:ring-1 focus-visible:ring-primary resize-none"
             />
           </div>
 
           <div className="pt-4 flex justify-end gap-3">
-            <Button variant="ghost" onClick={onClose} className="h-12 px-6 rounded-xl font-bold hover:bg-secondary/50">
+            <Button variant="ghost" onClick={onClose} className="h-12 px-6 rounded-md font-bold hover:bg-secondary">
               キャンセル
             </Button>
-            <Button onClick={handleSave} className="bg-primary hover:bg-primary/90 text-white font-bold h-12 px-8 rounded-xl shadow-lg shadow-primary/30 transition-all">
+            <Button onClick={handleSave} className="bg-primary hover:brightness-110 text-primary-foreground font-bold h-12 px-8 rounded-md transition-all">
               {editingTodo ? '更新する' : '作成する'}
             </Button>
           </div>

@@ -33,9 +33,9 @@ export default function Editor() {
 
   if (!project) {
     return (
-      <div className="min-h-screen flex flex-col items-center justify-center text-foreground font-[family-name:var(--font-noto)] bg-background">
+      <div className="min-h-screen flex flex-col items-center justify-center text-foreground font-sans bg-background">
         <p className="text-xl font-bold mb-4">プロジェクトが見つかりません</p>
-        <Button onClick={() => router.push('/')} className="bg-primary text-white font-bold h-12 px-8 rounded-2xl">ダッシュボードへ戻る</Button>
+        <Button onClick={() => router.push('/')} className="bg-primary hover:brightness-110 text-primary-foreground font-bold h-10 px-8 rounded-md transition-all">ダッシュボードへ戻る</Button>
       </div>
     );
   }
@@ -47,13 +47,13 @@ export default function Editor() {
   };
 
   return (
-    <main className="min-h-screen bg-background text-[#2D3436] pb-40 pt-8 px-4 sm:px-8 max-w-7xl mx-auto w-full font-[family-name:var(--font-noto)]">
+    <main className="min-h-screen bg-background text-foreground pb-40 pt-8 px-4 sm:px-8 max-w-7xl mx-auto w-full font-sans">
       
       {/* Header Area */}
       <div className="flex flex-col xl:flex-row justify-between items-start xl:items-center mb-12 gap-8 border-b border-border/50 pb-10">
         <div className="flex items-center gap-6 w-full xl:w-auto min-w-0">
-          <Button variant="ghost" size="icon" onClick={() => router.push('/hearing')} className="hover:bg-primary/5 text-muted-foreground hover:text-primary rounded-2xl shrink-0">
-            <ChevronLeft className="w-8 h-8" />
+          <Button variant="ghost" size="icon" onClick={() => router.push('/hearing')} className="hover:bg-secondary text-muted-foreground hover:text-primary rounded-md shrink-0 border border-transparent hover:border-border">
+            <ChevronLeft className="w-6 h-6" />
           </Button>
           <div className="flex-1 min-w-0">
             <div className="flex items-center gap-2 mb-3 text-xs font-bold text-muted-foreground">
@@ -64,7 +64,7 @@ export default function Editor() {
               <span className="text-foreground">Editing</span>
             </div>
             <div className="flex items-center gap-3 mb-2">
-              <Badge className="bg-primary/10 text-primary border-none font-bold text-[9px] px-2.5 py-0.5 rounded-lg uppercase tracking-widest">
+              <Badge className="bg-primary/10 text-primary border-none font-bold text-[9px] px-2.5 py-0.5 rounded-md uppercase tracking-widest">
                 Editing Project
               </Badge>
               <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest opacity-40">ID: {project.id.toUpperCase().substring(0, 8)}</span>
@@ -72,7 +72,7 @@ export default function Editor() {
             <Input 
               value={project.name} 
               onChange={handleNameChange} 
-              className="text-3xl sm:text-4xl font-bold italic tracking-tighter bg-transparent border-none focus-visible:ring-0 px-0 h-auto py-0 text-foreground w-full font-[family-name:var(--font-outfit)] uppercase"
+              className="text-3xl sm:text-4xl font-bold tracking-tight bg-transparent border-none focus-visible:ring-0 px-0 h-auto py-0 text-foreground w-full uppercase"
               placeholder="プロジェクト名を入力..."
             />
           </div>
@@ -86,14 +86,14 @@ export default function Editor() {
                 router.push('/cases');
               }
             }} 
-            className="flex-1 sm:flex-none bg-blue-600 hover:bg-blue-700 text-white font-bold h-14 px-8 rounded-2xl shadow-xl shadow-blue-500/20 transition-all hover:scale-105 active:scale-95"
+            className="flex-1 sm:flex-none bg-blue-600 hover:brightness-110 text-white font-bold h-12 px-6 rounded-md transition-all active:scale-95 shadow-none"
           >
-            <Briefcase className="w-5 h-5 mr-2" />
+            <Briefcase className="w-4 h-4 mr-2" />
             案件管理に変換して作成
           </Button>
           
-          <Button onClick={() => router.push('/hearing')} className="flex-1 sm:flex-none bg-primary hover:bg-primary/90 text-white font-bold h-14 px-10 rounded-2xl shadow-xl shadow-primary/20 transition-all hover:scale-105 active:scale-95">
-            <Save className="w-5 h-5 mr-2" />
+          <Button onClick={() => router.push('/hearing')} className="flex-1 sm:flex-none bg-primary hover:brightness-110 text-primary-foreground font-bold h-12 px-8 rounded-md transition-all active:scale-95 shadow-none">
+            <Save className="w-4 h-4 mr-2" />
             保存して戻る
           </Button>
         </div>
@@ -108,11 +108,11 @@ export default function Editor() {
         className="w-full space-y-10" 
         onValueChange={(val) => setActiveTab(val as 'loveHotel' | 'general')}
       >
-        <TabsList className="bg-secondary/50 border border-border p-1.5 h-16 rounded-[2rem] paper-shadow-sm flex overflow-hidden">
-          <TabsTrigger value="loveHotel" className="flex-1 h-full text-sm font-bold data-[state=active]:bg-white data-[state=active]:text-primary data-[state=active]:paper-shadow rounded-2xl transition-all gap-2">
+        <TabsList className="bg-secondary border border-border p-1 h-14 rounded-lg flex overflow-hidden w-full max-w-2xl">
+          <TabsTrigger value="loveHotel" className="flex-1 h-full text-sm font-bold data-[state=active]:bg-card data-[state=active]:text-primary data-[state=active]:border data-[state=active]:border-border rounded-md transition-all gap-2">
             🏩 ラブホテル特化テンプレート
           </TabsTrigger>
-          <TabsTrigger value="general" className="flex-1 h-full text-sm font-bold data-[state=active]:bg-white data-[state=active]:text-primary data-[state=active]:paper-shadow rounded-2xl transition-all gap-2">
+          <TabsTrigger value="general" className="flex-1 h-full text-sm font-bold data-[state=active]:bg-card data-[state=active]:text-primary data-[state=active]:border data-[state=active]:border-border rounded-md transition-all gap-2">
             🌍 汎用要件定義テンプレート
           </TabsTrigger>
         </TabsList>
@@ -131,9 +131,9 @@ export default function Editor() {
       {/* Scroll to Top Button */}
       <Button 
         onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
-        className="fixed bottom-8 right-8 w-14 h-14 rounded-full bg-white text-primary shadow-2xl border-2 border-primary/20 hover:bg-primary hover:text-white transition-all hover:scale-110 active:scale-95 z-50 flex items-center justify-center"
+        className="fixed bottom-8 right-8 w-12 h-12 rounded-full bg-card text-primary border border-border hover:border-primary/50 hover:bg-secondary transition-all active:scale-95 z-50 flex items-center justify-center shadow-md"
       >
-        <ArrowUp className="w-6 h-6" />
+        <ArrowUp className="w-5 h-5" />
       </Button>
     </main>
   );

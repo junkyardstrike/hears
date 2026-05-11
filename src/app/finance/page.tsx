@@ -233,7 +233,7 @@ export default function FinancePage() {
   }, [currentYearData, globalFinance, cases, lastYearFullTotal, clients.length, viewYear]);
 
   return (
-    <div className="space-y-4 animate-in fade-in duration-500 font-[family-name:var(--font-noto)] pb-10">
+    <div className="space-y-4 animate-in fade-in duration-500 font-sans pb-10">
       {/* 小型化されたナビゲーションカード */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
         <NavCard 
@@ -265,25 +265,25 @@ export default function FinancePage() {
         />
       </div>
 
-      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 bg-white p-5 rounded-[1.8rem] paper-shadow">
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 bg-card p-5 rounded-lg border border-border">
         <div className="flex items-center gap-3">
-          <div className="p-2.5 bg-primary/10 rounded-xl"><BarChart3 className="w-5 h-5 text-primary" /></div>
+          <div className="p-2.5 bg-primary/10 rounded-md"><BarChart3 className="w-5 h-5 text-primary" /></div>
           <div>
-            <h1 className="text-lg font-bold italic tracking-tighter text-foreground font-[family-name:var(--font-outfit)] uppercase leading-none">FINANCIAL ANALYSIS</h1>
+            <h1 className="text-lg font-bold tracking-tight text-foreground uppercase leading-none">FINANCIAL ANALYSIS</h1>
             <p className="text-[9px] font-bold text-muted-foreground uppercase tracking-[0.2em] opacity-40">収益分析 ・ 経営目標管理</p>
           </div>
         </div>
         <div className="flex flex-wrap items-center gap-3 w-full md:w-auto">
-          <div className="flex bg-secondary/50 p-0.5 rounded-lg border border-border shrink-0">
+          <div className="flex bg-input p-0.5 rounded-md border border-border shrink-0">
             {[viewYear - 1, viewYear, viewYear + 1].map(y => (
-              <button key={y} onClick={() => setViewYear(y)} className={cn("px-3 py-1 rounded-md text-[9px] font-bold uppercase transition-all", viewYear === y ? "bg-white text-primary shadow-sm" : "text-muted-foreground hover:text-foreground")}>{y}年度</button>
+              <button key={y} onClick={() => setViewYear(y)} className={cn("px-3 py-1 rounded text-[9px] font-bold uppercase transition-all", viewYear === y ? "bg-primary text-primary-foreground shadow-sm" : "text-muted-foreground hover:text-foreground")}>{y}年度</button>
             ))}
           </div>
-          <div className="flex items-center gap-2.5 bg-secondary/20 px-3 py-1 rounded-lg border border-border flex-1 md:flex-none justify-between md:justify-start">
+          <div className="flex items-center gap-2.5 bg-input px-3 py-1 rounded-md border border-border flex-1 md:flex-none justify-between md:justify-start">
              <span className="text-[9px] font-bold text-muted-foreground uppercase tracking-widest opacity-60 leading-none">基本給設定</span>
              <div className="flex items-center gap-1">
-               <Input type="number" value={baseSalaryInput} onChange={(e) => setBaseSalaryInput(e.target.value)} className="h-5 w-16 border-none bg-transparent font-bold text-sm p-0 focus-visible:ring-0 text-foreground font-[family-name:var(--font-outfit)] text-right" />
-               <Button size="icon" variant="ghost" onClick={handleSaveBaseSalary} className="h-6 w-6 hover:bg-primary/10 rounded-md">{isSalarySaved ? <Check className="w-3 h-3 text-emerald-500" /> : <Settings2 className="w-3 h-3" />}</Button>
+               <Input type="number" value={baseSalaryInput} onChange={(e) => setBaseSalaryInput(e.target.value)} className="h-5 w-16 border-none bg-transparent font-bold text-sm p-0 focus-visible:ring-0 text-foreground text-right" />
+               <Button size="icon" variant="ghost" onClick={handleSaveBaseSalary} className="h-6 w-6 hover:bg-secondary rounded-sm">{isSalarySaved ? <Check className="w-3 h-3 text-emerald-500" /> : <Settings2 className="w-3 h-3 text-muted-foreground" />}</Button>
              </div>
           </div>
         </div>
@@ -299,9 +299,9 @@ export default function FinancePage() {
 
       <div className="grid grid-cols-1 xl:grid-cols-3 gap-4">
         {/* YoY Performance カードの余白と高さを調整 */}
-        <Card className="xl:col-span-2 bg-white border-none paper-shadow-lg rounded-[2rem] p-5 pb-2">
+        <Card className="xl:col-span-2 bg-card border border-border rounded-lg p-5 pb-2">
           <div className="flex justify-between items-center mb-3">
-            <div><h3 className="text-sm font-bold italic tracking-tighter flex items-center gap-2 font-[family-name:var(--font-outfit)] uppercase"><History className="w-4 h-4 text-primary" /> YoY PERFORMANCE</h3><p className="text-[8px] font-bold text-muted-foreground uppercase tracking-widest opacity-60 ml-6">実績比較：<span className="text-emerald-600">確定</span> • <span className="text-amber-500">予定</span> • <span className="text-slate-300">前年</span></p></div>
+            <div><h3 className="text-sm font-bold tracking-tight flex items-center gap-2 uppercase"><History className="w-4 h-4 text-primary" /> YoY PERFORMANCE</h3><p className="text-[8px] font-bold text-muted-foreground uppercase tracking-widest opacity-60 ml-6">実績比較：<span className="text-primary">確定</span> • <span className="text-amber-500">予定</span> • <span className="text-muted-foreground">前年</span></p></div>
             <div className="flex gap-3">
                <div className="flex items-center gap-1"><div className="w-1.5 h-1.5 rounded-full bg-primary" /><span className="text-[9px] font-bold text-muted-foreground">確定</span></div>
                <div className="flex items-center gap-1"><div className="w-1.5 h-1.5 rounded-full bg-amber-400" /><span className="text-[9px] font-bold text-muted-foreground">予定</span></div>
@@ -313,18 +313,18 @@ export default function FinancePage() {
                 <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f5f5f5" />
                 <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{fontSize: 9, fontWeight: 'bold', fill: '#94a3b8'}} />
                 <YAxis axisLine={false} tickLine={false} tick={{fontSize: 9, fontWeight: 'bold', fill: '#94a3b8'}} tickFormatter={(v) => `${(v/1000).toLocaleString()}k`} />
-                <Tooltip contentStyle={{ borderRadius: '12px', border: 'none', boxShadow: '0 10px 30px rgba(0,0,0,0.1)', fontSize: '10px' }} formatter={(v: any) => v === null ? '---' : `${(v/1000).toLocaleString()}千円`} />
-                <Bar dataKey="confirmed" fill="#00896B" radius={[3, 3, 0, 0]} barSize={16} name="確定収益" />
+                <Tooltip contentStyle={{ borderRadius: '8px', border: '1px solid var(--border)', background: 'var(--card)', color: 'var(--foreground)', fontSize: '10px' }} formatter={(v: any) => v === null ? '---' : `${(v/1000).toLocaleString()}千円`} />
+                <Bar dataKey="confirmed" fill="var(--primary)" radius={[3, 3, 0, 0]} barSize={16} name="確定収益" />
                 <Bar dataKey="planned" fill="#f59e0b" radius={[3, 3, 0, 0]} barSize={16} name="収益予定" />
-                <Bar dataKey="lastYear" fill="#e2e8f0" radius={[3, 3, 0, 0]} barSize={16} name="前年度" />
+                <Bar dataKey="lastYear" fill="var(--muted)" radius={[3, 3, 0, 0]} barSize={16} name="前年度" />
               </BarChart>
             </ResponsiveContainer>
           </div>
         </Card>
 
         {/* Genre Mix を隣のカードと高さを合わせる */}
-        <Card className="bg-white border-none paper-shadow-lg rounded-[2rem] p-5 flex flex-col h-full overflow-hidden">
-          <div className="mb-2"><h3 className="text-sm font-bold italic tracking-tighter flex items-center gap-2 font-[family-name:var(--font-outfit)] uppercase"><PieIcon className="w-4 h-4 text-primary" /> GENRE MIX</h3><p className="text-[8px] font-bold text-muted-foreground uppercase tracking-widest opacity-60 ml-6">ジャンル別 収益構成比</p></div>
+        <Card className="bg-card border border-border rounded-lg p-5 flex flex-col h-full overflow-hidden">
+          <div className="mb-2"><h3 className="text-sm font-bold tracking-tight flex items-center gap-2 uppercase"><PieIcon className="w-4 h-4 text-primary" /> GENRE MIX</h3><p className="text-[8px] font-bold text-muted-foreground uppercase tracking-widest opacity-60 ml-6">ジャンル別 収益構成比</p></div>
           <div className="flex-1 flex flex-col justify-between overflow-hidden">
             <div className="h-[120px] w-full shrink-0">
               <ResponsiveContainer width="100%" height="100%">
@@ -343,18 +343,18 @@ export default function FinancePage() {
                     <Label 
                       value={`${totalCaseCountForMix}件`} 
                       position="center" 
-                      className="text-sm font-bold font-[family-name:var(--font-outfit)] fill-foreground"
+                      className="text-sm font-bold fill-foreground"
                     />
                   </Pie>
-                  <Tooltip contentStyle={{ borderRadius: '12px', fontSize: '9px' }} />
+                  <Tooltip contentStyle={{ borderRadius: '8px', border: '1px solid var(--border)', background: 'var(--card)', color: 'var(--foreground)', fontSize: '9px' }} />
                 </RechartsPieChart>
               </ResponsiveContainer>
             </div>
             <div className="space-y-1 overflow-y-auto pr-1 custom-scrollbar max-h-[85px] mt-2">
               {genreMix.map((item) => (
-                <div key={item.name} className="flex justify-between items-center p-1.5 rounded-lg bg-secondary/10 group hover:bg-secondary/20 transition-all shrink-0">
-                  <div className="flex items-center gap-1.5 min-w-0"><div className="w-1 h-1 rounded-full shrink-0" style={{ backgroundColor: item.color }} /><span className="text-[8px] font-black text-foreground uppercase tracking-tight truncate">{item.name}</span></div>
-                  <div className="text-right shrink-0"><span className="text-[10px] font-bold italic font-[family-name:var(--font-outfit)] block leading-none">¥{item.value.toLocaleString()}</span></div>
+                <div key={item.name} className="flex justify-between items-center p-1.5 rounded-md bg-secondary/30 group hover:bg-secondary transition-all shrink-0">
+                  <div className="flex items-center gap-1.5 min-w-0"><div className="w-1 h-1 rounded-full shrink-0" style={{ backgroundColor: item.color }} /><span className="text-[8px] font-bold text-foreground uppercase tracking-tight truncate">{item.name}</span></div>
+                  <div className="text-right shrink-0"><span className="text-[10px] font-bold block leading-none">¥{item.value.toLocaleString()}</span></div>
                 </div>
               ))}
             </div>
@@ -362,8 +362,8 @@ export default function FinancePage() {
         </Card>
       </div>
 
-      <Card className="bg-white border-none paper-shadow-lg rounded-[2rem] p-5">
-        <div className="mb-3"><h3 className="text-sm font-bold italic tracking-tighter flex items-center gap-2 font-[family-name:var(--font-outfit)] uppercase"><TrendingUp className="w-4 h-4 text-primary" /> REVENUE STACK</h3><p className="text-[8px] font-bold text-muted-foreground uppercase tracking-widest opacity-60 ml-6">収益種別 積み上げ推移分析</p></div>
+      <Card className="bg-card border border-border rounded-lg p-5">
+        <div className="mb-3"><h3 className="text-sm font-bold tracking-tight flex items-center gap-2 uppercase"><TrendingUp className="w-4 h-4 text-primary" /> REVENUE STACK</h3><p className="text-[8px] font-bold text-muted-foreground uppercase tracking-widest opacity-60 ml-6">収益種別 積み上げ推移分析</p></div>
         <div className="h-[220px] w-full">
           <ResponsiveContainer width="100%" height="100%">
             <AreaChart data={stackData}>
@@ -371,8 +371,8 @@ export default function FinancePage() {
               <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f5f5f5" />
               <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{fontSize: 9, fontWeight: 'bold', fill: '#94a3b8'}} />
               <YAxis axisLine={false} tickLine={false} tick={{fontSize: 9, fontWeight: 'bold', fill: '#94a3b8'}} tickFormatter={(v) => `${(v/1000).toLocaleString()}k`} />
-              <Tooltip contentStyle={{ borderRadius: '12px', fontSize: '10px' }} formatter={(v: any) => v === null ? '---' : `${(v/1000).toLocaleString()}k`} />
-              <Area type="monotone" dataKey="stock" stroke="#00896B" strokeWidth={2.5} fill="url(#colorStock)" stackId="1" name="保守" />
+              <Tooltip contentStyle={{ borderRadius: '8px', border: '1px solid var(--border)', background: 'var(--card)', color: 'var(--foreground)', fontSize: '10px' }} formatter={(v: any) => v === null ? '---' : `${(v/1000).toLocaleString()}k`} />
+              <Area type="monotone" dataKey="stock" stroke="var(--primary)" strokeWidth={2.5} fill="url(#colorStock)" stackId="1" name="保守" />
               <Area type="monotone" dataKey="shot" stroke="#3498db" strokeWidth={1} fillOpacity={0.05} stackId="1" name="案件" />
             </AreaChart>
           </ResponsiveContainer>
@@ -392,7 +392,7 @@ function NavCard({ label, subLabel, value, unit, icon, color, onClick }: any) {
   return (
     <button 
       onClick={onClick}
-      className="relative group overflow-hidden bg-white p-4 rounded-[1.8rem] paper-shadow hover:paper-shadow-lg transition-all text-left border border-transparent hover:border-primary/20 active:scale-95"
+      className="relative group overflow-hidden bg-card p-4 rounded-lg border border-border hover:border-primary/50 transition-all text-left"
     >
       <div className={cn(
         "absolute right-[-5px] top-[-5px] w-20 h-20 bg-gradient-to-br opacity-[0.03] group-hover:opacity-[0.08] transition-all rounded-full",
@@ -402,7 +402,7 @@ function NavCard({ label, subLabel, value, unit, icon, color, onClick }: any) {
       
       <div className="flex justify-between items-start mb-3">
         <div className={cn(
-          "p-2 rounded-xl text-white shadow-lg bg-gradient-to-br",
+          "p-2 rounded-md text-white shadow-sm bg-gradient-to-br",
           (colorClasses as any)[color]
         )}>
           {icon}
@@ -416,7 +416,7 @@ function NavCard({ label, subLabel, value, unit, icon, color, onClick }: any) {
           <span className="text-[6px] font-bold text-muted-foreground uppercase tracking-widest opacity-40">{subLabel}</span>
         </div>
         <div className="flex items-baseline gap-1.5">
-          <span className="text-2xl font-bold italic tracking-tighter text-foreground font-[family-name:var(--font-outfit)] leading-none">{value}</span>
+          <span className="text-2xl font-bold tracking-tight text-foreground leading-none">{value}</span>
           <span className="text-[9px] font-bold text-muted-foreground">{unit}</span>
         </div>
       </div>
@@ -432,9 +432,9 @@ function NavCard({ label, subLabel, value, unit, icon, color, onClick }: any) {
 
 function StatCardCompact({ label, subLabel, value, sub, icon, color, isPercent, onClick }: any) {
   return (
-    <Card className={cn("bg-white border-none paper-shadow rounded-[1.2rem] overflow-hidden group transition-all", onClick && "cursor-pointer hover:scale-[1.01]")} onClick={onClick}>
-      <div className={cn("h-1 w-full", color)} />
-      <CardContent className="p-3.5"><div className="flex justify-between items-center mb-2"><div className={cn("p-1.5 rounded-lg text-white shadow-sm", color)}>{icon}</div><div className="text-right leading-none"><span className="text-[9px] font-extrabold text-foreground uppercase tracking-widest block mb-0.5">{label}</span><span className="text-[6px] font-bold text-muted-foreground uppercase tracking-widest opacity-40">{subLabel}</span></div></div><div className="flex items-baseline gap-1.5"><span className={cn("text-2xl font-bold italic tracking-tighter font-[family-name:var(--font-outfit)]", isPercent ? (parseInt(value) >= 0 ? "text-emerald-600" : "text-red-500") : "text-foreground")}>{value}</span></div><p className="text-[8px] font-bold text-muted-foreground uppercase tracking-widest opacity-40 mt-1 truncate">{sub}</p></CardContent>
+    <Card className={cn("bg-card border border-border rounded-lg overflow-hidden group transition-all", onClick && "cursor-pointer hover:border-primary/50")} onClick={onClick}>
+      <div className={cn("h-1 w-full opacity-50 group-hover:opacity-100 transition-opacity", color)} />
+      <CardContent className="p-3.5"><div className="flex justify-between items-center mb-2"><div className={cn("p-1.5 rounded-md text-white", color)}>{icon}</div><div className="text-right leading-none"><span className="text-[9px] font-bold text-foreground uppercase tracking-widest block mb-0.5">{label}</span><span className="text-[6px] font-medium text-muted-foreground uppercase tracking-widest">{subLabel}</span></div></div><div className="flex items-baseline gap-1.5"><span className={cn("text-2xl font-bold tracking-tight", isPercent ? (parseInt(value) >= 0 ? "text-primary" : "text-destructive") : "text-foreground")}>{value}</span></div><p className="text-[8px] font-bold text-muted-foreground uppercase tracking-widest mt-1 truncate">{sub}</p></CardContent>
     </Card>
   );
 }

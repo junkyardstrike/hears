@@ -243,7 +243,7 @@ export function ExportPanel({ project, activeTab }: Props) {
   };
 
   return (
-    <div className="fixed bottom-10 right-10 z-[100] flex flex-col items-end gap-5 font-[family-name:var(--font-noto)]">
+    <div className="fixed bottom-10 right-10 z-[100] flex flex-col items-end gap-4 font-sans">
       
       <AnimatePresence>
         {isOpen && (
@@ -254,7 +254,7 @@ export function ExportPanel({ project, activeTab }: Props) {
               icon={<Download className="w-5 h-5" />}
               label="CSV 形式で出力"
               subLabel="Excelなどで管理"
-              className="bg-white text-foreground hover:bg-secondary/50"
+              className="bg-card border border-border text-foreground hover:bg-secondary"
             />
 
             <ExportButton 
@@ -262,7 +262,7 @@ export function ExportPanel({ project, activeTab }: Props) {
               icon={copiedMd ? <Check className="w-5 h-5 text-emerald-500" /> : <FileText className="w-5 h-5" />}
               label={copiedMd ? "コピー完了" : "Markdown 出力"}
               subLabel="ドキュメント等に貼り付け"
-              className="bg-white text-foreground hover:bg-secondary/50"
+              className="bg-card border border-border text-foreground hover:bg-secondary"
             />
 
             <ExportButton 
@@ -270,7 +270,7 @@ export function ExportPanel({ project, activeTab }: Props) {
               icon={copiedPrompt ? <Check className="w-6 h-6 text-emerald-500" /> : <Bot className="w-6 h-6" />}
               label={copiedPrompt ? "プロンプト生成完了" : "Readdy用指示書"}
               subLabel="AIでサイト構成案を生成"
-              className="bg-primary text-white hover:bg-primary/90 shadow-xl shadow-primary/20"
+              className="bg-primary border border-transparent text-primary-foreground hover:brightness-110 shadow-md"
             />
             
           </div>
@@ -280,11 +280,11 @@ export function ExportPanel({ project, activeTab }: Props) {
       <Button
         onClick={() => setIsOpen(!isOpen)}
         className={cn(
-          "h-20 w-20 rounded-[2rem] shadow-2xl transition-all hover:scale-105 active:scale-95 flex items-center justify-center p-0",
-          isOpen ? "bg-white text-foreground rotate-0" : "bg-primary text-white"
+          "h-14 w-14 rounded-full shadow-lg transition-all hover:scale-105 active:scale-95 flex items-center justify-center p-0 border border-transparent",
+          isOpen ? "bg-card text-foreground rotate-0 border-border hover:bg-secondary" : "bg-primary text-primary-foreground hover:brightness-110"
         )}
       >
-        {isOpen ? <X className="w-10 h-10" /> : <Share2 className="w-10 h-10" />}
+        {isOpen ? <X className="w-6 h-6" /> : <Share2 className="w-6 h-6" />}
       </Button>
     </div>
   );
@@ -295,11 +295,11 @@ function ExportButton({ onClick, icon, label, subLabel, className }: any) {
     <Button 
       onClick={onClick}
       className={cn(
-        "h-20 px-8 rounded-[2rem] paper-shadow border-none transition-all hover:scale-105 active:scale-95 flex items-center gap-6 min-w-[280px] justify-start group",
+        "h-16 px-6 rounded-lg border border-border bg-card shadow-sm transition-all hover:scale-105 active:scale-95 flex items-center gap-4 min-w-[280px] justify-start group",
         className
       )}
     >
-      <div className="w-12 h-12 rounded-2xl bg-secondary/30 flex items-center justify-center group-hover:scale-110 transition-transform">
+      <div className="w-10 h-10 rounded-md bg-secondary flex items-center justify-center group-hover:scale-110 transition-transform">
         {icon}
       </div>
       <div className="flex flex-col items-start gap-0.5">

@@ -33,11 +33,11 @@ export function HearingView() {
 
     if (list.length === 0) {
       return (
-        <div className="py-32 text-center bg-white/50 border-2 border-dashed border-border rounded-[3rem] animate-in fade-in duration-700">
+        <div className="py-24 text-center bg-card border border-dashed border-border rounded-lg animate-in fade-in duration-700">
           <div className="bg-secondary/50 w-24 h-24 rounded-full flex items-center justify-center mx-auto mb-6">
             <FileText className="w-12 h-12 text-muted-foreground opacity-20" />
           </div>
-          <h3 className="text-xl font-bold italic tracking-tighter text-foreground mb-2">No Projects Found</h3>
+          <h3 className="text-xl font-bold tracking-tight text-foreground mb-2">No Projects Found</h3>
           <p className="text-muted-foreground font-bold text-xs uppercase tracking-widest opacity-40">このフォルダにはプロジェクトがありません</p>
         </div>
       );
@@ -47,16 +47,16 @@ export function HearingView() {
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         {list.sort((a, b) => b.updatedAt - a.updatedAt).map((p) => (
           <div key={p.id} className="group relative">
-            <div className="bg-white p-8 rounded-[2.5rem] paper-shadow group-hover:paper-shadow-lg transition-all border border-transparent group-hover:border-primary/20 flex flex-col h-full">
+            <div className="bg-card p-6 lg:p-8 rounded-lg border border-border hover:border-primary/50 transition-all flex flex-col h-full">
               <div className="flex justify-between items-start mb-6">
                 <div className="flex flex-col">
-                  <Badge variant="secondary" className="w-fit mb-3 text-[9px] font-black tracking-widest uppercase rounded-lg">
+                  <Badge variant="secondary" className="w-fit mb-3 text-[9px] font-bold tracking-widest uppercase rounded-md bg-secondary text-foreground">
                     {p.folder === 'not-started' ? 'UNSTARTED / 未着手' : p.folder === 'in-progress' ? 'IN PROGRESS / 進行中' : 'BACKUP / 案件化済み'}
                   </Badge>
-                  <h3 className="text-xl font-bold italic tracking-tighter text-foreground leading-tight group-hover:text-primary transition-colors font-[family-name:var(--font-outfit)]">{p.name}</h3>
+                  <h3 className="text-xl font-bold tracking-tight text-foreground leading-tight group-hover:text-primary transition-colors">{p.name}</h3>
                 </div>
-                <div className="bg-primary/5 p-3 rounded-2xl">
-                  <FileText className="w-6 h-6 text-primary" />
+                <div className="bg-primary/10 p-3 rounded-md">
+                  <FileText className="w-5 h-5 text-primary" />
                 </div>
               </div>
               
@@ -64,12 +64,12 @@ export function HearingView() {
                 <div className="flex items-center gap-4 text-[10px] font-bold text-muted-foreground uppercase tracking-widest opacity-60">
                   <Calendar className="w-3.5 h-3.5" /> 最終更新: {new Date(p.updatedAt).toLocaleDateString()}
                 </div>
-                <div className="p-4 bg-secondary/30 rounded-2xl space-y-2">
-                  <div className="flex justify-between text-[9px] font-black text-muted-foreground uppercase tracking-widest">
+                <div className="p-4 bg-input rounded-md space-y-2 border border-border">
+                  <div className="flex justify-between text-[9px] font-bold text-muted-foreground uppercase tracking-widest">
                     <span>CLIENT</span>
-                    <span className="text-foreground">{p.basicInfo.clientName || '未設定'}</span>
+                    <span className="text-foreground font-bold">{p.basicInfo.clientName || '未設定'}</span>
                   </div>
-                  <div className="flex justify-between text-[9px] font-black text-muted-foreground uppercase tracking-widest">
+                  <div className="flex justify-between text-[9px] font-bold text-muted-foreground uppercase tracking-widest">
                     <span>DEADLINE</span>
                     <span className="text-foreground">{p.basicInfo.deadline || '未設定'}</span>
                   </div>
@@ -79,7 +79,7 @@ export function HearingView() {
               <div className="flex gap-3 mt-auto">
                 <Button 
                   onClick={() => router.push(`/editor/${p.id}`)}
-                  className="flex-1 bg-primary text-white font-bold h-12 rounded-2xl shadow-lg shadow-primary/20 hover:scale-[1.02] active:scale-95 transition-all"
+                  className="flex-1 bg-primary hover:brightness-110 text-primary-foreground font-bold h-10 rounded-md transition-all active:scale-95 shadow-none"
                 >
                   編集する
                 </Button>
@@ -92,7 +92,7 @@ export function HearingView() {
                       }
                     }}
                     variant="outline"
-                    className="flex-1 border-primary/20 text-primary font-bold h-12 rounded-2xl hover:bg-primary/5 transition-all"
+                    className="flex-1 border-border hover:border-primary/50 hover:bg-secondary text-primary font-bold h-10 rounded-md transition-all"
                   >
                     案件化する
                   </Button>
@@ -101,7 +101,7 @@ export function HearingView() {
                   onClick={() => { if(confirm('プロジェクトを削除しますか？')) deleteProject(p.id); }}
                   variant="ghost" 
                   size="icon" 
-                  className="h-12 w-12 rounded-2xl text-muted-foreground hover:text-destructive hover:bg-destructive/5"
+                  className="h-10 w-10 rounded-md text-muted-foreground hover:text-destructive hover:bg-destructive/10"
                 >
                   <Trash2 className="w-5 h-5" />
                 </Button>
@@ -114,18 +114,18 @@ export function HearingView() {
   };
 
   return (
-    <div className="space-y-10 animate-in fade-in slide-in-from-bottom-4 duration-700 font-[family-name:var(--font-noto)] pb-10">
-      <div className="flex flex-col xl:flex-row justify-between items-start xl:items-center gap-8 bg-white p-10 rounded-[3rem] paper-shadow">
+    <div className="space-y-10 animate-in fade-in slide-in-from-bottom-4 duration-700 font-sans pb-10">
+      <div className="flex flex-col xl:flex-row justify-between items-start xl:items-center gap-8 bg-card p-6 lg:p-8 rounded-lg border border-border">
         <div className="flex-1 min-w-0">
-          <h2 className="text-3xl font-bold italic tracking-tighter text-foreground flex items-center gap-4 uppercase mb-1 font-[family-name:var(--font-outfit)]">
-            <FolderRoot className="w-10 h-10 text-primary" /> Hearing Repository
+          <h2 className="text-3xl font-bold tracking-tight text-foreground flex items-center gap-4 uppercase mb-1">
+            <FolderRoot className="w-8 h-8 text-primary" /> Hearing Repository
           </h2>
           <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-[0.2em] opacity-40 ml-14 mb-6">ヒアリングリポジトリ ・ 顧客要望一括管理</p>
           
           <div className="flex flex-wrap items-center gap-x-10 gap-y-4 ml-14">
             <div className="flex flex-col">
               <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest opacity-40">TOTAL PROJECTS / 全プロジェクト数</span>
-              <span className="text-2xl font-bold italic tracking-tighter font-[family-name:var(--font-outfit)]">{projects.length}</span>
+              <span className="text-2xl font-bold tracking-tight">{projects.length}</span>
             </div>
           </div>
         </div>
@@ -135,12 +135,12 @@ export function HearingView() {
             <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground opacity-30" />
             <Input 
               placeholder="プロジェクト名で検索... / SEARCH" 
-              className="h-16 bg-secondary/30 border-none rounded-2xl pl-12 font-bold text-xs"
+              className="h-14 bg-input border border-border rounded-md pl-12 font-bold text-xs focus-visible:ring-1 focus-visible:ring-primary"
             />
           </div>
           <Button 
             onClick={handleCreate} 
-            className="h-16 px-10 bg-primary hover:bg-primary/90 text-white font-bold italic tracking-tight rounded-2xl shadow-2xl shadow-primary/30 transition-all hover:scale-105 active:scale-95 shrink-0 flex items-center gap-3"
+            className="h-14 px-8 bg-primary hover:brightness-110 text-primary-foreground font-bold tracking-tight rounded-md transition-all active:scale-95 shrink-0 flex items-center gap-3 shadow-none"
           >
             <Plus className="w-7 h-7" />
             <span className="text-base uppercase tracking-widest flex flex-col items-start leading-none">
@@ -200,15 +200,15 @@ function NavTab({ active, onClick, icon, label, subLabel, count, color }: any) {
     <button 
       onClick={onClick}
       className={cn(
-        "relative flex flex-col p-6 rounded-[2rem] transition-all text-left group active:scale-95",
+        "relative flex flex-col p-5 rounded-lg border transition-all text-left group active:scale-95",
         active 
-          ? "bg-white paper-shadow-lg border-b-4 " + (activeColors as any)[color]
-          : "bg-secondary/20 hover:bg-white hover:paper-shadow border-b-4 border-transparent"
+          ? "bg-card border-primary " + (activeColors as any)[color]
+          : "bg-secondary hover:bg-card border-border hover:border-primary/50 text-muted-foreground"
       )}
     >
       <div className={cn(
-        "p-2.5 rounded-xl mb-4 w-fit transition-all",
-        active ? "bg-primary/10 text-primary" : "bg-muted-foreground/10 text-muted-foreground group-hover:bg-primary/10 group-hover:text-primary"
+        "p-2.5 rounded-md mb-4 w-fit transition-all",
+        active ? "bg-primary/10 text-primary" : "bg-background text-muted-foreground group-hover:bg-primary/10 group-hover:text-primary"
       )}>
         {icon}
       </div>
@@ -219,8 +219,8 @@ function NavTab({ active, onClick, icon, label, subLabel, count, color }: any) {
           <span className="text-[9px] font-bold text-muted-foreground opacity-40 uppercase tracking-widest">{subLabel}</span>
         </div>
         <div className={cn(
-          "px-3 py-1 rounded-lg text-[10px] font-black font-[family-name:var(--font-outfit)]",
-          active ? "bg-primary text-white" : "bg-muted-foreground/10 text-muted-foreground"
+          "px-3 py-1 rounded-md text-[10px] font-black",
+          active ? "bg-primary text-primary-foreground" : "bg-background text-muted-foreground"
         )}>
           {count}
         </div>

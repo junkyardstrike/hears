@@ -43,19 +43,19 @@ export function GeneralTab({ project }: Props) {
 
   if (categories.length === 0) {
     return (
-      <div className="text-center py-24 bg-white/50 border-2 border-dashed border-border rounded-[2.5rem] animate-in fade-in duration-700">
-        <div className="bg-secondary/50 w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-6">
-          <FileText className="w-10 h-10 text-muted-foreground opacity-20" />
+    <div className="text-center py-24 bg-card border border-dashed border-border rounded-lg animate-in fade-in duration-700 font-sans">
+        <div className="bg-secondary w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-6">
+          <FileText className="w-10 h-10 text-muted-foreground opacity-50" />
         </div>
-        <h3 className="text-xl font-bold italic tracking-tighter text-foreground mb-4 uppercase font-[family-name:var(--font-outfit)]">No Requirements Yet</h3>
-        <Button onClick={() => addQuestion('要件定義・ヒアリング')} className="bg-primary text-white font-bold h-12 px-8 rounded-2xl shadow-xl shadow-primary/20">
-          <Plus className="w-5 h-5 mr-2" /> 最初の一歩をはじめる
+        <h3 className="text-xl font-bold tracking-tight text-foreground mb-4 uppercase">No Requirements Yet</h3>
+        <Button onClick={() => addQuestion('要件定義・ヒアリング')} className="bg-primary hover:brightness-110 text-primary-foreground font-bold h-10 px-6 rounded-md shadow-none transition-all">
+          <Plus className="w-4 h-4 mr-2" /> 最初の一歩をはじめる
         </Button>
       </div>
     );
   }
 
-  const sectionCardStyle = "bg-white border-none paper-shadow-lg rounded-[2.5rem] overflow-hidden mb-12 font-[family-name:var(--font-noto)]";
+  const sectionCardStyle = "bg-card border border-border shadow-none rounded-lg overflow-hidden mb-10 font-sans";
 
   return (
     <div className="w-full space-y-4 animate-in fade-in slide-in-from-bottom-4 duration-500 pb-20">
@@ -64,10 +64,10 @@ export function GeneralTab({ project }: Props) {
         return (
           <Card key={category} className={sectionCardStyle}>
             <CardHeader className="p-8 pb-4 flex flex-row items-center justify-between flex-wrap gap-4">
-              <CardTitle className="text-xl font-bold italic tracking-tighter text-foreground flex items-center gap-3 uppercase font-[family-name:var(--font-outfit)]">
-                <Globe className="w-8 h-8 text-primary" /> {category}
+              <CardTitle className="text-xl font-bold tracking-tight text-foreground flex items-center gap-3 uppercase">
+                <Globe className="w-6 h-6 text-primary" /> {category}
               </CardTitle>
-              <Button variant="ghost" size="sm" onClick={() => addQuestion(category)} className="text-primary hover:bg-primary/5 font-bold rounded-xl border border-primary/10 h-10 px-6">
+              <Button variant="ghost" size="sm" onClick={() => addQuestion(category)} className="text-primary hover:bg-secondary font-bold rounded-md border border-transparent hover:border-border h-10 px-4">
                 <Plus className="w-4 h-4 mr-2" /> 項目を追加
               </Button>
             </CardHeader>
@@ -81,7 +81,7 @@ export function GeneralTab({ project }: Props) {
                       initial={{ opacity: 0, scale: 0.95 }}
                       animate={{ opacity: 1, scale: 1 }}
                       exit={{ opacity: 0, scale: 0.9 }}
-                      className="flex flex-col gap-5 p-8 rounded-[2rem] bg-secondary/10 border border-border/50 hover:border-primary/20 transition-all group relative"
+                      className="flex flex-col gap-5 p-6 rounded-lg bg-secondary/50 border border-border hover:border-primary/50 transition-all group relative"
                     >
                       <div className="flex items-center justify-between">
                         <div className="flex items-center gap-3 min-w-0">
@@ -89,14 +89,14 @@ export function GeneralTab({ project }: Props) {
                           <Input 
                             value={q.label} 
                             onChange={(e) => updateQuestion(q.id, 'label', e.target.value)}
-                            className="font-bold text-[10px] tracking-widest text-muted-foreground focus-visible:ring-0 border-none bg-transparent px-0 h-auto py-0 uppercase font-[family-name:var(--font-outfit)]"
+                            className="font-bold text-[10px] tracking-widest text-muted-foreground focus-visible:ring-1 focus-visible:ring-primary border-none bg-transparent px-2 h-auto py-1 uppercase rounded"
                           />
                         </div>
                         <Button 
                           variant="ghost" 
                           size="icon" 
                           onClick={() => removeQuestion(q.id)} 
-                          className="text-muted-foreground hover:text-destructive hover:bg-destructive/5 opacity-0 group-hover:opacity-100 transition-all w-9 h-9 rounded-xl"
+                          className="text-muted-foreground hover:text-destructive hover:bg-destructive/10 opacity-0 group-hover:opacity-100 transition-all w-8 h-8 rounded-md"
                         >
                           <Trash2 className="w-4 h-4" />
                         </Button>
@@ -105,7 +105,7 @@ export function GeneralTab({ project }: Props) {
                         value={q.value}
                         onChange={(e) => updateQuestion(q.id, 'value', e.target.value)}
                         placeholder="詳細を入力してください..."
-                        className="resize-y min-h-[160px] bg-white border-none paper-shadow-sm focus-visible:ring-primary/20 text-[#2D3436] font-bold leading-relaxed rounded-2xl p-6"
+                        className="resize-y min-h-[160px] bg-input border border-border focus-visible:ring-1 focus-visible:ring-primary text-foreground font-medium leading-relaxed rounded-md p-4"
                       />
                     </motion.div>
                   ))}

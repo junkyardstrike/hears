@@ -49,39 +49,39 @@
 }
 
 :root {
-  --background: #F5F5F0;
-  --foreground: #2D3436;
-  --card: #ffffff;
-  --card-foreground: #2D3436;
-  --popover: #ffffff;
-  --popover-foreground: #2D3436;
-  --primary: #00896B;
+  --background: #1c1c1c;
+  --foreground: #e2e8f0;
+  --card: #232323;
+  --card-foreground: #e2e8f0;
+  --popover: #232323;
+  --popover-foreground: #e2e8f0;
+  --primary: #10b981;
   --primary-foreground: #ffffff;
-  --secondary: #EBEBE6;
-  --secondary-foreground: #2D3436;
-  --muted: #EBEBE6;
-  --muted-foreground: #636e72;
-  --accent: #00896B;
+  --secondary: #2e2e2e;
+  --secondary-foreground: #e2e8f0;
+  --muted: #2e2e2e;
+  --muted-foreground: #94a3b8;
+  --accent: #10b981;
   --accent-foreground: #ffffff;
-  --destructive: #d63031;
+  --destructive: #ef4444;
   --destructive-foreground: #ffffff;
-  --border: #E0E0DB;
-  --input: #E0E0DB;
-  --ring: #00896B;
-  --radius: 0.75rem;
+  --border: #2e2e2e;
+  --input: #141414;
+  --ring: #10b981;
+  --radius: 0.5rem;
 
-  /* Sidebar Modern Green Theme */
-  --sidebar-bg: #00896B;
-  --sidebar-fg: #F5F5F0;
-  --sidebar-accent: rgba(255, 255, 255, 0.1);
+  /* Sidebar Modern Dark Theme */
+  --sidebar-bg: #1c1c1c;
+  --sidebar-fg: #e2e8f0;
+  --sidebar-accent: rgba(16, 185, 129, 0.1);
 }
 
 @layer utilities {
   .paper-shadow {
-    box-shadow: 0 4px 12px -2px rgba(0, 0, 0, 0.04), 0 2px 4px -2px rgba(0, 0, 0, 0.02);
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.3), 0 2px 4px -2px rgba(0, 0, 0, 0.3);
   }
   .paper-shadow-lg {
-    box-shadow: 0 20px 40px -8px rgba(0, 0, 0, 0.08), 0 8px 16px -4px rgba(0, 0, 0, 0.04);
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.4), 0 4px 6px -4px rgba(0, 0, 0, 0.4);
   }
   .scrollbar-hide::-webkit-scrollbar {
     display: none;
@@ -93,7 +93,7 @@
     @apply border-border outline-ring/50;
   }
   body {
-    @apply bg-background text-foreground min-h-screen overflow-x-hidden font-[family-name:var(--font-noto)];
+    @apply bg-background text-foreground min-h-screen overflow-x-hidden font-sans antialiased tracking-tight;
     padding-top: env(safe-area-inset-top);
     padding-bottom: env(safe-area-inset-bottom);
     padding-left: env(safe-area-inset-left);
