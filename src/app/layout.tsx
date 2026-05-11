@@ -43,7 +43,7 @@ export default function RootLayout({
       lang="ja"
       className={cn(outfit.variable, notoSansJp.variable, "h-full antialiased")}
     >
-      <body className="h-full overflow-hidden flex flex-col font-[family-name:var(--font-noto)] bg-[#F5F5F0] text-[#2D3436]">
+      <body className="h-full overflow-hidden flex flex-col font-sans bg-background text-foreground">
         <PwaRegister />
         <AuthProvider>
           <RootWrapper>

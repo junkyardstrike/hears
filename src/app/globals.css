@@ -49,7 +49,7 @@
 }
 
 :root {
-  --background: #1c1c1c;
+  --background: #000000; /* Pitch black */
   --foreground: #e2e8f0;
   --card: #232323;
   --card-foreground: #e2e8f0;
@@ -71,7 +71,7 @@
   --radius: 0.5rem;
 
   /* Sidebar Modern Dark Theme */
-  --sidebar-bg: #1c1c1c;
+  --sidebar-bg: #000000;
   --sidebar-fg: #e2e8f0;
   --sidebar-accent: rgba(16, 185, 129, 0.1);
 }
