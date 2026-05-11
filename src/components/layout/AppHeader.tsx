@@ -8,7 +8,6 @@ import { Button } from '@/components/ui/button';
 
 export function AppHeader() {
   const pathname = usePathname();
-  const { setLocked } = useHearsStore();
 
   const getBreadcrumbs = () => {
     const parts = pathname.split('/').filter(Boolean);
@@ -60,15 +59,6 @@ export function AppHeader() {
             </div>
           ))}
         </nav>
-
-        <Button 
-          variant="ghost" 
-          size="icon" 
-          onClick={() => setLocked(true)}
-          className="w-8 h-8 rounded-full text-muted-foreground hover:text-primary hover:bg-primary/10 shrink-0"
-        >
-          <Lock className="w-4 h-4" />
-        </Button>
       </div>
     </header>
   );

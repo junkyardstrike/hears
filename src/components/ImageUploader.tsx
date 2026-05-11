@@ -4,6 +4,7 @@ import React, { useRef, useState } from 'react';
 import imageCompression from 'browser-image-compression';
 import { UploadCloud, X, ZoomIn } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { supabase } from '@/lib/supabase';
 
 interface Props {
   value: string | null;
@@ -32,20 +33,38 @@ export function ImageUploader({ value, onChange, label = "画像アップロー�
       
       const compressedFile = await imageCompression(file, options);
       
-      const reader = new FileReader();
-      reader.readAsDataURL(compressedFile);
-      reader.onloadend = () => {
-        onChange(reader.result as string);
-        setIsCompressing(false);
-      };
+      const { data: sessionData } = await supabase.auth.getSession();
+      const userId = sessionData.session?.user?.id;
+      
+      if (!userId) {
+        throw new Error('User not authenticated');
+      }
+
+      const fileName = `${Date.now()}_${Math.random().toString(36).substring(7)}.webp`;
+      const filePath = `${userId}/${fileName}`;
+
+      const { error: uploadError } = await supabase.storage
+        .from('hears_assets')
+        .upload(filePath, compressedFile, {
+          contentType: 'image/webp',
+          upsert: false
+        });
+
+      if (uploadError) throw uploadError;
+
+      const { data: publicUrlData } = supabase.storage
+        .from('hears_assets')
+        .getPublicUrl(filePath);
+
+      onChange(publicUrlData.publicUrl);
     } catch (error) {
-      console.error('Image compression failed:', error);
-      alert('画像の処理に失敗しました。');
+      console.error('Image upload failed:', error);
+      alert('画像のアップロードに失敗しました。');
+    } finally {
       setIsCompressing(false);
-    }
-    
-    if (fileInputRef.current) {
-      fileInputRef.current.value = '';
+      if (fileInputRef.current) {
+        fileInputRef.current.value = '';
+      }
     }
   };
 

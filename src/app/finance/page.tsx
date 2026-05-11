@@ -51,6 +51,8 @@ export default function FinancePage() {
 
         let stockTakeHome = 0;
         let shotTakeHome = 0;
+        let grossStock = 0;
+        let grossShot = 0;
         
         cases.forEach(c => {
           if (!c.finance) return;
@@ -62,15 +64,18 @@ export default function FinancePage() {
             const recognitionMonth = c.finance.oneTimeFeeMonth || start;
             if (recognitionMonth === mStr) {
               shotTakeHome += c.finance.oneTimeFeeTakeHome ?? Math.floor((c.finance.oneTimeFee || 0) * 0.4);
+              grossShot += c.finance.oneTimeFee || 0;
             }
             if (mStr === start || isAfter(dMonth, parseISO(start))) {
               stockTakeHome += Math.floor((c.finance.maintenanceFee || 0) * 0.4);
+              grossStock += c.finance.maintenanceFee || 0;
             }
           } else {
             const recognitionMonth = c.finance.spotMonth || start;
             if (recognitionMonth === mStr) {
               const rate = c.finance.spotRate ?? 40;
               shotTakeHome += Math.floor((c.finance.spotFee || 0) * (rate / 100));
+              grossShot += c.finance.spotFee || 0;
             }
           }
         });
@@ -84,6 +89,7 @@ export default function FinancePage() {
           stock: stockTakeHome,
           shot: shotTakeHome,
           total: totalWithBase,
+          grossTotal: grossStock + grossShot,
           isFuture
         };
       });
@@ -167,7 +173,13 @@ export default function FinancePage() {
 
   const stats = useMemo(() => {
     let yearlyTotal = 0;
-    currentYearData.forEach(d => { if (!d.isFuture) yearlyTotal += d.total; });
+    let yearlyGrossTotal = 0;
+    currentYearData.forEach(d => { 
+      if (!d.isFuture) {
+        yearlyTotal += d.total; 
+        yearlyGrossTotal += d.grossTotal;
+      }
+    });
 
     const now = new Date();
     const currentMonthNum = now.getMonth() + 1;
@@ -210,7 +222,8 @@ export default function FinancePage() {
 
     return { 
       yearlyTotal, 
-      currentMonthPrediction: Math.floor(currentMonthPrediction), 
+      yearlyGrossTotal,
+      currentMonthPrediction: Math.floor(currentMonthPrediction),  
       reachRate,
       totalProjects: cases.length,
       activeCases: cases.filter(c => c.status === 'active').length,
@@ -276,7 +289,8 @@ export default function FinancePage() {
         </div>
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+      <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-5 gap-3">
+        <StatCardCompact label={`${viewYear}年度 法人総売上 (100%)`} subLabel="GROSS TOTAL" value={`¥${stats.yearlyGrossTotal.toLocaleString()}`} sub="基本給を含まない案件総売上" icon={<Landmark className="w-4 h-4" />} color="bg-indigo-600" />
         <StatCardCompact label={`${viewYear}年度 累計実績`} subLabel="CUMULATIVE" value={`¥${stats.yearlyTotal.toLocaleString()}`} sub="今日までの確定手取り額" icon={<Wallet className="w-4 h-4" />} color="bg-primary" onClick={() => router.push(`/finance/details?year=${viewYear}&mode=year`)} />
         <StatCardCompact label={`${viewYear - 1}年度 実績`} subLabel="PREVIOUS" value={`¥${lastYearFullTotal.toLocaleString()}`} sub="前年度の最終着地実績" icon={<TargetIcon className="w-4 h-4" />} color="bg-zinc-800" onClick={() => router.push(`/finance/details?year=${viewYear - 1}&mode=year`)} />
         <StatCardCompact label="当月推定手取り額" subLabel="MONTHLY" value={`¥${stats.currentMonthPrediction.toLocaleString()}`} sub="基本給 ＋ 保守還元合算" icon={<Activity className="w-4 h-4" />} color="bg-blue-600" onClick={() => router.push(`/finance/details?year=${new Date().getFullYear()}&month=${stats.currentMonthNum}&mode=month`)} />

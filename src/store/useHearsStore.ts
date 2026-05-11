@@ -1,11 +1,5 @@
 import { create } from 'zustand';
-import { persist, createJSONStorage, StateStorage } from 'zustand/middleware';
-import { get as getIDB, set as setIDB, del as delIDB } from 'idb-keyval';
-import { format } from 'date-fns';
-import { 
-  encryptData, decryptData, 
-  saveEncryptedFile, readEncryptedFile 
-} from '@/lib/syncService';
+import { supabase } from '@/lib/supabase';
 
 // ---------------------------------------------------------
 // Types
@@ -51,6 +45,10 @@ export interface GeneralQuestionItem {
 export interface TodoItem {
   id: string;
   text: string;
+  clientId?: string;
+  clientName?: string;
+  dueDate?: string;
+  memo?: string;
   completed: boolean;
   createdAt: number;
 }
@@ -165,12 +163,9 @@ export interface HearsState {
   projects: ProjectData[];
   cases: CaseData[];
   clients: ClientData[];
+  globalTodos: TodoItem[];
   globalGenres: string[];
   
-  pinCode: string;
-  isLocked: boolean;
-  setPinCode: (pin: string) => void;
-  setLocked: (locked: boolean) => void;
   mobileMenuOpen: boolean;
   setMobileMenuOpen: (open: boolean) => void;
 
@@ -180,14 +175,9 @@ export interface HearsState {
   };
   updateGlobalFinance: (updater: (f: HearsState['globalFinance']) => void) => void;
 
-  backupSettings: {
-    enabled: boolean;
-    syncDirHandle?: any;
-    masterPassword?: string;
-    lastBackupDate?: number;
-  };
-  setBackupSettings: (settings: Partial<HearsState['backupSettings']>) => void;
-  loadSyncDirHandle: () => Promise<void>;
+  syncStatus: 'idle' | 'syncing' | 'error';
+  setSyncStatus: (status: 'idle' | 'syncing' | 'error') => void;
+  loadFromCloud: (userId: string) => Promise<void>;
 
   createProject: (name: string) => string;
   deleteProject: (id: string) => void;
@@ -206,8 +196,10 @@ export interface HearsState {
   deleteGenre: (name: string) => void;
 
   importData: (rawData: any) => void;
-  importDatabase: (fileHandle: any, password: string) => Promise<{ success: boolean; error?: string }>;
-  exportDatabase: (directoryHandle: any, password: string) => Promise<{ success: boolean; fileName?: string; error?: string }>;
+
+  addGlobalTodo: (todo: Omit<TodoItem, 'id' | 'createdAt' | 'completed'>) => void;
+  updateGlobalTodo: (id: string, updater: (t: TodoItem) => void) => void;
+  deleteGlobalTodo: (id: string) => void;
 }
 
 export const generateId = () => {
@@ -285,24 +277,11 @@ const createInitialProject = (name: string): ProjectData => ({
   generalImages: {}
 });
 
-const idbStorage: StateStorage = {
-  getItem: async (name: string): Promise<string | null> => {
-    return (await getIDB(name)) || null;
-  },
-  setItem: async (name: string, value: string): Promise<void> => {
-    await setIDB(name, value);
-  },
-  removeItem: async (name: string): Promise<void> => {
-    await delIDB(name);
-  },
-};
-
-export const useHearsStore = create<HearsState>()(
-  persist(
-    (set, get) => ({
+export const useHearsStore = create<HearsState>()((set, get) => ({
       projects: [],
       cases: [],
       clients: [],
+      globalTodos: [],
       globalGenres: [
         'HP制作',
         'SNS運用',
@@ -310,42 +289,50 @@ export const useHearsStore = create<HearsState>()(
         '保守・運用',
         'コンサルティング'
       ],
-      pinCode: '0000',
-      isLocked: true,
       mobileMenuOpen: false,
       globalFinance: {
         baseSalary: 200000,
         baseSalaryOverrides: {},
       },
-      backupSettings: {
-        enabled: false,
-        lastBackupDate: undefined,
-      },
+      syncStatus: 'idle',
 
-      setBackupSettings: (settings) => {
-        set((state) => {
-          const newSettings = { ...state.backupSettings, ...settings };
-          // If we have a handle, persist it specifically in IDB since persist middleware can't handle it
-          if (settings.syncDirHandle) {
-            setIDB('alchemist-sync-dir', settings.syncDirHandle);
-          }
-          return { backupSettings: newSettings };
-        });
-      },
+      setSyncStatus: (status) => set({ syncStatus: status }),
 
-      loadSyncDirHandle: async () => {
-        const handle = await getIDB<any>('alchemist-sync-dir');
-        if (handle) {
-          // Verify permission
-          const status = await (handle as any).queryPermission({ mode: 'readwrite' });
-          if (status === 'granted') {
-            set((state) => ({ backupSettings: { ...state.backupSettings, syncDirHandle: handle } }));
+      loadFromCloud: async (userId: string) => {
+        set({ syncStatus: 'syncing' });
+        try {
+          const { data, error } = await supabase
+            .from('user_state')
+            .select('state')
+            .eq('user_id', userId)
+            .single();
+
+          if (error && error.code !== 'PGRST116') {
+            console.error('Failed to load from cloud:', error);
+            set({ syncStatus: 'error' });
+            return;
           }
+
+          if (data && data.state) {
+            const rawData = data.state;
+            set({
+              projects: rawData.projects || [],
+              cases: rawData.cases || [],
+              clients: rawData.clients || [],
+              globalTodos: rawData.globalTodos || [],
+              globalFinance: rawData.globalFinance || { baseSalary: 200000, baseSalaryOverrides: {} },
+              globalGenres: rawData.globalGenres || [
+                'HP制作', 'SNS運用', 'システム開発', '保守・運用', 'コンサルティング'
+              ]
+            });
+          }
+          set({ syncStatus: 'idle' });
+        } catch (err) {
+          console.error(err);
+          set({ syncStatus: 'error' });
         }
       },
 
-      setPinCode: (pin) => set({ pinCode: pin }),
-      setLocked: (locked: boolean) => set({ isLocked: locked }),
       setMobileMenuOpen: (open: boolean) => set({ mobileMenuOpen: open }),
 
       updateGlobalFinance: (updater) => {
@@ -366,45 +353,6 @@ export const useHearsStore = create<HearsState>()(
         set((state) => ({ projects: state.projects.filter(p => p.id !== id) }));
       },
       
-      importDatabase: async (fileHandle: any, password: string) => {
-        try {
-          const encryptedBuffer = await readEncryptedFile(fileHandle);
-          const decryptedJson = await decryptData(encryptedBuffer, password);
-          const data = JSON.parse(decryptedJson);
-          
-          set({
-            projects: data.projects || [],
-            cases: data.cases || [],
-            clients: data.clients || [],
-            globalFinance: data.globalFinance || { baseSalary: 200000, baseSalaryOverrides: {} }
-          });
-          return { success: true };
-        } catch (e) {
-          console.error('Import failed:', e);
-          return { success: false, error: '復号に失敗しました。パスワードが違うか、ファイルが破損しています。' };
-        }
-      },
-
-      exportDatabase: async (directoryHandle: any, password: string) => {
-        try {
-          const state = get();
-          const plainData = JSON.stringify({
-            projects: state.projects,
-            cases: state.cases,
-            clients: state.clients,
-            globalFinance: state.globalFinance
-          });
-
-          const encryptedBuffer = await encryptData(plainData, password);
-          const fileName = `alchemist_db_${format(new Date(), 'yyyyMMdd_HHmmss')}.alchemist`;
-          
-          await saveEncryptedFile(directoryHandle, fileName, encryptedBuffer);
-          return { success: true, fileName };
-        } catch (e) {
-          console.error('Export failed:', e);
-          return { success: false, error: 'エクスポートに失敗しました。' };
-        }
-      },
 
       updateProject: (id: string, updater: (project: ProjectData) => void) => {
         set((state) => ({
@@ -451,12 +399,14 @@ export const useHearsStore = create<HearsState>()(
           let newProjects = [...state.projects];
           let newCases = [...state.cases];
           let newClients = [...state.clients];
+          let newGlobalTodos = [...(state.globalTodos || [])];
           if (rawData.projects && Array.isArray(rawData.projects)) {
             newProjects = rawData.projects.map(processProject);
             newCases = rawData.cases || [];
             newClients = rawData.clients || [];
+            newGlobalTodos = rawData.globalTodos || [];
           }
-          return { projects: newProjects, cases: newCases, clients: newClients };
+          return { projects: newProjects, cases: newCases, clients: newClients, globalTodos: newGlobalTodos };
         });
       },
 
@@ -538,11 +488,33 @@ export const useHearsStore = create<HearsState>()(
             return c;
           })
         }));
+      },
+
+      addGlobalTodo: (todoData) => {
+        const newTodo: TodoItem = {
+          ...todoData,
+          id: generateId(),
+          createdAt: Date.now(),
+          completed: false,
+        };
+        set((state) => ({ globalTodos: [...(state.globalTodos || []), newTodo] }));
+      },
+
+      updateGlobalTodo: (id: string, updater: (t: TodoItem) => void) => {
+        set((state) => ({
+          globalTodos: (state.globalTodos || []).map(t => {
+            if (t.id === id) {
+              const clone = JSON.parse(JSON.stringify(t));
+              updater(clone);
+              return clone;
+            }
+            return t;
+          })
+        }));
+      },
+
+      deleteGlobalTodo: (id: string) => {
+        set((state) => ({ globalTodos: (state.globalTodos || []).filter(t => t.id !== id) }));
       }
-    }),
-    {
-      name: 'alchemist-v6-storage',
-      storage: createJSONStorage(() => idbStorage)
-    }
-  )
+    })
 );

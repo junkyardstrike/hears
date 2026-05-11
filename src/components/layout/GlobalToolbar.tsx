@@ -3,7 +3,7 @@
 import { usePathname, useRouter } from 'next/navigation';
 import { 
   Search, HelpCircle, Settings, User, 
-  Bell, Command, ChevronDown, Menu
+  Bell, Command, ChevronDown, Menu, Plus
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -17,11 +17,14 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { useHearsStore } from '@/store/useHearsStore';
+import { GlobalTaskModal } from '@/components/GlobalTaskModal';
+import { useState } from 'react';
 
 export function GlobalToolbar() {
   const pathname = usePathname();
   const router = useRouter();
   const { setMobileMenuOpen } = useHearsStore();
+  const [isTaskModalOpen, setIsTaskModalOpen] = useState(false);
   
   const getPageTitle = (path: string) => {
     if (path === '/') return 'ダッシュボード';
@@ -70,6 +73,14 @@ export function GlobalToolbar() {
             <span className="text-[9px] font-bold text-muted-foreground uppercase">K</span>
           </div>
         </div>
+
+        <Button 
+          onClick={() => setIsTaskModalOpen(true)}
+          className="hidden sm:flex items-center gap-2 bg-primary hover:bg-primary/90 text-white font-bold h-10 px-4 rounded-xl shadow-md shadow-primary/20 transition-all active:scale-95 ml-2 lg:ml-4"
+        >
+          <Plus className="w-4 h-4" />
+          <span className="text-xs uppercase tracking-widest font-black">NEW TASK</span>
+        </Button>
 
         <div className="flex items-center gap-1 lg:border-l border-border lg:pl-4">
           <Button variant="ghost" size="icon" className="hidden sm:flex text-muted-foreground hover:text-primary rounded-xl" title="ヘルプ">
@@ -125,6 +136,12 @@ export function GlobalToolbar() {
           </DropdownMenuContent>
         </DropdownMenu>
       </div>
+
+      <GlobalTaskModal 
+        isOpen={isTaskModalOpen} 
+        onClose={() => setIsTaskModalOpen(false)}
+        editingTodo={null}
+      />
     </header>
   );
 }

@@ -9,7 +9,7 @@ import { GeneralTab } from '@/components/GeneralTab';
 import { ExportPanel } from '@/components/ExportPanel';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Button } from '@/components/ui/button';
-import { ArrowLeft, Save, Briefcase, FileText, ChevronLeft } from 'lucide-react';
+import { ArrowLeft, Save, Briefcase, FileText, ChevronLeft, ArrowUp, Home } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { cn } from '@/lib/utils';
 import { Badge } from '@/components/ui/badge';
@@ -56,6 +56,13 @@ export default function Editor() {
             <ChevronLeft className="w-8 h-8" />
           </Button>
           <div className="flex-1 min-w-0">
+            <div className="flex items-center gap-2 mb-3 text-xs font-bold text-muted-foreground">
+              <button onClick={() => router.push('/')} className="hover:text-primary transition-colors flex items-center gap-1"><Home className="w-3.5 h-3.5" /> Dashboard</button>
+              <span className="opacity-40">/</span>
+              <button onClick={() => router.push('/hearing')} className="hover:text-primary transition-colors">Hearing</button>
+              <span className="opacity-40">/</span>
+              <span className="text-foreground">Editing</span>
+            </div>
             <div className="flex items-center gap-3 mb-2">
               <Badge className="bg-primary/10 text-primary border-none font-bold text-[9px] px-2.5 py-0.5 rounded-lg uppercase tracking-widest">
                 Editing Project
@@ -121,6 +128,13 @@ export default function Editor() {
 
       <ExportPanel project={project} activeTab={activeTab} />
       
+      {/* Scroll to Top Button */}
+      <Button 
+        onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+        className="fixed bottom-8 right-8 w-14 h-14 rounded-full bg-white text-primary shadow-2xl border-2 border-primary/20 hover:bg-primary hover:text-white transition-all hover:scale-110 active:scale-95 z-50 flex items-center justify-center"
+      >
+        <ArrowUp className="w-6 h-6" />
+      </Button>
     </main>
   );
 }

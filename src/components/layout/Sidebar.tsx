@@ -12,7 +12,7 @@ import { cn } from '@/lib/utils';
 import { Progress } from '@/components/ui/progress';
 
 const menuItems = [
-  { label: 'DASHBOARD', jpLabel: 'ダッシュボード', icon: LayoutDashboard, href: '/', color: 'text-white' },
+  { label: 'DASHBOARD', jpLabel: '取引先・案件管理', icon: LayoutDashboard, href: '/', color: 'text-white' },
   { label: 'HEARING', jpLabel: 'ヒアリング管理', icon: ClipboardList, href: '/hearing', color: 'text-white' },
   { label: 'CASES', jpLabel: '案件管理', icon: Briefcase, href: '/cases', color: 'text-white' },
   { label: 'FINANCE', jpLabel: '収益分析', icon: BarChart3, href: '/finance', color: 'text-white' },
@@ -21,7 +21,7 @@ const menuItems = [
 
 export function Sidebar({ isMobile = false }: { isMobile?: boolean }) {
   const pathname = usePathname();
-  const { setLocked, cases, globalFinance } = useHearsStore();
+  const { cases, globalFinance } = useHearsStore();
   
   // Calculate revenue for meter
   const baseSalary = globalFinance?.baseSalary || 0;
@@ -103,7 +103,7 @@ export function Sidebar({ isMobile = false }: { isMobile?: boolean }) {
           </div>
         </div>
 
-        <div className="grid grid-cols-2 gap-3">
+        <div className="grid grid-cols-1 gap-3">
           <Link 
             href="/settings"
             className="flex flex-col items-center justify-center p-4 rounded-2xl bg-white/5 hover:bg-white/10 transition-all border border-white/5 group"
@@ -112,14 +112,6 @@ export function Sidebar({ isMobile = false }: { isMobile?: boolean }) {
             <span className="text-[9px] font-black uppercase tracking-widest text-white/40 group-hover:text-white/80">SETTINGS</span>
             <span className="text-[7px] font-bold text-white/20 uppercase">設定</span>
           </Link>
-          <button 
-            onClick={() => setLocked(true)}
-            className="flex flex-col items-center justify-center p-4 rounded-2xl bg-white/5 hover:bg-white/20 transition-all border border-white/5 group"
-          >
-            <Lock className="w-5 h-5 mb-1 text-white/50 group-hover:text-white transition-colors" />
-            <span className="text-[9px] font-black uppercase tracking-widest text-white/40 group-hover:text-white/80">LOCK</span>
-            <span className="text-[7px] font-bold text-white/20 uppercase">ロック</span>
-          </button>
         </div>
       </div>
     </aside>

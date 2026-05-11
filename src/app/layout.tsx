@@ -31,6 +31,8 @@ export const viewport = {
   viewportFit: "cover",
 };
 
+import { AuthProvider } from "@/components/auth/AuthProvider";
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -41,11 +43,13 @@ export default function RootLayout({
       lang="ja"
       className={cn(outfit.variable, notoSansJp.variable, "h-full antialiased")}
     >
-      <body className="min-h-full flex flex-col font-[family-name:var(--font-noto)] bg-[#F5F5F0] text-[#2D3436]">
+      <body className="h-full overflow-hidden flex flex-col font-[family-name:var(--font-noto)] bg-[#F5F5F0] text-[#2D3436]">
         <PwaRegister />
-        <RootWrapper>
-          {children}
-        </RootWrapper>
+        <AuthProvider>
+          <RootWrapper>
+            {children}
+          </RootWrapper>
+        </AuthProvider>
       </body>
     </html>
   );
