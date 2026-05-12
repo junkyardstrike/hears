@@ -81,9 +81,9 @@ export default function ClientsDashboard() {
       </div>
 
       {/* 一覧 */}
-      <div className="grid grid-cols-1 gap-4">
+      <div className="grid grid-cols-2 lg:grid-cols-1 gap-2 lg:gap-4">
         {filteredClients.length === 0 ? (
-          <div className="py-24 text-center bg-card border border-dashed border-border rounded-lg animate-in fade-in duration-700">
+          <div className="py-24 text-center bg-card border border-dashed border-border rounded-lg animate-in fade-in duration-700 col-span-2 lg:col-span-1">
              <Building2 className="w-16 h-16 text-muted-foreground mx-auto opacity-10 mb-6" />
              <h3 className="text-xl font-bold italic tracking-tighter text-foreground mb-1">NO CLIENTS REGISTERED</h3>
              <p className="text-muted-foreground font-bold text-[10px] uppercase tracking-widest opacity-40">取引先が登録されていません</p>
@@ -96,10 +96,10 @@ export default function ClientsDashboard() {
             return (
               <div key={c.id} className={cn(
                 "bg-card rounded-lg border overflow-hidden transition-all",
-                isExpanded ? "border-primary ring-1 ring-primary" : "border-border hover:border-primary/50"
+                isExpanded ? "border-primary ring-1 ring-primary col-span-2 lg:col-span-1" : "border-border hover:border-primary/50"
               )}>
                 <div 
-                  className="p-8 flex flex-col lg:flex-row items-center gap-8 group relative cursor-pointer"
+                  className="p-3 lg:p-8 flex flex-col lg:flex-row items-start lg:items-center gap-2 lg:gap-8 group relative cursor-pointer"
                   onClick={() => setExpandedClientId(isExpanded ? null : c.id)}
                 >
                    <div className="absolute left-0 top-0 bottom-0 w-2 bg-primary/20 group-hover:bg-primary transition-all" />
@@ -120,21 +120,21 @@ export default function ClientsDashboard() {
                         </div>
                      </div>
                    ) : (
-                     <div className="flex-1 min-w-0 flex flex-col md:flex-row items-center gap-10">
-                        <div className="flex-1 min-w-0 text-center md:text-left">
-                           <h3 className="text-2xl font-bold italic tracking-tighter text-foreground group-hover:text-primary transition-colors font-[family-name:var(--font-outfit)] leading-tight mb-1">
+                     <div className="flex-1 w-full min-w-0 flex flex-col lg:flex-row items-start lg:items-center gap-2 lg:gap-10">
+                        <div className="flex-1 w-full lg:w-auto min-w-0 text-left">
+                           <h3 className="text-sm lg:text-2xl font-bold italic tracking-tighter text-foreground group-hover:text-primary transition-colors font-[family-name:var(--font-outfit)] leading-tight mb-0 lg:mb-1 truncate">
                              {c.name}
                            </h3>
-                           <p className="text-[10px] font-bold text-muted-foreground tracking-widest opacity-60">ID: {c.id.toUpperCase().substring(0, 8)}</p>
+                           <p className="text-[7px] lg:text-[10px] font-bold text-muted-foreground tracking-widest opacity-60">ID: {c.id.toUpperCase().substring(0, 8)}</p>
                         </div>
-                        <div className="flex items-center gap-10 px-10 border-x border-border/50 shrink-0">
-                           <div className="flex flex-col text-center min-w-[120px]">
-                              <span className="text-[9px] font-bold text-muted-foreground uppercase tracking-widest opacity-40 mb-1">MANAGER / 担当者</span>
-                              <span className="text-sm font-bold text-foreground">{c.managerName || '未設定'}</span>
+                        <div className="flex flex-row lg:flex-row items-center justify-between lg:justify-start gap-2 lg:gap-10 px-0 lg:px-10 border-t lg:border-t-0 lg:border-x border-border/50 shrink-0 w-full lg:w-auto pt-2 lg:pt-0">
+                           <div className="flex flex-col text-left lg:text-center min-w-0 lg:min-w-[120px] max-w-[80px] lg:max-w-none">
+                              <span className="text-[6px] lg:text-[9px] font-bold text-muted-foreground uppercase tracking-widest opacity-40 mb-0.5 lg:mb-1">MANAGER</span>
+                              <span className="text-[10px] lg:text-sm font-bold text-foreground truncate">{c.managerName || '未設定'}</span>
                            </div>
-                           <div className="flex flex-col text-center min-w-[100px]">
-                              <span className="text-[9px] font-bold text-muted-foreground uppercase tracking-widest opacity-40 mb-1">CASES</span>
-                              <span className="text-xl font-bold italic tracking-tighter text-primary font-[family-name:var(--font-outfit)]">
+                           <div className="flex flex-col text-right lg:text-center min-w-0 lg:min-w-[100px]">
+                              <span className="text-[6px] lg:text-[9px] font-bold text-muted-foreground uppercase tracking-widest opacity-40 mb-0.5 lg:mb-1">CASES</span>
+                              <span className="text-xs lg:text-xl font-bold italic tracking-tighter text-primary font-[family-name:var(--font-outfit)]">
                                 {clientCases.length}
                               </span>
                            </div>
@@ -142,14 +142,14 @@ export default function ClientsDashboard() {
                      </div>
                    )}
 
-                   <div className="flex items-center gap-3 shrink-0 relative z-10">
+                   <div className="flex items-center gap-1 lg:gap-3 shrink-0 absolute lg:relative right-2 top-2 lg:right-auto lg:top-auto z-10 bg-card/80 lg:bg-transparent p-1 lg:p-0 rounded-md backdrop-blur-md lg:backdrop-blur-none">
                      {editingId === c.id ? (
                        <>
-                         <Button variant="ghost" size="icon" onClick={(e) => { e.stopPropagation(); setEditingId(null); }} className="h-10 w-10 rounded-md text-muted-foreground hover:bg-secondary">
-                           <X className="w-5 h-5" />
+                         <Button variant="ghost" size="icon" onClick={(e) => { e.stopPropagation(); setEditingId(null); }} className="h-6 w-6 lg:h-10 lg:w-10 rounded-md text-muted-foreground hover:bg-secondary">
+                           <X className="w-3 h-3 lg:w-5 lg:h-5" />
                          </Button>
-                         <Button onClick={saveEdit} className="h-10 px-4 bg-primary text-primary-foreground rounded-md font-bold flex items-center gap-2 hover:brightness-110">
-                           <Check className="w-5 h-5" /> 保存
+                         <Button onClick={saveEdit} className="h-6 px-2 lg:h-10 lg:px-4 bg-primary text-primary-foreground rounded-md font-bold flex items-center gap-1 lg:gap-2 hover:brightness-110 text-[10px] lg:text-sm">
+                           <Check className="w-3 h-3 lg:w-5 lg:h-5" /> <span className="hidden lg:inline">保存</span>
                          </Button>
                        </>
                      ) : (
@@ -158,20 +158,20 @@ export default function ClientsDashboard() {
                            variant="ghost" 
                            size="icon" 
                            onClick={(e) => startEdit(c, e)}
-                           className="h-10 w-10 rounded-md text-muted-foreground hover:text-primary hover:bg-primary/10 transition-all"
+                           className="h-6 w-6 lg:h-10 lg:w-10 rounded-md text-muted-foreground hover:text-primary hover:bg-primary/10 transition-all"
                          >
-                           <Edit className="w-5 h-5" />
+                           <Edit className="w-3 h-3 lg:w-5 lg:h-5" />
                          </Button>
                          <Button 
                            variant="ghost" 
                            size="icon" 
                            onClick={(e) => { e.stopPropagation(); if(confirm('取引先を削除しますか？')) deleteClient(c.id); }}
-                           className="h-10 w-10 rounded-md text-muted-foreground hover:text-destructive hover:bg-destructive/10 transition-all"
+                           className="h-6 w-6 lg:h-10 lg:w-10 rounded-md text-muted-foreground hover:text-destructive hover:bg-destructive/10 transition-all"
                          >
-                           <Trash2 className="w-5 h-5" />
+                           <Trash2 className="w-3 h-3 lg:w-5 lg:h-5" />
                          </Button>
-                         <div className="w-px h-6 bg-border mx-2" />
-                         <Button variant="ghost" size="icon" className="h-10 w-10 rounded-md text-muted-foreground hover:bg-secondary">
+                         <div className="w-px h-4 lg:h-6 bg-border mx-1 lg:mx-2" />
+                         <Button variant="ghost" size="icon" className="hidden lg:flex h-10 w-10 rounded-md text-muted-foreground hover:bg-secondary">
                             {isExpanded ? <ChevronUp className="w-6 h-6" /> : <ChevronDown className="w-6 h-6" />}
                          </Button>
                        </>

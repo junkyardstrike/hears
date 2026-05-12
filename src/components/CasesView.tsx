@@ -55,69 +55,69 @@ function CasesViewContent() {
     }
 
     return (
-      <div className="grid grid-cols-1 gap-4">
+      <div className="grid grid-cols-2 lg:grid-cols-1 gap-2 lg:gap-4">
         {list.sort((a, b) => b.updatedAt - a.updatedAt).map((c, idx) => (
           <div key={`${c.id}-${idx}`} className="block group relative">
             <Link href={`/cases/${c.id}`} className="absolute inset-0 z-0 rounded-lg" />
-            <div className="bg-card p-6 lg:p-8 rounded-lg border border-border hover:border-primary/50 transition-all flex flex-col lg:flex-row items-center gap-8 relative overflow-hidden pointer-events-none">
+            <div className="bg-card p-3 lg:p-8 rounded-lg border border-border hover:border-primary/50 transition-all flex flex-col lg:flex-row items-start lg:items-center gap-2 lg:gap-8 relative overflow-hidden pointer-events-none">
               <div className={cn(
-                "absolute left-0 top-0 bottom-0 w-2 transition-all",
+                "absolute left-0 top-0 bottom-0 w-1.5 lg:w-2 transition-all",
                 c.status === 'active' ? "bg-emerald-500" : "bg-blue-500"
               )} />
               
-              <div className="flex flex-col items-center lg:items-start min-w-[140px] shrink-0">
+              <div className="flex flex-col items-start min-w-0 lg:min-w-[140px] shrink-0 w-full lg:w-auto">
                 <Badge className={cn(
-                  "rounded-lg px-3 py-1 text-[9px] font-bold tracking-widest border-none mb-3",
+                  "rounded-md lg:rounded-lg px-2 lg:px-3 py-0.5 lg:py-1 text-[7px] lg:text-[9px] font-bold tracking-widest border-none mb-1 lg:mb-3",
                   c.status === 'active' ? 'bg-emerald-500/10 text-emerald-600' : 'bg-blue-500/10 text-blue-600'
                 )}>
                   {c.status === 'active' ? '進行中 / active' : '完了済 / completed'}
                 </Badge>
-                <div className="flex flex-wrap items-center gap-4">
-                  <div className="flex items-center gap-2 text-[10px] font-bold text-primary tracking-tighter italic">
-                    <Tag className="w-3.5 h-3.5" /> {c.genre || '未設定'}
+                <div className="flex flex-col lg:flex-row lg:flex-wrap items-start lg:items-center gap-1 lg:gap-4">
+                  <div className="flex items-center gap-1 lg:gap-2 text-[8px] lg:text-[10px] font-bold text-primary tracking-tighter italic">
+                    <Tag className="w-3 h-3 lg:w-3.5 lg:h-3.5" /> <span className="truncate max-w-[100px] lg:max-w-none">{c.genre || '未設定'}</span>
                   </div>
-                  <div className="flex items-center gap-2 text-[10px] font-bold text-muted-foreground tracking-widest opacity-60">
-                    <Calendar className="w-3.5 h-3.5" /> {c.finance?.revenueStartMonth || '未設定'}
+                  <div className="flex items-center gap-1 lg:gap-2 text-[8px] lg:text-[10px] font-bold text-muted-foreground tracking-widest opacity-60">
+                    <Calendar className="w-3 h-3 lg:w-3.5 lg:h-3.5" /> {c.finance?.revenueStartMonth || '未設定'}
                   </div>
                 </div>
               </div>
 
-              <div className="flex-1 min-w-[300px] text-center lg:text-left py-2 group-hover:translate-x-1 transition-transform">
-                <h3 className="text-2xl font-bold tracking-tight text-foreground group-hover:text-primary transition-colors mb-2 leading-tight">
+              <div className="flex-1 w-full lg:w-auto min-w-0 text-left py-1 lg:py-2 group-hover:translate-x-1 transition-transform">
+                <h3 className="text-sm lg:text-2xl font-bold tracking-tight text-foreground group-hover:text-primary transition-colors mb-0 lg:mb-2 leading-tight truncate">
                   {c.name}
                 </h3>
-                <p className="text-[10px] font-bold text-muted-foreground tracking-[0.2em] opacity-40 truncate">
-                  {c.contractEntity || '法人契約なし / no contract entity'}
+                <p className="text-[7px] lg:text-[10px] font-bold text-muted-foreground tracking-[0.2em] opacity-40 truncate">
+                  {c.contractEntity || '法人契約なし'}
                 </p>
               </div>
 
-              <div className="flex items-center gap-10 px-10 border-x border-border/50 shrink-0">
+              <div className="flex flex-row lg:flex-row items-center gap-2 lg:gap-10 px-0 lg:px-10 border-t lg:border-t-0 lg:border-x border-border/50 shrink-0 w-full lg:w-auto pt-2 lg:pt-0 justify-between lg:justify-start">
                 {c.genre === 'HP制作' || c.genre === 'SNS運用' ? (
                   <>
-                    <div className="flex flex-col text-center min-w-[120px]">
-                      <span className="text-[9px] font-bold text-muted-foreground uppercase tracking-widest opacity-40 mb-1">GROSS / 保守料</span>
-                      <span className="text-xl font-bold tracking-tight text-foreground">¥{(c.finance?.maintenanceFee || 0).toLocaleString()}</span>
+                    <div className="flex flex-col text-left lg:text-center min-w-0 lg:min-w-[120px]">
+                      <span className="text-[6px] lg:text-[9px] font-bold text-muted-foreground uppercase tracking-widest opacity-40 mb-0.5 lg:mb-1">GROSS / 保守</span>
+                      <span className="text-xs lg:text-xl font-bold tracking-tight text-foreground">¥{(c.finance?.maintenanceFee || 0).toLocaleString()}</span>
                     </div>
-                    <div className="flex flex-col text-center min-w-[120px]">
-                      <span className="text-[9px] font-bold text-muted-foreground uppercase tracking-widest opacity-40 mb-1">NET (40%) / 手取り額</span>
-                      <span className="text-xl font-bold tracking-tight text-emerald-500">¥{Math.floor((c.finance?.maintenanceFee || 0) * 0.4).toLocaleString()}</span>
+                    <div className="flex flex-col text-right lg:text-center min-w-0 lg:min-w-[120px]">
+                      <span className="text-[6px] lg:text-[9px] font-bold text-muted-foreground uppercase tracking-widest opacity-40 mb-0.5 lg:mb-1">NET (40%)</span>
+                      <span className="text-xs lg:text-xl font-bold tracking-tight text-emerald-500">¥{Math.floor((c.finance?.maintenanceFee || 0) * 0.4).toLocaleString()}</span>
                     </div>
                   </>
                 ) : (
                   <>
-                    <div className="flex flex-col text-center min-w-[120px]">
-                      <span className="text-[9px] font-bold text-muted-foreground uppercase tracking-widest opacity-40 mb-1">SPOT TOTAL / 案件総額</span>
-                      <span className="text-xl font-bold tracking-tight text-foreground">¥{(c.finance?.spotFee || 0).toLocaleString()}</span>
+                    <div className="flex flex-col text-left lg:text-center min-w-0 lg:min-w-[120px]">
+                      <span className="text-[6px] lg:text-[9px] font-bold text-muted-foreground uppercase tracking-widest opacity-40 mb-0.5 lg:mb-1">SPOT TOTAL</span>
+                      <span className="text-xs lg:text-xl font-bold tracking-tight text-foreground">¥{(c.finance?.spotFee || 0).toLocaleString()}</span>
                     </div>
-                    <div className="flex flex-col text-center min-w-[120px]">
-                      <span className="text-[9px] font-bold text-muted-foreground uppercase tracking-widest opacity-40 mb-1">NET ({c.finance?.spotRate ?? 40}%) / 手取り額</span>
-                      <span className="text-xl font-bold tracking-tight text-emerald-500">¥{Math.floor((c.finance?.spotFee || 0) * ((c.finance?.spotRate ?? 40) / 100)).toLocaleString()}</span>
+                    <div className="flex flex-col text-right lg:text-center min-w-0 lg:min-w-[120px]">
+                      <span className="text-[6px] lg:text-[9px] font-bold text-muted-foreground uppercase tracking-widest opacity-40 mb-0.5 lg:mb-1">NET ({c.finance?.spotRate ?? 40}%)</span>
+                      <span className="text-xs lg:text-xl font-bold tracking-tight text-emerald-500">¥{Math.floor((c.finance?.spotFee || 0) * ((c.finance?.spotRate ?? 40) / 100)).toLocaleString()}</span>
                     </div>
                   </>
                 )}
               </div>
 
-              <div className="flex items-center gap-3 shrink-0 lg:ml-auto pointer-events-auto relative z-10">
+              <div className="flex lg:flex items-center gap-1 lg:gap-3 shrink-0 lg:ml-auto pointer-events-auto absolute lg:relative right-2 top-2 lg:right-auto lg:top-auto z-10 bg-card/80 lg:bg-transparent p-1 lg:p-0 rounded-md backdrop-blur-md lg:backdrop-blur-none">
                 <Button 
                   variant="ghost" 
                   size="icon" 
@@ -126,12 +126,12 @@ function CasesViewContent() {
                     toggleStatus(c.id, c.status);
                   }}
                   className={cn(
-                    "h-10 w-10 rounded-md transition-all border border-transparent hover:border-border",
+                    "h-6 w-6 lg:h-10 lg:w-10 rounded-md transition-all border border-transparent hover:border-border",
                     c.status === 'active' ? "text-emerald-500 hover:bg-emerald-500/10" : "text-blue-500 hover:bg-blue-500/10"
                   )}
                   title={c.status === 'active' ? "完了にする" : "進行中に戻す"}
                 >
-                  {c.status === 'active' ? <CheckCircle2 className="w-5 h-5" /> : <RefreshCw className="w-5 h-5" />}
+                  {c.status === 'active' ? <CheckCircle2 className="w-3 h-3 lg:w-5 lg:h-5" /> : <RefreshCw className="w-3 h-3 lg:w-5 lg:h-5" />}
                 </Button>
                 <Button 
                   variant="ghost" 
@@ -140,11 +140,11 @@ function CasesViewContent() {
                     e.stopPropagation();
                     if(confirm('案件を削除しますか？')) deleteCase(c.id);
                   }}
-                  className="h-10 w-10 rounded-md text-muted-foreground hover:text-destructive hover:bg-destructive/10 transition-all"
+                  className="h-6 w-6 lg:h-10 lg:w-10 rounded-md text-muted-foreground hover:text-destructive hover:bg-destructive/10 transition-all"
                 >
-                  <Trash2 className="w-5 h-5" />
+                  <Trash2 className="w-3 h-3 lg:w-5 lg:h-5" />
                 </Button>
-                <div className="bg-secondary p-2 rounded-md group-hover:bg-primary/10 transition-all">
+                <div className="hidden lg:block bg-secondary p-2 rounded-md group-hover:bg-primary/10 transition-all ml-1">
                   <ChevronRight className="w-5 h-5 text-muted-foreground group-hover:text-primary transition-all group-hover:translate-x-1" />
                 </div>
               </div>
