@@ -93,7 +93,10 @@
     @apply border-border outline-ring/50;
   }
   body {
-    @apply bg-background text-foreground min-h-screen overflow-x-hidden font-sans antialiased tracking-tight;
+    @apply bg-background text-foreground font-sans antialiased tracking-tight;
+    height: 100dvh;
+    width: 100vw;
+    overflow: hidden;
     padding-top: env(safe-area-inset-top);
     padding-bottom: env(safe-area-inset-bottom);
     padding-left: env(safe-area-inset-left);

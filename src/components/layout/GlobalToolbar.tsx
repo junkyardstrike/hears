@@ -37,7 +37,7 @@ export function GlobalToolbar() {
   };
 
   return (
-    <header className="h-16 lg:h-20 bg-background border-b border-border sticky top-0 z-40 px-4 lg:px-8 flex items-center justify-between font-sans">
+    <header className="h-16 lg:h-20 shrink-0 bg-background border-b border-border z-40 px-4 lg:px-8 flex items-center justify-between font-sans">
       {/* Left: Page Title */}
       <div className="flex items-center gap-2 lg:gap-6 min-w-0">
         <div className="lg:hidden">

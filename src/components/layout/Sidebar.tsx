@@ -32,7 +32,7 @@ export function Sidebar({ isMobile = false }: { isMobile?: boolean }) {
 
   return (
     <aside className={cn(
-      "flex flex-col w-72 bg-[var(--sidebar-bg)] text-[var(--sidebar-fg)] h-screen sticky top-0 z-50 border-r border-border font-sans tracking-tight",
+      "flex flex-col w-72 bg-[var(--sidebar-bg)] text-[var(--sidebar-fg)] h-full z-50 border-r border-border font-sans tracking-tight",
       !isMobile && "hidden lg:flex"
     )}>
       {/* Branding */}
