@@ -1274,13 +1274,12 @@ export default function TemplePage() {
                         </div>
                       </div>
                     </div>
+                    <div className="pt-2">
+                      <div className="text-[10px] font-black text-primary bg-primary/5 px-2 py-1 rounded inline-block">
+                        累計 ¥{(th.min/10000).toFixed(0)}万
+                      </div>
                     </div>
-                   </div>
-                   <div className="pt-2">
-                     <div className="text-[10px] font-black text-primary bg-primary/5 px-2 py-1 rounded inline-block">
-                       累計 ¥{(th.min/10000).toFixed(0)}万
-                     </div>
-                   </div>
+                  </div>
                 </div>
               </div>
             ))}
