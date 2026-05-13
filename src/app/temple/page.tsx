@@ -1042,7 +1042,10 @@ export default function TemplePage() {
                   
                   <div className="flex justify-between items-end">
                     <div className="text-base font-bold">{stats.count} <span className="text-[10px]">件</span></div>
-                    <div className="text-xl font-black tracking-tight">¥{stats.revenue.toLocaleString()}</div>
+                    <div className="flex flex-col items-end">
+                      <span className="text-[7px] font-black text-muted-foreground mb-0.5">(保守累計獲得額 + 制作・スポット累計)</span>
+                      <div className="text-xl font-black tracking-tight">¥{stats.revenue.toLocaleString()}</div>
+                    </div>
                   </div>
 
                   <div className="bg-secondary/30 rounded-md p-4 space-y-4">
