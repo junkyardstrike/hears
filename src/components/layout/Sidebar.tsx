@@ -5,7 +5,7 @@ import { usePathname } from 'next/navigation';
 import { 
   LayoutDashboard, ClipboardList, Briefcase, 
   BarChart3, ListTodo, Settings, Lock,
-  TrendingUp, Wallet, ShieldCheck, ChevronRight
+  TrendingUp, Wallet, ShieldCheck, ChevronRight, Crown
 } from 'lucide-react';
 import { useHearsStore } from '@/store/useHearsStore';
 import { cn } from '@/lib/utils';
@@ -21,11 +21,13 @@ const PixelBot = () => (
   </div>
 );
 
+
 const menuItems = [
   { label: 'DASHBOARD', jpLabel: '取引先・案件管理', icon: LayoutDashboard, href: '/', color: 'text-white' },
   { label: 'HEARING', jpLabel: 'ヒアリング管理', icon: ClipboardList, href: '/hearing', color: 'text-white' },
   { label: 'CASES', jpLabel: '案件管理', icon: Briefcase, href: '/cases', color: 'text-white' },
   { label: 'FINANCE', jpLabel: '収益分析', icon: BarChart3, href: '/finance', color: 'text-white' },
+  { label: 'TEMPLE', jpLabel: 'ステータス・神殿', icon: Crown, href: '/temple', color: 'text-white' },
   { label: 'TASKS', jpLabel: '全体タスク', icon: ListTodo, href: '/todo', color: 'text-white' },
 ];
 
