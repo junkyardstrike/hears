@@ -186,14 +186,14 @@ export default function ClientsDashboard() {
                         </div>
                         <div className="flex flex-row items-center justify-between lg:justify-start gap-6 border-t lg:border-t-0 lg:border-x border-border/50 shrink-0 w-full lg:w-auto pt-4 lg:pt-0 lg:px-8">
                            <div className="flex flex-col text-left">
-                              <span className="text-[8px] font-bold text-muted-foreground uppercase tracking-widest opacity-40 mb-1">CASES</span>
+                              <span className="text-[8px] font-bold text-muted-foreground uppercase tracking-widest opacity-40 mb-1">CASES / 案件数</span>
                               <span className="text-lg font-bold italic tracking-tighter text-primary font-[family-name:var(--font-outfit)]">
                                 {c.clientCases.length}
                               </span>
                            </div>
                            <div className="w-px h-8 bg-border/50" />
                            <div className="flex flex-col text-right lg:text-left">
-                              <span className="text-[8px] font-bold text-muted-foreground uppercase tracking-widest opacity-40 mb-1">TOTAL REVENUE (GROSS)</span>
+                              <span className="text-[8px] font-bold text-muted-foreground uppercase tracking-widest opacity-40 mb-1">TOTAL REVENUE (GROSS) / 累計総売上</span>
                               <span className="text-lg font-bold tracking-tight text-foreground">
                                 ¥{c.clientTotalGross.toLocaleString()}
                               </span>
@@ -257,11 +257,11 @@ export default function ClientsDashboard() {
                       
                       <div className="flex-1 bg-card border border-border p-5 rounded-md flex flex-col justify-center gap-4">
                         <div className="flex items-center justify-between">
-                          <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">CUMULATIVE MAINTENANCE</span>
+                          <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">CUMULATIVE MAINTENANCE / 保守累計</span>
                           <span className="text-lg font-bold tracking-tight text-emerald-500">¥{c.clientTotalStock.toLocaleString()}</span>
                         </div>
                         <div className="flex items-center justify-between">
-                          <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">PRODUCTION / SPOT TOTAL</span>
+                          <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">PRODUCTION / SPOT TOTAL / 制作・スポット合計</span>
                           <span className="text-lg font-bold tracking-tight text-blue-500">¥{c.clientTotalShot.toLocaleString()}</span>
                         </div>
                       </div>
@@ -269,7 +269,7 @@ export default function ClientsDashboard() {
 
                     <div className="flex items-center justify-between mb-6">
                       <h4 className="text-sm font-bold italic tracking-tighter text-foreground flex items-center gap-2 font-[family-name:var(--font-outfit)] uppercase">
-                        <Briefcase className="w-5 h-5 text-primary" /> ASSOCIATED CASES
+                        <Briefcase className="w-5 h-5 text-primary" /> ASSOCIATED CASES / 紐付けられた案件
                       </h4>
                     </div>
                     {c.clientCases.length === 0 ? (
