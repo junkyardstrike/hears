@@ -395,17 +395,17 @@ const HERO_TITLE_DEFS: TitleCondition[] = [
   { id: 'hero_zenith', name: '一億の神話', description: '勇者系統累計売上 1 億円達成', category: '勇者の矜持' },
 ];
 
-// Evolution Avatar Component (Crops from spritesheet)
+// Evolution Avatar Component (Crops from black-background spritesheet)
 const EvolutionAvatar = ({ type, tier, size = 64, className }: { type: ClassType, tier: number, size?: number, className?: string }) => {
   const images = {
-    mage: '/assets/avatars/mage_evo.png',
-    merchant: '/assets/avatars/merchant_evo.png',
-    hero: '/assets/avatars/hero_evo.png'
+    mage: '/assets/avatars/mage_evo_b.png',
+    merchant: '/assets/avatars/merchant_evo_b.png',
+    hero: '/assets/avatars/hero_evo_b.png'
   };
   
   return (
-    <div className={cn("relative overflow-hidden", className)} style={{ width: size, height: size }}>
-      <div className="w-[500%] h-full relative" style={{ left: `-${(tier-1)*100}%`, filter: 'url(#remove-white)' }}>
+    <div className={cn("relative overflow-hidden shrink-0", className)} style={{ width: size, height: size }}>
+      <div className="w-[500%] h-full relative" style={{ left: `-${(tier-1)*100}%`, mixBlendMode: 'screen' }}>
         <img 
           src={images[type]} 
           alt={`${type} tier ${tier}`}
@@ -1037,25 +1037,35 @@ export default function TemplePage() {
                   </div>
                 </div>
 
-                {/* Chart */}
                 <div className="pt-4 border-t border-border">
-                  <span className="text-[9px] font-bold text-muted-foreground uppercase tracking-widest block mb-4">ANNUAL REVENUE TREND (年間収益推移)</span>
-                  <div className="h-[140px] w-full">
-                    <ResponsiveContainer width="100%" height="100%">
-                      <AreaChart data={stats.chartData} margin={{ top: 20, right: 0, left: 0, bottom: 0 }}>
-                        <defs>
-                          <linearGradient id={`gradient-${type}`} x1="0" y1="0" x2="0" y2="1">
-                            <stop offset="5%" stopColor={info.fillColor} stopOpacity={0.3}/>
-                            <stop offset="95%" stopColor={info.fillColor} stopOpacity={0}/>
-                          </linearGradient>
-                        </defs>
-                        <XAxis dataKey="month" axisLine={false} tickLine={false} tick={{fontSize: 8, fontWeight: 'bold', fill: '#94a3b8'}} />
-                        <Tooltip cursor={{stroke: info.fillColor, strokeWidth: 1}} contentStyle={{ borderRadius: '8px', border: '1px solid var(--border)', background: 'var(--card)', color: 'var(--foreground)', fontSize: '10px', fontWeight: 'bold' }} formatter={(v: any) => `¥${v.toLocaleString()}`} />
-                        <Area type="monotone" dataKey="value" stroke={info.fillColor} strokeWidth={2} fillOpacity={1} fill={`url(#gradient-${type})`}>
-                          <LabelList dataKey="value" position="top" formatter={(v: any) => v > 0 ? `¥${(v/10000).toFixed(0)}万` : ''} style={{ fontSize: '7px', fontWeight: 'bold', fill: '#94a3b8' }} />
-                        </Area>
-                      </AreaChart>
-                    </ResponsiveContainer>
+                  <div className="flex items-center justify-between mb-4">
+                    <span className="text-[9px] font-bold text-muted-foreground uppercase tracking-widest block">REVENUE TREND (全期間収益推移)</span>
+                    <span className="text-[8px] font-black text-primary uppercase bg-primary/10 px-2 py-0.5 rounded border border-primary/20">All Periods</span>
+                  </div>
+                  <div className="h-[140px] w-full overflow-x-auto custom-scrollbar">
+                    <div style={{ width: Math.max(100, stats.chartData.length * 8) + '%' }}>
+                      <ResponsiveContainer width="100%" height="100%">
+                        <AreaChart data={stats.chartData} margin={{ top: 20, right: 10, left: 0, bottom: 0 }}>
+                          <defs>
+                            <linearGradient id={`gradient-${type}`} x1="0" y1="0" x2="0" y2="1">
+                              <stop offset="5%" stopColor={info.fillColor} stopOpacity={0.3}/>
+                              <stop offset="95%" stopColor={info.fillColor} stopOpacity={0}/>
+                            </linearGradient>
+                          </defs>
+                          <XAxis 
+                            dataKey="month" 
+                            axisLine={false} 
+                            tickLine={false} 
+                            tick={{fontSize: 7, fontWeight: 'bold', fill: '#94a3b8'}} 
+                            interval={stats.chartData.length > 24 ? 2 : 0}
+                          />
+                          <Tooltip cursor={{stroke: info.fillColor, strokeWidth: 1}} contentStyle={{ borderRadius: '8px', border: '1px solid var(--border)', background: 'var(--card)', color: 'var(--foreground)', fontSize: '10px', fontWeight: 'bold' }} formatter={(v: any) => `¥${v.toLocaleString()}`} />
+                          <Area type="monotone" dataKey="value" stroke={info.fillColor} strokeWidth={2} fillOpacity={1} fill={`url(#gradient-${type})`}>
+                            <LabelList dataKey="value" position="top" formatter={(v: any) => v > 50000 ? `¥${(v/10000).toFixed(0)}万` : ''} style={{ fontSize: '7px', fontWeight: 'bold', fill: '#94a3b8' }} />
+                          </Area>
+                        </AreaChart>
+                      </ResponsiveContainer>
+                    </div>
                   </div>
                 </div>
 
@@ -1157,11 +1167,14 @@ export default function TemplePage() {
               <div key={th.tier} className="bg-secondary/20 rounded-md p-4 border border-border relative overflow-hidden group">
                 <div className="absolute top-2 right-2 text-3xl font-black opacity-5 group-hover:opacity-10 transition-opacity">T{th.tier}</div>
                 <div className="flex flex-col gap-3 relative z-10">
-                   <div className="w-16 h-16 bg-background/40 backdrop-blur-sm rounded-md flex items-center justify-center border border-border/50 shadow-inner group-hover:border-primary/30 transition-all overflow-hidden p-1">
-                      <div className="flex gap-1 items-center">
-                         <EvolutionAvatar type="mage" tier={th.tier} size={18} className="opacity-80 group-hover:opacity-100 transition-opacity" />
-                         <EvolutionAvatar type="merchant" tier={th.tier} size={18} className="opacity-80 group-hover:opacity-100 transition-opacity" />
-                         <EvolutionAvatar type="hero" tier={th.tier} size={18} className="opacity-80 group-hover:opacity-100 transition-opacity" />
+                   <div className="flex items-center gap-4 relative z-10">
+                      <div className="w-12 h-12 bg-background rounded-md flex items-center justify-center border border-border shadow-sm shrink-0">
+                         <Image src={th.image} alt={th.title} width={32} height={32} className="object-contain" style={{ imageRendering: 'pixelated' }} />
+                      </div>
+                      <div className="flex gap-0.5 items-center">
+                         <EvolutionAvatar type="mage" tier={th.tier} size={32} className="hover:scale-110 transition-transform" />
+                         <EvolutionAvatar type="merchant" tier={th.tier} size={32} className="hover:scale-110 transition-transform" />
+                         <EvolutionAvatar type="hero" tier={th.tier} size={32} className="hover:scale-110 transition-transform" />
                       </div>
                    </div>
                    <div>
@@ -1331,13 +1344,6 @@ export default function TemplePage() {
           </div>
         </div>
       </Card>
-      {/* SVG Filters for Transparency */}
-      <svg className="hidden">
-        <filter id="remove-white">
-          {/* Converts white (255,255,255) to transparent */}
-          <feColorMatrix type="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  -1 -1 -1 1 1" />
-        </filter>
-      </svg>
     </div>
   );
 }
