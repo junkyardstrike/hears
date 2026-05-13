@@ -163,49 +163,51 @@ function CasesViewContent() {
 
   return (
     <div className="space-y-10 animate-in fade-in slide-in-from-bottom-4 duration-700 font-sans pb-10">
-      <div className="flex flex-col xl:flex-row justify-between items-start xl:items-center gap-8 bg-card p-6 lg:p-8 rounded-lg border border-border">
-        <div className="flex-1 min-w-0">
-          <h2 className="text-3xl font-bold tracking-tight text-foreground flex items-center gap-4 uppercase mb-1">
-            <Briefcase className="w-8 h-8 text-primary" /> Case Repository
-          </h2>
-          <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-[0.2em] opacity-40 ml-14 mb-6">案件管理リポジトリ ・ プロジェクト一括管理</p>
-          
-          <div className="flex flex-wrap items-center gap-x-10 gap-y-4 ml-14">
-            <div className="flex flex-col">
-              <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest opacity-40">TOTAL CASES / 全案件数</span>
-              <span className="text-2xl font-bold tracking-tight">{cases.length}</span>
+      <div className="flex flex-col gap-5 bg-card p-5 lg:p-6 rounded-lg border border-border">
+        <div className="flex flex-col xl:flex-row justify-between items-start xl:items-center gap-4">
+          <div className="min-w-0">
+            <h2 className="text-2xl lg:text-3xl font-bold tracking-tight text-foreground flex items-center gap-3 lg:gap-4 uppercase mb-1">
+              <Briefcase className="w-6 h-6 lg:w-8 lg:h-8 text-primary" /> Case Repository
+            </h2>
+            <p className="text-[9px] lg:text-[10px] font-bold text-muted-foreground uppercase tracking-[0.2em] opacity-40 ml-9 lg:ml-12">案件管理リポジトリ ・ プロジェクト一括管理</p>
+          </div>
+
+          <div className="flex flex-col sm:flex-row gap-3 w-full xl:w-auto shrink-0">
+            <div className="relative flex-1 sm:w-80">
+              <Search className="absolute left-3 lg:left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground opacity-30" />
+              <Input 
+                placeholder="案件名・法人名で検索... / SEARCH" 
+                className="h-12 lg:h-14 bg-input border border-border rounded-md pl-10 lg:pl-12 font-bold text-[10px] lg:text-xs focus-visible:ring-1 focus-visible:ring-primary"
+              />
             </div>
-            <div className="w-px h-6 bg-border hidden sm:block" />
-            <div className="flex flex-col">
-              <span className="text-[10px] font-bold text-emerald-500 uppercase tracking-widest opacity-60">ACTIVE / 進行中</span>
-              <span className="text-2xl font-bold tracking-tight text-emerald-500">{cases.filter(c => c.status === 'active').length}</span>
-            </div>
-            <div className="w-px h-6 bg-border hidden sm:block" />
-            <div className="flex flex-col">
-              <span className="text-[10px] font-bold text-blue-500 uppercase tracking-widest opacity-60">COMPLETED / 完了済</span>
-              <span className="text-2xl font-bold tracking-tight text-blue-500">{cases.filter(c => c.status === 'completed').length}</span>
-            </div>
+            <Button 
+              onClick={handleCreate} 
+              className="h-12 lg:h-14 px-6 lg:px-8 bg-primary hover:brightness-110 text-primary-foreground font-bold tracking-tight rounded-md transition-all active:scale-95 shrink-0 flex items-center gap-2 lg:gap-3"
+            >
+              <Plus className="w-5 h-5 lg:w-7 lg:h-7" />
+              <span className="text-base uppercase tracking-widest flex flex-col items-start leading-none">
+                <span className="text-[10px] lg:text-[11px] font-black">NEW CASE</span>
+                <span className="text-[7px] lg:text-[8px] font-bold opacity-60 mt-1">新規案件を作成</span>
+              </span>
+            </Button>
           </div>
         </div>
 
-        <div className="flex flex-col sm:flex-row gap-4 w-full xl:w-auto shrink-0">
-          <div className="relative flex-1 sm:w-80">
-            <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground opacity-30" />
-            <Input 
-              placeholder="案件名・法人名で検索... / SEARCH" 
-              className="h-14 bg-input border border-border rounded-md pl-12 font-bold text-xs focus-visible:ring-1 focus-visible:ring-primary"
-            />
+        <div className="flex items-center gap-4 lg:gap-8 border-t border-border/50 pt-4 px-1 lg:px-2">
+          <div className="flex flex-col">
+            <span className="text-[8px] lg:text-[9px] font-bold text-muted-foreground uppercase tracking-widest opacity-40">TOTAL CASES / 全案件数</span>
+            <span className="text-lg lg:text-xl font-bold tracking-tight">{cases.length}</span>
           </div>
-          <Button 
-            onClick={handleCreate} 
-            className="h-14 px-8 bg-primary hover:brightness-110 text-primary-foreground font-bold tracking-tight rounded-md transition-all active:scale-95 shrink-0 flex items-center gap-3"
-          >
-            <Plus className="w-7 h-7" />
-            <span className="text-base uppercase tracking-widest flex flex-col items-start leading-none">
-              <span className="text-[11px] font-black">NEW CASE</span>
-              <span className="text-[8px] font-bold opacity-60 mt-1">新規案件を作成</span>
-            </span>
-          </Button>
+          <div className="w-px h-5 lg:h-6 bg-border" />
+          <div className="flex flex-col">
+            <span className="text-[8px] lg:text-[9px] font-bold text-emerald-500 uppercase tracking-widest opacity-60">ACTIVE / 進行中</span>
+            <span className="text-lg lg:text-xl font-bold tracking-tight text-emerald-500">{cases.filter(c => c.status === 'active').length}</span>
+          </div>
+          <div className="w-px h-5 lg:h-6 bg-border" />
+          <div className="flex flex-col">
+            <span className="text-[8px] lg:text-[9px] font-bold text-blue-500 uppercase tracking-widest opacity-60">COMPLETED / 完了済</span>
+            <span className="text-lg lg:text-xl font-bold tracking-tight text-blue-500">{cases.filter(c => c.status === 'completed').length}</span>
+          </div>
         </div>
       </div>
 

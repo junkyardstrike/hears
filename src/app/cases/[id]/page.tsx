@@ -26,6 +26,27 @@ import {
 import { useRouter } from 'next/navigation';
 import { cn } from '@/lib/utils';
 
+const MonthPicker = ({ value, onChange, placeholder = "月を選択" }: { value: string, onChange: (val: string) => void, placeholder?: string }) => {
+  const years = [2024, 2025, 2026, 2027, 2028, 2029, 2030];
+  const months = Array.from({ length: 12 }, (_, i) => i + 1);
+  const options = years.flatMap(y => months.map(m => `${y}-${m.toString().padStart(2, '0')}`));
+  
+  return (
+    <Select value={value || "none"} onValueChange={(val) => onChange(val === "none" ? "" : val)}>
+      <SelectTrigger className="h-12 bg-input border border-border rounded-md font-bold text-base px-4 focus:ring-1 focus:ring-primary">
+        <SelectValue placeholder={placeholder} />
+      </SelectTrigger>
+      <SelectContent className="max-h-[300px] rounded-md border-border bg-popover custom-scrollbar">
+        <SelectItem value="none" className="font-bold py-2 text-muted-foreground">未設定</SelectItem>
+        {options.map(opt => {
+          const [y, m] = opt.split('-');
+          return <SelectItem key={opt} value={opt} className="font-bold py-2">{`${y}年 ${parseInt(m)}月`}</SelectItem>;
+        })}
+      </SelectContent>
+    </Select>
+  );
+};
+
 export default function CaseDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = use(params);
   const router = useRouter();
@@ -279,7 +300,7 @@ export default function CaseDetailPage({ params }: { params: Promise<{ id: strin
                     </div>
                     <div className="space-y-2">
                       <label className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest ml-1">REVENUE START / 収益開始月</label>
-                      <Input type="month" value={c.finance?.revenueStartMonth || ''} onChange={(e) => updateFinance('revenueStartMonth', e.target.value)} className="h-12 bg-input border border-border rounded-md font-bold text-base px-4 focus-visible:ring-1 focus-visible:ring-primary" />
+                      <MonthPicker value={c.finance?.revenueStartMonth || ''} onChange={(val) => updateFinance('revenueStartMonth', val)} />
                     </div>
                   </div>
 
@@ -323,7 +344,7 @@ export default function CaseDetailPage({ params }: { params: Promise<{ id: strin
                           </div>
                           <div className="space-y-2">
                             <label className="text-[10px] font-bold text-amber-500 uppercase tracking-widest ml-1 flex items-center gap-2"><CalendarDays className="w-3 h-3" /> PAYMENT MONTH / 計上月</label>
-                            <Input type="month" value={c.finance?.oneTimeFeeMonth || ''} onChange={(e) => updateFinance('oneTimeFeeMonth', e.target.value)} className="h-12 bg-input border border-border focus-visible:border-amber-500/50 rounded-md font-bold text-base px-4 text-amber-500 focus-visible:ring-1 focus-visible:ring-amber-500" />
+                            <MonthPicker value={c.finance?.oneTimeFeeMonth || ''} onChange={(val) => updateFinance('oneTimeFeeMonth', val)} placeholder="未設定" />
                           </div>
                         </div>
                       </div>
@@ -356,7 +377,7 @@ export default function CaseDetailPage({ params }: { params: Promise<{ id: strin
                       </div>
                       <div className="space-y-2">
                         <label className="text-[10px] font-bold text-amber-500 uppercase tracking-widest ml-1 flex items-center gap-2"><CalendarDays className="w-3 h-3" /> PAYMENT MONTH / 計上月 (上書き用)</label>
-                        <Input type="month" value={c.finance?.spotMonth || ''} onChange={(e) => updateFinance('spotMonth', e.target.value)} className="h-12 bg-input border border-border focus-visible:border-amber-500/50 rounded-md font-bold text-base px-4 text-amber-500 focus-visible:ring-1 focus-visible:ring-amber-500" />
+                        <MonthPicker value={c.finance?.spotMonth || ''} onChange={(val) => updateFinance('spotMonth', val)} placeholder="未設定" />
                         <p className="text-[9px] font-medium text-muted-foreground opacity-60 uppercase tracking-widest ml-1">※ 未入力の場合は「収益開始月」に計上されます</p>
                       </div>
                     </div>
