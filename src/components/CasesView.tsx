@@ -94,13 +94,21 @@ function CasesViewContent() {
               <div className="flex flex-row lg:flex-row items-center gap-2 lg:gap-10 px-0 lg:px-10 border-t lg:border-t-0 lg:border-x border-border/50 shrink-0 w-full lg:w-auto pt-2 lg:pt-0 justify-between lg:justify-start">
                 {c.genre === 'HP制作' || c.genre === 'SNS運用' ? (
                   <>
-                    <div className="flex flex-col text-left lg:text-center min-w-0 lg:min-w-[120px]">
-                      <span className="text-[6px] lg:text-[9px] font-bold text-muted-foreground uppercase tracking-widest opacity-40 mb-0.5 lg:mb-1">GROSS / 保守</span>
-                      <span className="text-xs lg:text-xl font-bold tracking-tight text-foreground">¥{(c.finance?.maintenanceFee || 0).toLocaleString()}</span>
+                    <div className="flex flex-col text-left lg:text-center min-w-0 lg:min-w-[90px]">
+                      <span className="text-[6px] lg:text-[9px] font-bold text-muted-foreground uppercase tracking-widest opacity-40 mb-0.5 lg:mb-1">保守 GROSS</span>
+                      <span className="text-[10px] lg:text-xl font-bold tracking-tight text-foreground">¥{(c.finance?.maintenanceFee || 0).toLocaleString()}</span>
                     </div>
-                    <div className="flex flex-col text-right lg:text-center min-w-0 lg:min-w-[120px]">
-                      <span className="text-[6px] lg:text-[9px] font-bold text-muted-foreground uppercase tracking-widest opacity-40 mb-0.5 lg:mb-1">NET (40%)</span>
-                      <span className="text-xs lg:text-xl font-bold tracking-tight text-emerald-500">¥{Math.floor((c.finance?.maintenanceFee || 0) * 0.4).toLocaleString()}</span>
+                    <div className="flex flex-col text-center min-w-0 lg:min-w-[90px]">
+                      <span className="text-[6px] lg:text-[9px] font-bold text-muted-foreground uppercase tracking-widest opacity-40 mb-0.5 lg:mb-1">保守手取 (40%)</span>
+                      <span className="text-[10px] lg:text-xl font-bold tracking-tight text-emerald-500">¥{Math.floor((c.finance?.maintenanceFee || 0) * 0.4).toLocaleString()}</span>
+                    </div>
+                    <div className="flex flex-col text-center min-w-0 lg:min-w-[90px] border-l border-border/50 pl-2 lg:pl-6">
+                      <span className="text-[6px] lg:text-[9px] font-bold text-muted-foreground uppercase tracking-widest opacity-40 mb-0.5 lg:mb-1">制作 GROSS</span>
+                      <span className="text-[10px] lg:text-xl font-bold tracking-tight text-foreground">¥{(c.finance?.oneTimeFee || 0).toLocaleString()}</span>
+                    </div>
+                    <div className="flex flex-col text-right lg:text-center min-w-0 lg:min-w-[90px]">
+                      <span className="text-[6px] lg:text-[9px] font-bold text-muted-foreground uppercase tracking-widest opacity-40 mb-0.5 lg:mb-1">制作手取</span>
+                      <span className="text-[10px] lg:text-xl font-bold tracking-tight text-emerald-500">¥{(c.finance?.oneTimeFeeTakeHome ?? Math.floor((c.finance?.oneTimeFee || 0) * 0.4)).toLocaleString()}</span>
                     </div>
                   </>
                 ) : (
