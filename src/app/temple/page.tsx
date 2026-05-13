@@ -1245,27 +1245,32 @@ export default function TemplePage() {
                            <Image src={th.image} alt={th.title} width={32} height={32} className="object-contain" style={{ imageRendering: 'pixelated' }} />
                         </div>
                       </div>
-                      <div className="text-[10px] font-black text-primary bg-primary/5 px-2 py-0.5 rounded border border-primary/10">TIER {th.tier}</div>
                    </div>
-                   <div>
-                     <div className="text-[10px] font-black text-primary uppercase">Lv.{th.level}</div>
-                     <div className="text-xs font-black truncate">{th.title}</div>
-                     <div className="text-[9px] font-bold text-muted-foreground mt-1">
+                   <div className="space-y-1 mt-1">
+                     <div className="text-[10px] font-black text-muted-foreground uppercase tracking-tighter opacity-50">Lv.{th.level}</div>
+                     <div className="text-sm font-black leading-tight text-foreground">{th.title}</div>
+                     <div className="text-[10px] font-bold text-muted-foreground">(第 {th.tier} 階層)</div>
+                   </div>
+                   <div className="space-y-3 pt-3 border-t border-border/30">
+                     <div className="space-y-1">
+                       <div className="text-[9px] font-black text-emerald-500 uppercase opacity-60">Web / SNS 開発</div>
+                       <div className="text-xs font-black text-foreground">{th.jobs.mage}</div>
+                       <div className="text-[8px] font-bold text-muted-foreground opacity-40">({th.tier}次職)</div>
+                     </div>
+                     <div className="space-y-1">
+                       <div className="text-[9px] font-black text-amber-500 uppercase opacity-60">SiGMARK</div>
+                       <div className="text-xs font-black text-foreground">{th.jobs.merchant}</div>
+                       <div className="text-[8px] font-bold text-muted-foreground opacity-40">({th.tier}次職)</div>
+                     </div>
+                     <div className="space-y-1">
+                       <div className="text-[9px] font-black text-blue-500 uppercase opacity-60">OTHER GENRES</div>
+                       <div className="text-xs font-black text-foreground">{th.jobs.hero}</div>
+                       <div className="text-[8px] font-bold text-muted-foreground opacity-40">({th.tier}次職)</div>
+                     </div>
+                   </div>
+                   <div className="pt-2">
+                     <div className="text-[10px] font-black text-primary bg-primary/5 px-2 py-1 rounded inline-block">
                        累計 ¥{(th.min/10000).toFixed(0)}万
-                     </div>
-                   </div>
-                   <div className="space-y-1">
-                     <div className="flex justify-between text-[8px] font-bold">
-                       <span className="text-emerald-500 font-black">MAGE:</span>
-                       <span className="text-foreground">{th.jobs.mage}</span>
-                     </div>
-                     <div className="flex justify-between text-[8px] font-bold">
-                       <span className="text-amber-500 font-black">MERCHANT:</span>
-                       <span className="text-foreground">{th.jobs.merchant}</span>
-                     </div>
-                     <div className="flex justify-between text-[8px] font-bold">
-                       <span className="text-blue-500 font-black">HERO:</span>
-                       <span className="text-foreground">{th.jobs.hero}</span>
                      </div>
                    </div>
                 </div>
