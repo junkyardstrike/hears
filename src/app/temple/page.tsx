@@ -97,7 +97,7 @@ const MAGE_TITLE_DEFS: TitleCondition[] = [
   { id: 'mage_rev_900k', name: '英知の入り口', description: '累計売上90万円突破', category: '累計収益' },
   { id: 'mage_rev_1m', name: '中級術師の自覚', description: '累計売上100万円突破', category: '累計収益' },
   { id: 'mage_rev_1.1m', name: '銀の杖の主', description: '累計売上110万円突破', category: '累計収益' },
-  { id: 'mage_rev_1.2m', name: '魔力結晶の精製', description: '累計売上120万円突破', category: '累計収益' },
+  { id: 'mage_rev_1.2m', name: '魔力結晶의 精製', description: '累計売上120万円突破', category: '累計収益' },
   { id: 'mage_rev_1.3m', name: '元素の理解', description: '累計売上130万円突破', category: '累計収益' },
   { id: 'mage_rev_1.4m', name: '魔導回路の拡張', description: '累計売上140万円突破', category: '累計収益' },
   { id: 'mage_rev_1.5m', name: '中堅魔導士の威厳', description: '累計売上150万円突破', category: '累計収益' },
@@ -154,7 +154,7 @@ const MAGE_TITLE_DEFS: TitleCondition[] = [
   { id: 'mage_power_1m', name: '禁忌の究極魔法', description: '1件の案件単価が100万円以上', category: '単価・瞬発力' },
   { id: 'mage_power_2m', name: '天変地異', description: '1件の案件単価が200万円以上', category: '単価・瞬発力' },
   { id: 'mage_limit_break', name: '限界突破', description: '魔法使い系統の案件単価が過去最高額を更新', category: '単価・瞬発力' },
-  { id: 'mage_pioneer', name: '魔導の開拓者', description: 'これまで扱ったことのない新しい取引先とWeb案件を完了', category: '単価・瞬発力' },
+  { id: 'mage_pioneer', name: '魔導の開を開拓者', description: 'これまで扱ったことのない新しい取引先とWeb案件を完了', category: '単価・瞬発力' },
   { id: 'mage_repeat_2', name: '契約の更新', description: '同一取引先から累計2件完了', category: 'リピート・信頼' },
   { id: 'mage_repeat_3', name: '御用達の魔導士', description: '同一取引先から累計3件完了', category: 'リピート・信頼' },
   { id: 'mage_repeat_5', name: '宮廷魔導士', description: '同一取引先から累計5件完了', category: 'リピート・信頼' },
@@ -176,6 +176,109 @@ const MAGE_TITLE_DEFS: TitleCondition[] = [
   { id: 'mage_hp_architect', name: 'HPの建築家', description: 'HP制作カテゴリの累計売上が500万円突破', category: '複合・時間' },
   { id: 'mage_hall_of_fame', name: '魔導の殿堂入り', description: '魔法使い系統の全称号の50%を獲得', category: '複合・時間' },
   { id: 'mage_zenith', name: 'アルケミストの極致', description: '魔法使い系統の累計売上が1億円に到達', category: '複合・時間' },
+];
+
+const MERCHANT_TITLE_DEFS: TitleCondition[] = [
+  { id: 'merchant_rev_1', name: '看板の掲揚', description: '商人系統で最初の1円を記録', category: '累計収益' },
+  { id: 'merchant_rev_10k', name: '露天商の第一歩', description: '累計売上1万円突破', category: '累計収益' },
+  { id: 'merchant_rev_20k', name: '商いの芽', description: '累計売上2万円突破', category: '累計収益' },
+  { id: 'merchant_rev_30k', name: '小さな利銭', description: '累計売上3万円突破', category: '累計収益' },
+  { id: 'merchant_rev_40k', name: '行商人の誇り', description: '累計売上4万円突破', category: '累計収益' },
+  { id: 'merchant_rev_50k', name: '商売の基礎', description: '累計売上5万円突破', category: '累計収益' },
+  { id: 'merchant_rev_60k', name: '駆け出し店主', description: '累計売上6万円突破', category: '累計収益' },
+  { id: 'merchant_rev_70k', name: '仕入れの極意', description: '累計売上7万円突破', category: '累計収益' },
+  { id: 'merchant_rev_80k', name: '看板娘の微笑み', description: '累計売上8万円突破', category: '累計収益' },
+  { id: 'merchant_rev_90k', name: '商店の賑わい', description: '累計売上9万円突破', category: '累計収益' },
+  { id: 'merchant_rev_100k', name: '街の商店主', description: '累計売上10万円突破', category: '累計収益' },
+  { id: 'merchant_rev_200k', name: '市場の顔役', description: '累計売上20万円突破', category: '累計収益' },
+  { id: 'merchant_rev_300k', name: '商売繁盛', description: '累計売上30万円突破', category: '累計収益' },
+  { id: 'merchant_rev_400k', name: '利益の奔流', description: '累計売上40万円突破', category: '累計収益' },
+  { id: 'merchant_rev_500k', name: '豪商の卵', description: '累計売上50万円突破', category: '累計収益' },
+  { id: 'merchant_rev_600k', name: '商才の目覚め', description: '累計売上60万円突破', category: '累計収益' },
+  { id: 'merchant_rev_700k', name: '富の呼び声', description: '累計売上70万円突破', category: '累計収益' },
+  { id: 'merchant_rev_800k', name: '流通の支配者', description: '累計売上80万円突破', category: '累計収益' },
+  { id: 'merchant_rev_900k', name: '金の匂いを知る者', description: '累計売上90万円突破', category: '累計収益' },
+  { id: 'merchant_rev_1m', name: '豪商の風格', description: '累計売上100万円突破', category: '累計収益' },
+  { id: 'merchant_rev_1.1m', name: '銀の算盤', description: '累計売上110万円突破', category: '累計収益' },
+  { id: 'merchant_rev_1.2m', name: '資産の再投資', description: '累計売上120万円突破', category: '累計収益' },
+  { id: 'merchant_rev_1.3m', name: '相場の理解', description: '累計売上130万円突破', category: '累計収益' },
+  { id: 'merchant_rev_1.4m', name: '商業網の拡張', description: '累計売上140万円突破', category: '累計収益' },
+  { id: 'merchant_rev_1.5m', name: '富豪の予感', description: '累計売上150万円突破', category: '累計収益' },
+  { id: 'merchant_rev_1.6m', name: '商談の達人', description: '累計売上160万円突破', category: '累計収益' },
+  { id: 'merchant_rev_1.7m', name: '富の集積', description: '累計売上170万円突破', category: '累計収益' },
+  { id: 'merchant_rev_1.8m', name: '不変の価値', description: '累計売上180万円突破', category: '累計収益' },
+  { id: 'merchant_rev_1.9m', name: '黄金の直感', description: '累計売上190万円突破', category: '累計収益' },
+  { id: 'merchant_rev_3m', name: '資本家の卵', description: '累計売上300万円突破', category: '累計収益' },
+  { id: 'merchant_rev_3.5m', name: '金の成る木', description: '累計売上350万円突破', category: '累計収益' },
+  { id: 'merchant_rev_4m', name: '一等地の主', description: '累計売上400万円突破', category: '累計収益' },
+  { id: 'merchant_rev_4.5m', name: '富の潮流に乗る者', description: '累計売上450万円突破', category: '累計収益' },
+  { id: 'merchant_rev_5m', name: 'ギルドマスター', description: '累計売上500万円突破', category: '累計収益' },
+  { id: 'merchant_rev_5.5m', name: '星を売る商人', description: '累計売上550万円突破', category: '累計収益' },
+  { id: 'merchant_rev_6m', name: '富の開拓者', description: '累計売上600万円突破', category: '累計収益' },
+  { id: 'merchant_rev_6.5m', name: '大富豪の資質', description: '累計売上650万円突破', category: '累計収益' },
+  { id: 'merchant_rev_7m', name: '一国の経済', description: '累計売上700万円突破', category: '累計収益' },
+  { id: 'merchant_rev_7.5m', name: '黄金の邸宅', description: '累計売上750万円突破', category: '累計収益' },
+  { id: 'merchant_rev_8m', name: '中央銀行の主', description: '累計売上800万円突破', category: '累計収益' },
+  { id: 'merchant_rev_8.5m', name: '経済の心臓', description: '累計売上850万円突破', category: '累計収益' },
+  { id: 'merchant_rev_9m', name: '古の秘宝の売り手', description: '累計売上900万円突破', category: '累計収益' },
+  { id: 'merchant_rev_9.5m', name: '富の真理の門', description: '累計売上950万円突破', category: '累計収益' },
+  { id: 'merchant_rev_10m', name: '黄金郷の主（エル・ドラド）', description: '累計売上1,000万円突破', category: '累計収益' },
+  { id: 'merchant_rev_12m', name: '世界の相場師', description: '累計売上1,200万円突破', category: '累計収益' },
+  { id: 'merchant_rev_15m', name: '資本の城塞', description: '累計売上1,500万円突破', category: '累計収益' },
+  { id: 'merchant_rev_18m', name: '不滅의 資産家', description: '累計売上1,800万円突破', category: '累計収益' },
+  { id: 'merchant_rev_20m', name: '黄金の支配力', description: '累計売上2,000万円突破', category: '累計収益' },
+  { id: 'merchant_rev_30m', name: 'マーケットの帝王', description: '累計売上3,000万円突破', category: '累計収益' },
+  { id: 'merchant_rev_50m', name: '盤上の支配者', description: '累計売上5,000万円達成', category: '累計収益' },
+  { id: 'merchant_maint_3m', name: '開店休業なし', description: '商人系統で3ヶ月連続売上', category: '保守・継続' },
+  { id: 'merchant_maint_6m', name: 'ブランドの守護者', description: '商人系統で6ヶ月連続売上', category: '保守・継続' },
+  { id: 'merchant_maint_12m', name: '不変の屋号', description: '商人系統で12ヶ月連続売上', category: '保守・継続' },
+  { id: 'merchant_maint_24m', name: '千年の暖簾', description: '商人系統で24ヶ月連続売上', category: '保守・継続' },
+  { id: 'merchant_maint_36m', name: '枯れない泉', description: '商人系統で36ヶ月連続売上', category: '保守・継続' },
+  { id: 'merchant_up_3m', name: '富の再生産', description: '売上が3ヶ月連続で前月を上回る', category: '保守・継続' },
+  { id: 'merchant_up_6m', name: 'バブルの予兆', description: '売上が6ヶ月連続で前月を上回る', category: '保守・継続' },
+  { id: 'merchant_up_12m', name: '市場の熱気', description: '売上が12ヶ月連続で前月を上回る', category: '保守・継続' },
+  { id: 'merchant_cast_2', name: '爆売りの兆し', description: '同一月に商談を2件完了', category: '月間アクション' },
+  { id: 'merchant_cast_3', name: '市場の台風', description: '同一月に商談を3件完了', category: '月間アクション' },
+  { id: 'merchant_cast_5', name: 'ブームの仕掛け人', description: '同一月に商談を5件完了', category: '月間アクション' },
+  { id: 'merchant_cast_10', name: '爆売りの豪商', description: '同一月に商談を10件完了', category: '月間アクション' },
+  { id: 'merchant_cast_20', name: '千客万来', description: '同一月に商談を20件完了', category: '月間アクション' },
+  { id: 'merchant_cast_30', name: '市場の王', description: '同一月に商談を30件完了', category: '月間アクション' },
+  { id: 'merchant_total_10', name: '商魂の火', description: '累計完了案件数10件', category: '月間アクション' },
+  { id: 'merchant_total_50', name: '商魂の業火', description: '累計完了案件数50件', category: '月間アクション' },
+  { id: 'merchant_total_100', name: '商魂の太陽', description: '累計完了案件数100件', category: '月間アクション' },
+  { id: 'merchant_gold_month', name: '黄金の月', description: '月間売上が過去最高を更新', category: '月間アクション' },
+  { id: 'merchant_gold_quarter', name: '黄金の四半期', description: '3ヶ月間の合計売上が過去最高を更新', category: '月間アクション' },
+  { id: 'merchant_repeat_2', name: 'お得意様', description: '同一顧客からの累計受注2回', category: 'リピート・信頼' },
+  { id: 'merchant_repeat_5', name: '生涯のパートナー', description: '同一顧客からの累計受注5回', category: 'リピート・信頼' },
+  { id: 'merchant_repeat_10', name: '信用の錬金術', description: '同一顧客からの累計受注10回', category: 'リピート・信頼' },
+  { id: 'merchant_network_5', name: '顔の広い商人', description: '顧客（取引先名）重複なし数が5社に到達', category: 'リピート・信頼' },
+  { id: 'merchant_network_10', name: '人脈の金脈', description: '顧客重複なし数が10社に到達', category: 'リピート・信頼' },
+  { id: 'merchant_network_20', name: '市場の顔役', description: '顧客重複なし数が20社に到達', category: 'リピート・信頼' },
+  { id: 'merchant_network_50', name: '万客千客', description: '顧客重複なし数が50社に到達', category: 'リピート・信頼' },
+  { id: 'merchant_network_100', name: '世界を繋ぐ鎖', description: '顧客重複なし数が100社に到達', category: 'リピート・信頼' },
+  { id: 'merchant_trust_1m', name: '財界のフィクサー', description: '特定顧客からの累計売上100万円突破', category: 'リピート・信頼' },
+  { id: 'merchant_trust_5m', name: '独占禁止法', description: '特定顧客からの累計売上500万円突破', category: 'リピート・信頼' },
+  { id: 'merchant_speed_48h', name: '即決即断', description: '案件作成から完了まで48時間以内', category: '単価・瞬発力' },
+  { id: 'merchant_speed_24h', name: '電光石火の取引', description: '案件作成から完了まで24時間以内', category: '単価・瞬発力' },
+  { id: 'merchant_growth_50', name: '相場の魔術師', description: '前月比の売上成長率が50%を超える', category: '単価・瞬発力' },
+  { id: 'merchant_high_margin', name: '賢い商い', description: '案件あたりの平均利益（想定）が一定基準を突破', category: '単価・瞬発力' },
+  { id: 'merchant_perfect_target', name: '黄金のバランス', description: '指定月内の売上目標を100%ぴったりで達成', category: '単価・瞬発力' },
+  { id: 'merchant_limit_break', name: '限界突破の豪商', description: '過去最高の単価を更新', category: '単価・瞬発力' },
+  { id: 'merchant_branding_start', name: 'ブランドの種', description: 'SiGMARKで最初の売上', category: '複合・時間' },
+  { id: 'merchant_sig_100k', name: 'ステッカー・マニア', description: 'SiGMARKカテゴリで累計売上10万円', category: '複合・時間' },
+  { id: 'merchant_sig_1m', name: 'ブランドの象徴', description: 'SiGMARKカテゴリで累計売上100万円', category: '複合・時間' },
+  { id: 'merchant_sig_5m', name: '歩く看板', description: 'SiGMARKカテゴリで累計売上500万円', category: '複合・時間' },
+  { id: 'merchant_time_weekend', name: '休日のバイヤー', description: '土日祝日にSiGMARK案件を完了', category: '複合・時間' },
+  { id: 'merchant_time_midnight', name: '闇市の主', description: '深夜（24時〜5時）にSiGMARK案件を完了', category: '複合・時間' },
+  { id: 'merchant_growth_year', name: '黄金の1年', description: '年間の商人系統総売上が前年超え', category: '複合・時間' },
+  { id: 'merchant_bubble_year', name: '奇跡のバブル', description: '年間の商人系統総売上が前年比2倍', category: '複合・時間' },
+  { id: 'merchant_sns_lead', name: '広告塔の主', description: 'SNS経由（または特定フラグ）での売上を初記録', category: '複合・時間' },
+  { id: 'merchant_dominate', name: '資本の支配者', description: '他系統の売上を商人系統が上回る', category: '複合・時間' },
+  { id: 'merchant_roadmap_4', name: '商いのロードマップ', description: '商人系統の4次職に到達', category: '複合・時間' },
+  { id: 'merchant_roadmap_5', name: '盤上の支配', description: '商人系統の5次職に到達', category: '複合・時間' },
+  { id: 'merchant_out_of_pref', name: '全商人の憧れ', description: '累計取引先が県外（または特定フラグ）に到達', category: '複合・時間' },
+  { id: 'merchant_hall_of_fame', name: '商いの殿堂入り', description: '商人系統の称号50%獲得', category: '複合・時間' },
+  { id: 'merchant_zenith', name: '無限の資本', description: '商人系統累計売上1億円達成', category: '複合・時間' },
 ];
 
 // Avatar Component
@@ -230,7 +333,6 @@ export default function TemplePage() {
     
     const totals = { mage: 0, merchant: 0, hero: 0 };
     const counts = { mage: 0, merchant: 0, hero: 0 };
-    const casesInClass: Record<ClassType, CaseData[]> = { mage: [], merchant: [], hero: [] };
     const history: Record<ClassType, { month: string, revenue: number }[]> = { mage: [], merchant: [], hero: [] };
     
     // For expanded stats & Rankings
@@ -381,7 +483,7 @@ export default function TemplePage() {
          revenueToNextLevel,
          revenueToNextExpLevel,
          chartData,
-         titles: t === 'mage' ? calculateTitles(t, cases, history[t], maintenanceTotals[t]) : []
+         titles: calculateTitles(t, cases, history[t], totals)
        };
     });
 
@@ -389,31 +491,39 @@ export default function TemplePage() {
   }, [cases]);
 
   // Helper to calculate titles
-  function calculateTitles(type: ClassType, allCases: CaseData[], typeHistory: any[], typeMaintTotal: number) {
-    if (type !== 'mage') return [];
+  function calculateTitles(type: ClassType, allCases: CaseData[], typeHistory: any[], allTotals: Record<ClassType, number>) {
+    const isMage = type === 'mage';
+    const isMerchant = type === 'merchant';
+    if (!isMage && !isMerchant) return [];
     
     const acquired: any[] = [];
-    const mageCases = allCases.filter(c => c.genre === 'HP制作' || c.genre === 'SNS運用');
+    const classCases = allCases.filter(c => {
+      if (isMage) return c.genre === 'HP制作' || c.genre === 'SNS運用';
+      if (isMerchant) return c.genre === 'SiGMARK';
+      return false;
+    });
+    
+    const titleDefs = isMage ? MAGE_TITLE_DEFS : MERCHANT_TITLE_DEFS;
     
     // Revenue Based
     const thresholds = [
-      { id: 'mage_rev_1', val: 1 }, { id: 'mage_rev_10k', val: 10000 }, { id: 'mage_rev_20k', val: 20000 },
-      { id: 'mage_rev_30k', val: 30000 }, { id: 'mage_rev_40k', val: 40000 }, { id: 'mage_rev_50k', val: 50000 },
-      { id: 'mage_rev_60k', val: 60000 }, { id: 'mage_rev_70k', val: 70000 }, { id: 'mage_rev_80k', val: 80000 },
-      { id: 'mage_rev_90k', val: 90000 }, { id: 'mage_rev_100k', val: 100000 }, { id: 'mage_rev_200k', val: 200000 },
-      { id: 'mage_rev_300k', val: 300000 }, { id: 'mage_rev_400k', val: 400000 }, { id: 'mage_rev_500k', val: 500000 },
-      { id: 'mage_rev_600k', val: 600000 }, { id: 'mage_rev_700k', val: 700000 }, { id: 'mage_rev_800k', val: 800000 },
-      { id: 'mage_rev_900k', val: 900000 }, { id: 'mage_rev_1m', val: 1000000 }, { id: 'mage_rev_1.1m', val: 1100000 },
-      { id: 'mage_rev_1.2m', val: 1200000 }, { id: 'mage_rev_1.3m', val: 1300000 }, { id: 'mage_rev_1.4m', val: 1400000 },
-      { id: 'mage_rev_1.5m', val: 1500000 }, { id: 'mage_rev_1.6m', val: 1600000 }, { id: 'mage_rev_1.7m', val: 1700000 },
-      { id: 'mage_rev_1.8m', val: 1800000 }, { id: 'mage_rev_1.9m', val: 1900000 }, { id: 'mage_rev_3m', val: 3000000 },
-      { id: 'mage_rev_3.5m', val: 3500000 }, { id: 'mage_rev_4m', val: 4000000 }, { id: 'mage_rev_4.5m', val: 4500000 },
-      { id: 'mage_rev_5m', val: 5000000 }, { id: 'mage_rev_5.5m', val: 5500000 }, { id: 'mage_rev_6m', val: 6000000 },
-      { id: 'mage_rev_6.5m', val: 6500000 }, { id: 'mage_rev_7m', val: 7000000 }, { id: 'mage_rev_7.5m', val: 7500000 },
-      { id: 'mage_rev_8m', val: 8000000 }, { id: 'mage_rev_8.5m', val: 8500000 }, { id: 'mage_rev_9m', val: 9000000 },
-      { id: 'mage_rev_9.5m', val: 9500000 }, { id: 'mage_rev_10m', val: 10000000 }, { id: 'mage_rev_12m', val: 12000000 },
-      { id: 'mage_rev_15m', val: 15000000 }, { id: 'mage_rev_18m', val: 18000000 }, { id: 'mage_rev_20m', val: 20000000 },
-      { id: 'mage_rev_30m', val: 30000000 }, { id: 'mage_rev_50m', val: 50000000 }, { id: 'mage_zenith', val: 100000000 }
+      { id: `${type}_rev_1`, val: 1 }, { id: `${type}_rev_10k`, val: 10000 }, { id: `${type}_rev_20k`, val: 20000 },
+      { id: `${type}_rev_30k`, val: 30000 }, { id: `${type}_rev_40k`, val: 40000 }, { id: `${type}_rev_50k`, val: 50000 },
+      { id: `${type}_rev_60k`, val: 60000 }, { id: `${type}_rev_70k`, val: 70000 }, { id: `${type}_rev_80k`, val: 80000 },
+      { id: `${type}_rev_90k`, val: 90000 }, { id: `${type}_rev_100k`, val: 100000 }, { id: `${type}_rev_200k`, val: 200000 },
+      { id: `${type}_rev_300k`, val: 300000 }, { id: `${type}_rev_400k`, val: 400000 }, { id: `${type}_rev_500k`, val: 500000 },
+      { id: `${type}_rev_600k`, val: 600000 }, { id: `${type}_rev_700k`, val: 700000 }, { id: `${type}_rev_800k`, val: 800000 },
+      { id: `${type}_rev_900k`, val: 900000 }, { id: `${type}_rev_1m`, val: 1000000 }, { id: `${type}_rev_1.1m`, val: 1100000 },
+      { id: `${type}_rev_1.2m`, val: 1200000 }, { id: `${type}_rev_1.3m`, val: 1300000 }, { id: `${type}_rev_1.4m`, val: 1400000 },
+      { id: `${type}_rev_1.5m`, val: 1500000 }, { id: `${type}_rev_1.6m`, val: 1600000 }, { id: `${type}_rev_1.7m`, val: 1700000 },
+      { id: `${type}_rev_1.8m`, val: 1800000 }, { id: `${type}_rev_1.9m`, val: 1900000 }, { id: `${type}_rev_3m`, val: 3000000 },
+      { id: `${type}_rev_3.5m`, val: 3500000 }, { id: `${type}_rev_4m`, val: 4000000 }, { id: `${type}_rev_4.5m`, val: 4500000 },
+      { id: `${type}_rev_5m`, val: 5000000 }, { id: `${type}_rev_5.5m`, val: 5500000 }, { id: `${type}_rev_6m`, val: 6000000 },
+      { id: `${type}_rev_6.5m`, val: 6500000 }, { id: `${type}_rev_7m`, val: 7000000 }, { id: `${type}_rev_7.5m`, val: 7500000 },
+      { id: `${type}_rev_8m`, val: 8000000 }, { id: `${type}_rev_8.5m`, val: 8500000 }, { id: `${type}_rev_9m`, val: 9000000 },
+      { id: `${type}_rev_9.5m`, val: 9500000 }, { id: `${type}_rev_10m`, val: 10000000 }, { id: `${type}_rev_12m`, val: 12000000 },
+      { id: `${type}_rev_15m`, val: 15000000 }, { id: `${type}_rev_18m`, val: 18000000 }, { id: `${type}_rev_20m`, val: 20000000 },
+      { id: `${type}_rev_30m`, val: 30000000 }, { id: `${type}_rev_50m`, val: 50000000 }, { id: `${type}_zenith`, val: 100000000 }
     ];
     
     let cumulative = 0;
@@ -422,117 +532,208 @@ export default function TemplePage() {
       cumulative += h.revenue;
       thresholds.forEach(t => {
         if (cumulative >= t.val && !acquired.some(a => a.id === t.id)) {
-          const def = MAGE_TITLE_DEFS.find(d => d.id === t.id);
+          const def = titleDefs.find(d => d.id === t.id);
           if (def) acquired.push({ ...def, acquiredAt: `${h.month}-01` });
         }
       });
     });
 
-    // Continuity Checks
+    // Continuity & History Checks
     let consecutiveRevenue = 0;
-    let consecutiveMaint = 0;
+    let consecutiveGrowth = 0;
+    let maxMonthRev = 0;
+    let maxQTotal = 0;
+    
     sortedHistory.forEach((h, i) => {
-      if (h.revenue > 0) consecutiveRevenue++;
-      else consecutiveRevenue = 0;
+      if (h.revenue > 0) consecutiveRevenue++; else consecutiveRevenue = 0;
+      if (i > 0 && h.revenue > sortedHistory[i-1].revenue) consecutiveGrowth++; else consecutiveGrowth = 0;
 
-      if (consecutiveRevenue >= 6 && !acquired.some(a => a.id === 'mage_stream_6m')) acquired.push({ ...MAGE_TITLE_DEFS.find(d => d.id === 'mage_stream_6m'), acquiredAt: h.month });
-      if (consecutiveRevenue >= 12 && !acquired.some(a => a.id === 'mage_stream_12m')) acquired.push({ ...MAGE_TITLE_DEFS.find(d => d.id === 'mage_stream_12m'), acquiredAt: h.month });
-      if (consecutiveRevenue >= 24 && !acquired.some(a => a.id === 'mage_stream_24m')) acquired.push({ ...MAGE_TITLE_DEFS.find(d => d.id === 'mage_stream_24m'), acquiredAt: h.month });
+      const prefix = isMage ? 'mage_stream' : 'merchant_maint';
+      if (consecutiveRevenue >= 3 && !acquired.some(a => a.id === `${prefix}_3m`)) acquired.push({ ...titleDefs.find(d => d.id === `${prefix}_3m`), acquiredAt: h.month });
+      if (consecutiveRevenue >= 6 && !acquired.some(a => a.id === `${prefix}_6m`)) acquired.push({ ...titleDefs.find(d => d.id === `${prefix}_6m`), acquiredAt: h.month });
+      if (consecutiveRevenue >= 12 && !acquired.some(a => a.id === `${prefix}_12m`)) acquired.push({ ...titleDefs.find(d => d.id === `${prefix}_12m`), acquiredAt: h.month });
+      if (consecutiveRevenue >= 24 && !acquired.some(a => a.id === `${prefix}_24m`)) acquired.push({ ...titleDefs.find(d => d.id === `${prefix}_24m`), acquiredAt: h.month });
+      if (consecutiveRevenue >= 36 && !acquired.some(a => a.id === `${prefix}_36m`)) acquired.push({ ...titleDefs.find(d => d.id === `${prefix}_36m`), acquiredAt: h.month });
+
+      if (isMerchant) {
+        if (consecutiveGrowth >= 3 && !acquired.some(a => a.id === 'merchant_up_3m')) acquired.push({ ...titleDefs.find(d => d.id === 'merchant_up_3m'), acquiredAt: h.month });
+        if (consecutiveGrowth >= 6 && !acquired.some(a => a.id === 'merchant_up_6m')) acquired.push({ ...titleDefs.find(d => d.id === 'merchant_up_6m'), acquiredAt: h.month });
+        if (consecutiveGrowth >= 12 && !acquired.some(a => a.id === 'merchant_up_12m')) acquired.push({ ...titleDefs.find(d => d.id === 'merchant_up_12m'), acquiredAt: h.month });
+
+        // Gold Month
+        if (h.revenue > maxMonthRev && maxMonthRev > 0) {
+           if (!acquired.some(a => a.id === 'merchant_gold_month')) acquired.push({ ...titleDefs.find(d => d.id === 'merchant_gold_month'), acquiredAt: h.month });
+        }
+        if (h.revenue > maxMonthRev) maxMonthRev = h.revenue;
+
+        // Growth 50%
+        if (i > 0 && sortedHistory[i-1].revenue > 0 && h.revenue > sortedHistory[i-1].revenue * 1.5) {
+           if (!acquired.some(a => a.id === 'merchant_growth_50')) acquired.push({ ...titleDefs.find(d => d.id === 'merchant_growth_50'), acquiredAt: h.month });
+        }
+
+        // Gold Quarter
+        if (i >= 2) {
+          const qTotal = h.revenue + sortedHistory[i-1].revenue + sortedHistory[i-2].revenue;
+          if (qTotal > maxQTotal && maxQTotal > 0) {
+             if (!acquired.some(a => a.id === 'merchant_gold_quarter')) acquired.push({ ...titleDefs.find(d => d.id === 'merchant_gold_quarter'), acquiredAt: h.month });
+          }
+          if (qTotal > maxQTotal) maxQTotal = qTotal;
+        }
+      }
     });
+
+    // Year-on-year
+    if (isMerchant) {
+      const years: Record<string, number> = {};
+      sortedHistory.forEach(h => {
+        const y = h.month.split('-')[0];
+        years[y] = (years[y] || 0) + h.revenue;
+      });
+      const yearList = Object.keys(years).sort();
+      yearList.forEach((y, i) => {
+        if (i > 0) {
+          const prevYear = years[yearList[i-1]];
+          const currYear = years[y];
+          if (currYear > prevYear && !acquired.some(a => a.id === 'merchant_growth_year')) acquired.push({ ...titleDefs.find(d => d.id === 'merchant_growth_year'), acquiredAt: y });
+          if (currYear > prevYear * 2 && !acquired.some(a => a.id === 'merchant_bubble_year')) acquired.push({ ...titleDefs.find(d => d.id === 'merchant_bubble_year'), acquiredAt: y });
+        }
+      });
+    }
 
     // Case Specific
     let maxSingleFee = 0;
-    mageCases.forEach(c => {
+    const clientStats: Record<string, { count: number, revenue: number }> = {};
+
+    classCases.forEach(c => {
       const finishDate = new Date(c.updatedAt);
-      const finishMonthStr = format(finishDate, 'yyyy-MM');
       const finishFullDateStr = format(finishDate, 'yyyy-MM-dd');
       const diffMs = c.updatedAt - c.createdAt;
-      const diffDays = diffMs / (1000 * 60 * 60 * 24);
+      const diffHrs = diffMs / (1000 * 60 * 60);
+      const diffDays = diffHrs / 24;
       const hour = getHours(finishDate);
       
       const fee = (c.finance?.oneTimeFee || 0) + (c.finance?.spotFee || 0);
       if (fee > maxSingleFee) {
-        if (maxSingleFee > 0 && !acquired.some(a => a.id === 'mage_limit_break')) acquired.push({ ...MAGE_TITLE_DEFS.find(d => d.id === 'mage_limit_break'), acquiredAt: finishFullDateStr });
+        const limitId = isMage ? 'mage_limit_break' : 'merchant_limit_break';
+        if (maxSingleFee > 0 && !acquired.some(a => a.id === limitId)) acquired.push({ ...titleDefs.find(d => d.id === limitId), acquiredAt: finishFullDateStr });
         maxSingleFee = fee;
       }
 
-      if (diffDays <= 7 && !acquired.some(a => a.id === 'mage_speed_7d')) acquired.push({ ...MAGE_TITLE_DEFS.find(d => d.id === 'mage_speed_7d'), acquiredAt: finishFullDateStr });
-      if (diffDays <= 3 && !acquired.some(a => a.id === 'mage_speed_3d')) acquired.push({ ...MAGE_TITLE_DEFS.find(d => d.id === 'mage_speed_3d'), acquiredAt: finishFullDateStr });
-      if (diffDays <= 1 && !acquired.some(a => a.id === 'mage_speed_24h')) acquired.push({ ...MAGE_TITLE_DEFS.find(d => d.id === 'mage_speed_24h'), acquiredAt: finishFullDateStr });
-      
-      if (fee >= 500000 && !acquired.some(a => a.id === 'mage_power_500k')) acquired.push({ ...MAGE_TITLE_DEFS.find(d => d.id === 'mage_power_500k'), acquiredAt: finishFullDateStr });
-      if (fee >= 1000000 && !acquired.some(a => a.id === 'mage_power_1m')) acquired.push({ ...MAGE_TITLE_DEFS.find(d => d.id === 'mage_power_1m'), acquiredAt: finishFullDateStr });
-      if (fee >= 2000000 && !acquired.some(a => a.id === 'mage_power_2m')) acquired.push({ ...MAGE_TITLE_DEFS.find(d => d.id === 'mage_power_2m'), acquiredAt: finishFullDateStr });
-      
-      if (hour >= 0 && hour < 5 && !acquired.some(a => a.id === 'mage_time_midnight')) acquired.push({ ...MAGE_TITLE_DEFS.find(d => d.id === 'mage_time_midnight'), acquiredAt: finishFullDateStr });
-      if (hour >= 22 && hour < 24 && !acquired.some(a => a.id === 'mage_time_night')) acquired.push({ ...MAGE_TITLE_DEFS.find(d => d.id === 'mage_time_night'), acquiredAt: finishFullDateStr });
-      if (isWeekend(finishDate) && !acquired.some(a => a.id === 'mage_time_weekend')) acquired.push({ ...MAGE_TITLE_DEFS.find(d => d.id === 'mage_time_weekend'), acquiredAt: finishFullDateStr });
+      // Client aggregation
+      const cName = c.contractEntity || c.clientName || 'Unknown';
+      if (!clientStats[cName]) clientStats[cName] = { count: 0, revenue: 0 };
+      clientStats[cName].count++;
+      clientStats[cName].revenue += (c.finance?.oneTimeFee || 0) + (c.finance?.spotFee || 0) + (c.finance?.maintenanceFee || 0);
+
+      if (isMage) {
+        if (diffDays <= 7 && !acquired.some(a => a.id === 'mage_speed_7d')) acquired.push({ ...titleDefs.find(d => d.id === 'mage_speed_7d'), acquiredAt: finishFullDateStr });
+        if (diffDays <= 3 && !acquired.some(a => a.id === 'mage_speed_3d')) acquired.push({ ...titleDefs.find(d => d.id === 'mage_speed_3d'), acquiredAt: finishFullDateStr });
+        if (diffDays <= 1 && !acquired.some(a => a.id === 'mage_speed_24h')) acquired.push({ ...titleDefs.find(d => d.id === 'mage_speed_24h'), acquiredAt: finishFullDateStr });
+        if (fee >= 500000 && !acquired.some(a => a.id === 'mage_power_500k')) acquired.push({ ...titleDefs.find(d => d.id === 'mage_power_500k'), acquiredAt: finishFullDateStr });
+        if (fee >= 1000000 && !acquired.some(a => a.id === 'mage_power_1m')) acquired.push({ ...titleDefs.find(d => d.id === 'mage_power_1m'), acquiredAt: finishFullDateStr });
+        if (fee >= 2000000 && !acquired.some(a => a.id === 'mage_power_2m')) acquired.push({ ...titleDefs.find(d => d.id === 'mage_power_2m'), acquiredAt: finishFullDateStr });
+        if (hour >= 0 && hour < 5 && !acquired.some(a => a.id === 'mage_time_midnight')) acquired.push({ ...titleDefs.find(d => d.id === 'mage_time_midnight'), acquiredAt: finishFullDateStr });
+        if (isWeekend(finishDate) && !acquired.some(a => a.id === 'mage_time_weekend')) acquired.push({ ...titleDefs.find(d => d.id === 'mage_time_weekend'), acquiredAt: finishFullDateStr });
+      }
+
+      if (isMerchant) {
+        if (diffHrs <= 48 && !acquired.some(a => a.id === 'merchant_speed_48h')) acquired.push({ ...titleDefs.find(d => d.id === 'merchant_speed_48h'), acquiredAt: finishFullDateStr });
+        if (diffHrs <= 24 && !acquired.some(a => a.id === 'merchant_speed_24h')) acquired.push({ ...titleDefs.find(d => d.id === 'merchant_speed_24h'), acquiredAt: finishFullDateStr });
+        if (hour >= 0 && hour < 5 && !acquired.some(a => a.id === 'merchant_time_midnight')) acquired.push({ ...titleDefs.find(d => d.id === 'merchant_time_midnight'), acquiredAt: finishFullDateStr });
+        if (isWeekend(finishDate) && !acquired.some(a => a.id === 'merchant_time_weekend')) acquired.push({ ...titleDefs.find(d => d.id === 'merchant_time_weekend'), acquiredAt: finishFullDateStr });
+
+        // Branding Start
+        if (!acquired.some(a => a.id === 'merchant_branding_start')) acquired.push({ ...titleDefs.find(d => d.id === 'merchant_branding_start'), acquiredAt: finishFullDateStr });
+
+        // High Margin (Simple: fee > 100k)
+        if (fee >= 100000 && !acquired.some(a => a.id === 'merchant_high_margin')) acquired.push({ ...titleDefs.find(d => d.id === 'merchant_high_margin'), acquiredAt: finishFullDateStr });
+
+        // SNS & Regional
+        if (c.isSnsLead && !acquired.some(a => a.id === 'merchant_sns_lead')) acquired.push({ ...titleDefs.find(d => d.id === 'merchant_sns_lead'), acquiredAt: finishFullDateStr });
+        if (c.isOutOfPref && !acquired.some(a => a.id === 'merchant_out_of_pref')) acquired.push({ ...titleDefs.find(d => d.id === 'merchant_out_of_pref'), acquiredAt: finishFullDateStr });
+      }
     });
 
-    // Multi-cast (same month)
+    // Client based titles
+    if (isMerchant) {
+      Object.entries(clientStats).forEach(([name, stats]) => {
+        if (stats.count >= 2 && !acquired.some(a => a.id === 'merchant_repeat_2')) acquired.push({ ...titleDefs.find(d => d.id === 'merchant_repeat_2'), acquiredAt: 'ACHIEVED' });
+        if (stats.count >= 5 && !acquired.some(a => a.id === 'merchant_repeat_5')) acquired.push({ ...titleDefs.find(d => d.id === 'merchant_repeat_5'), acquiredAt: 'ACHIEVED' });
+        if (stats.count >= 10 && !acquired.some(a => a.id === 'merchant_repeat_10')) acquired.push({ ...titleDefs.find(d => d.id === 'merchant_repeat_10'), acquiredAt: 'ACHIEVED' });
+        if (stats.revenue >= 1000000 && !acquired.some(a => a.id === 'merchant_trust_1m')) acquired.push({ ...titleDefs.find(d => d.id === 'merchant_trust_1m'), acquiredAt: 'ACHIEVED' });
+        if (stats.revenue >= 5000000 && !acquired.some(a => a.id === 'merchant_trust_5m')) acquired.push({ ...titleDefs.find(d => d.id === 'merchant_trust_5m'), acquiredAt: 'ACHIEVED' });
+      });
+      
+      // Dominate
+      const othersMax = Math.max(allTotals.mage, allTotals.hero);
+      if (allTotals.merchant > othersMax && othersMax > 0) {
+         if (!acquired.some(a => a.id === 'merchant_dominate')) acquired.push({ ...titleDefs.find(d => d.id === 'merchant_dominate'), acquiredAt: 'ACHIEVED' });
+      }
+      
+      // Roadmap
+      const tier = getTierFromRevenue(allTotals.merchant);
+      if (tier >= 4 && !acquired.some(a => a.id === 'merchant_roadmap_4')) acquired.push({ ...titleDefs.find(d => d.id === 'merchant_roadmap_4'), acquiredAt: 'ACHIEVED' });
+      if (tier >= 5 && !acquired.some(a => a.id === 'merchant_roadmap_5')) acquired.push({ ...titleDefs.find(d => d.id === 'merchant_roadmap_5'), acquiredAt: 'ACHIEVED' });
+    }
+
+    // Multi-cast / Action
     const casesByMonth: Record<string, CaseData[]> = {};
-    mageCases.forEach(c => {
+    classCases.forEach(c => {
       const m = format(new Date(c.updatedAt), 'yyyy-MM');
       if (!casesByMonth[m]) casesByMonth[m] = [];
       casesByMonth[m].push(c);
     });
     Object.entries(casesByMonth).forEach(([m, monthCases]) => {
-      const genres = new Set(monthCases.map(c => c.genre));
-      if (genres.has('HP制作') && genres.has('SNS運用') && !acquired.some(a => a.id === 'mage_cast_double')) acquired.push({ ...MAGE_TITLE_DEFS.find(d => d.id === 'mage_cast_double'), acquiredAt: m });
-      if (genres.has('HP制作') && genres.has('SNS運用') && monthCases.length >= 3 && !acquired.some(a => a.id === 'mage_cast_triple')) acquired.push({ ...MAGE_TITLE_DEFS.find(d => d.id === 'mage_cast_triple'), acquiredAt: m });
-      if (monthCases.length >= 4 && !acquired.some(a => a.id === 'mage_cast_quad')) acquired.push({ ...MAGE_TITLE_DEFS.find(d => d.id === 'mage_cast_quad'), acquiredAt: m });
-      if (monthCases.length >= 5 && !acquired.some(a => a.id === 'mage_cast_penta')) acquired.push({ ...MAGE_TITLE_DEFS.find(d => d.id === 'mage_cast_penta'), acquiredAt: m });
-      if (monthCases.length >= 10 && !acquired.some(a => a.id === 'mage_cast_multi')) acquired.push({ ...MAGE_TITLE_DEFS.find(d => d.id === 'mage_cast_multi'), acquiredAt: m });
-      if (monthCases.length >= 15 && !acquired.some(a => a.id === 'mage_cast_storm')) acquired.push({ ...MAGE_TITLE_DEFS.find(d => d.id === 'mage_cast_storm'), acquiredAt: m });
-    });
-
-    // Maintenance Milestones
-    const maintThresholds = [
-      { id: 'mage_maint_10k', val: 10000 }, { id: 'mage_maint_50k', val: 50000 }, { id: 'mage_maint_100k', val: 100000 },
-      { id: 'mage_maint_200k', val: 200000 }, { id: 'mage_maint_300k', val: 300000 }, { id: 'mage_maint_1m', val: 1000000 },
-      { id: 'mage_maint_2m', val: 2000000 }
-    ];
-    maintThresholds.forEach(mt => {
-      if (typeMaintTotal >= mt.val) {
-        const def = MAGE_TITLE_DEFS.find(d => d.id === mt.id);
-        if (def) acquired.push({ ...def, acquiredAt: 'ACHIEVED' });
+      if (isMage) {
+        const genres = new Set(monthCases.map(c => c.genre));
+        if (genres.has('HP制作') && genres.has('SNS運用') && !acquired.some(a => a.id === 'mage_cast_double')) acquired.push({ ...titleDefs.find(d => d.id === 'mage_cast_double'), acquiredAt: m });
+        if (monthCases.length >= 4 && !acquired.some(a => a.id === 'mage_cast_quad')) acquired.push({ ...titleDefs.find(d => d.id === 'mage_cast_quad'), acquiredAt: m });
+      }
+      if (isMerchant) {
+        const c = monthCases.length;
+        if (c >= 2 && !acquired.some(a => a.id === 'merchant_cast_2')) acquired.push({ ...titleDefs.find(d => d.id === 'merchant_cast_2'), acquiredAt: m });
+        if (c >= 3 && !acquired.some(a => a.id === 'merchant_cast_3')) acquired.push({ ...titleDefs.find(d => d.id === 'merchant_cast_3'), acquiredAt: m });
+        if (c >= 5 && !acquired.some(a => a.id === 'merchant_cast_5')) acquired.push({ ...titleDefs.find(d => d.id === 'merchant_cast_5'), acquiredAt: m });
+        if (c >= 10 && !acquired.some(a => a.id === 'merchant_cast_10')) acquired.push({ ...titleDefs.find(d => d.id === 'merchant_cast_10'), acquiredAt: m });
+        if (c >= 20 && !acquired.some(a => a.id === 'merchant_cast_20')) acquired.push({ ...titleDefs.find(d => d.id === 'merchant_cast_20'), acquiredAt: m });
+        if (c >= 30 && !acquired.some(a => a.id === 'merchant_cast_30')) acquired.push({ ...titleDefs.find(d => d.id === 'merchant_cast_30'), acquiredAt: m });
       }
     });
 
     // Network / Hybrid
-    const uniqueClients = new Set(mageCases.map(c => c.contractEntity || c.clientName).filter(Boolean));
-    if (uniqueClients.size >= 10) acquired.push({ ...MAGE_TITLE_DEFS.find(d => d.id === 'mage_network_10'), acquiredAt: 'ACHIEVED' });
-    if (uniqueClients.size >= 30) acquired.push({ ...MAGE_TITLE_DEFS.find(d => d.id === 'mage_network_30'), acquiredAt: 'ACHIEVED' });
-    if (uniqueClients.size >= 50) acquired.push({ ...MAGE_TITLE_DEFS.find(d => d.id === 'mage_network_50'), acquiredAt: 'ACHIEVED' });
+    const uniqueClients = new Set(classCases.map(c => c.contractEntity || c.clientName).filter(Boolean));
+    if (isMage) {
+      if (uniqueClients.size >= 10) acquired.push({ ...titleDefs.find(d => d.id === 'mage_network_10'), acquiredAt: 'ACHIEVED' });
+    }
+    if (isMerchant) {
+      if (uniqueClients.size >= 5) acquired.push({ ...titleDefs.find(d => d.id === 'merchant_network_5'), acquiredAt: 'ACHIEVED' });
+      if (uniqueClients.size >= 10) acquired.push({ ...titleDefs.find(d => d.id === 'merchant_network_10'), acquiredAt: 'ACHIEVED' });
+      if (uniqueClients.size >= 20) acquired.push({ ...titleDefs.find(d => d.id === 'merchant_network_20'), acquiredAt: 'ACHIEVED' });
+      if (uniqueClients.size >= 50) acquired.push({ ...titleDefs.find(d => d.id === 'merchant_network_50'), acquiredAt: 'ACHIEVED' });
+      if (uniqueClients.size >= 100) acquired.push({ ...titleDefs.find(d => d.id === 'merchant_network_100'), acquiredAt: 'ACHIEVED' });
+      if (classCases.length >= 10 && !acquired.some(a => a.id === 'merchant_total_10')) acquired.push({ ...titleDefs.find(d => d.id === 'merchant_total_10'), acquiredAt: 'ACHIEVED' });
+      if (classCases.length >= 50 && !acquired.some(a => a.id === 'merchant_total_50')) acquired.push({ ...titleDefs.find(d => d.id === 'merchant_total_50'), acquiredAt: 'ACHIEVED' });
+      if (classCases.length >= 100 && !acquired.some(a => a.id === 'merchant_total_100')) acquired.push({ ...titleDefs.find(d => d.id === 'merchant_total_100'), acquiredAt: 'ACHIEVED' });
+    }
 
-    const hpCount = mageCases.filter(c => c.genre === 'HP制作').length;
-    const snsCount = mageCases.filter(c => c.genre === 'SNS運用').length;
-    if (hpCount >= 10 && snsCount >= 10 && !acquired.some(a => a.id === 'mage_hybrid')) acquired.push({ ...MAGE_TITLE_DEFS.find(d => d.id === 'mage_hybrid'), acquiredAt: 'ACHIEVED' });
+    // Special
+    if (isMerchant) {
+      const sigRev = classCases.reduce((acc, c) => acc + (c.finance?.oneTimeFee || 0) + (c.finance?.spotFee || 0) + (c.finance?.maintenanceFee || 0), 0);
+      if (sigRev >= 100000 && !acquired.some(a => a.id === 'merchant_sig_100k')) acquired.push({ ...titleDefs.find(d => d.id === 'merchant_sig_100k'), acquiredAt: 'ACHIEVED' });
+      if (sigRev >= 1000000 && !acquired.some(a => a.id === 'merchant_sig_1m')) acquired.push({ ...titleDefs.find(d => d.id === 'merchant_sig_1m'), acquiredAt: 'ACHIEVED' });
+      if (sigRev >= 5000000 && !acquired.some(a => a.id === 'merchant_sig_5m')) acquired.push({ ...titleDefs.find(d => d.id === 'merchant_sig_5m'), acquiredAt: 'ACHIEVED' });
+    }
 
-    const snsRev = mageCases.filter(c => c.genre === 'SNS運用').reduce((acc, c) => acc + (c.finance?.oneTimeFee || 0) + (c.finance?.spotFee || 0) + (c.finance?.maintenanceFee || 0), 0);
-    if (snsRev >= 1000000 && !acquired.some(a => a.id === 'mage_sns_master')) acquired.push({ ...MAGE_TITLE_DEFS.find(d => d.id === 'mage_sns_master'), acquiredAt: 'ACHIEVED' });
-
-    const hpRev = mageCases.filter(c => c.genre === 'HP制作').reduce((acc, c) => acc + (c.finance?.oneTimeFee || 0) + (c.finance?.spotFee || 0) + (c.finance?.maintenanceFee || 0), 0);
-    if (hpRev >= 5000000 && !acquired.some(a => a.id === 'mage_hp_architect')) acquired.push({ ...MAGE_TITLE_DEFS.find(d => d.id === 'mage_hp_architect'), acquiredAt: 'ACHIEVED' });
-
-    if (acquired.length >= MAGE_TITLE_DEFS.length * 0.5) acquired.push({ ...MAGE_TITLE_DEFS.find(d => d.id === 'mage_hall_of_fame'), acquiredAt: 'ACHIEVED' });
+    if (acquired.length >= titleDefs.length * 0.5) {
+      const hallId = isMage ? 'mage_hall_of_fame' : 'merchant_hall_of_fame';
+      if (!acquired.some(a => a.id === hallId)) acquired.push({ ...titleDefs.find(d => d.id === hallId), acquiredAt: 'ACHIEVED' });
+    }
 
     return acquired.sort((a, b) => (b.acquiredAt || '').localeCompare(a.acquiredAt || ''));
   }
 
   return (
-    <div className="space-y-8 animate-in fade-in duration-500 font-sans pb-20 max-w-[1600px] mx-auto">
-      {/* Header */}
-      <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-8 bg-card p-6 lg:p-8 rounded-lg border border-border">
-        <div className="min-w-0 flex-1">
-          <div className="flex items-center gap-4 mb-2">
-            <h2 className="text-2xl font-bold italic tracking-tighter text-foreground flex items-center gap-4 uppercase font-[family-name:var(--font-outfit)]">
-              <Castle className="w-8 h-8 text-primary" /> TEMPLE STATUS
-            </h2>
-          </div>
-          <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-[0.2em] opacity-40 ml-12">稼ぎをチカラに。神殿ステータス</p>
-        </div>
-      </div>
+    <div className="space-y-8 animate-in fade-in duration-500 font-sans pb-20 max-w-[1600px] mx-auto pt-8">
 
       {/* 3 Columns */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
@@ -573,7 +774,7 @@ export default function TemplePage() {
                 <div className="space-y-2">
                   <div className="flex justify-between items-end">
                     <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">NEXT JOB (次の目標)</span>
-                    <span className="text-xs font-black uppercase">{stats.toNext > 0 ? `あと ${stats.toNext} Lv` : 'MAX TIER'}</span>
+                    <span className="text-xs font-black uppercase">{stats.toNext > 0 ? `あと ${stats.toNext} Lv で転職` : 'MAX TIER'}</span>
                   </div>
                   <Progress value={stats.progress} className={cn("h-2 bg-secondary", `[&>div]:${info.bgClass}`)} />
                   <div className="flex justify-between items-center text-[9px] font-bold text-muted-foreground uppercase tracking-tight">
@@ -664,17 +865,18 @@ export default function TemplePage() {
                 </div>
 
                 {/* Title History */}
-                {stats.titles && stats.titles.length > 0 && (
-                  <div className="pt-4 border-t border-border">
-                    <div className="flex items-center justify-between mb-4">
-                      <div className="flex items-center gap-2">
-                        <History className="w-3.5 h-3.5 text-muted-foreground" />
-                        <span className="text-[9px] font-bold text-muted-foreground uppercase tracking-widest">ACQUIRED TITLES (取得済み称号)</span>
-                      </div>
-                      <div className={cn("text-[10px] font-black px-2 py-0.5 rounded border backdrop-blur-sm", info.bgClass.replace('bg-', 'bg-') + "/10", info.borderClass)}>
-                        取得済み: {stats.titles.length} <span className="opacity-40 ml-1">/ {type === 'mage' ? MAGE_TITLE_DEFS.length : '??'}</span>
-                      </div>
+                <div className="pt-4 border-t border-border">
+                  <div className="flex items-center justify-between mb-4">
+                    <div className="flex items-center gap-2">
+                      <History className="w-3.5 h-3.5 text-muted-foreground" />
+                      <span className="text-[9px] font-bold text-muted-foreground uppercase tracking-widest">ACQUIRED TITLES (取得済み称号)</span>
                     </div>
+                    <div className={cn("text-[10px] font-black px-2 py-0.5 rounded border backdrop-blur-sm", info.bgClass.replace('bg-', 'bg-') + "/10", info.borderClass)}>
+                      取得済み: {stats.titles?.length || 0} <span className="opacity-40 ml-1">/ {type === 'mage' ? MAGE_TITLE_DEFS.length : MERCHANT_TITLE_DEFS.length}</span>
+                    </div>
+                  </div>
+                  
+                  {stats.titles && stats.titles.length > 0 ? (
                     <div className="max-h-[280px] overflow-y-auto pr-1 custom-scrollbar">
                       <div className="grid grid-cols-2 gap-2">
                         {stats.titles.map((title: any, idx: number) => {
@@ -714,8 +916,24 @@ export default function TemplePage() {
                         })}
                       </div>
                     </div>
+                  ) : (
+                    <div className="h-[100px] flex flex-col items-center justify-center border border-dashed border-border rounded bg-secondary/5">
+                      <Medal className="w-6 h-6 text-muted-foreground opacity-20 mb-2" />
+                      <span className="text-[10px] font-bold text-muted-foreground opacity-40 uppercase tracking-widest">称号未取得</span>
+                      <p className="text-[8px] text-muted-foreground opacity-30 mt-1">案件を完了して称号を獲得しましょう</p>
+                    </div>
+                  )}
+
+                  <div className="mt-4 pt-4 border-t border-border/30">
+                    <button 
+                      onClick={() => document.getElementById('roadmap-section')?.scrollIntoView({ behavior: 'smooth' })}
+                      className="w-full py-2 bg-secondary/30 hover:bg-secondary/50 rounded text-[9px] font-black uppercase tracking-widest transition-colors flex items-center justify-center gap-2"
+                    >
+                      <Star className="w-3 h-3 text-amber-500" />
+                      全称号の取得条件を確認
+                    </button>
                   </div>
-                )}
+                </div>
               </CardContent>
             </Card>
           );
@@ -723,7 +941,7 @@ export default function TemplePage() {
       </div>
 
       {/* Class Roadmap & Titles */}
-      <Card className="bg-card border-border">
+      <Card id="roadmap-section" className="bg-card border-border">
         <div className="p-8">
           <div className="flex items-center gap-3 mb-10">
             <Star className="w-5 h-5 text-amber-500" />
@@ -785,8 +1003,11 @@ export default function TemplePage() {
                 <div className="space-y-8 max-h-[1200px] overflow-y-auto pr-4 custom-scrollbar">
                   {['累計収益', '保守・継続', '月間アクション', '単価・瞬発力', 'リピート・信頼', '複合・時間'].map(cat => (
                     <div key={cat} className="space-y-3">
-                      <div className="flex items-center gap-2 border-b border-border pb-1">
-                        <span className="text-[9px] font-black text-muted-foreground uppercase tracking-widest">{cat}</span>
+                      <div className="flex items-center gap-2 mb-4">
+                        <div className="px-3 py-1 rounded-full border border-emerald-500/30 bg-emerald-500/10 backdrop-blur-sm">
+                          <span className="text-[10px] font-black uppercase tracking-widest text-emerald-500">{cat}</span>
+                        </div>
+                        <div className="flex-1 h-[1px] bg-border opacity-30" />
                       </div>
                       <div className="grid grid-cols-1 gap-2">
                         {MAGE_TITLE_DEFS.filter(d => d.category === cat).map(def => (
@@ -801,19 +1022,37 @@ export default function TemplePage() {
                 </div>
               </div>
 
-              {/* Merchant Titles (Placeholder) */}
-              <div className="space-y-8 opacity-40">
+              {/* Merchant Titles */}
+              <div className="space-y-8">
                 <div className="flex items-center gap-3">
                   <div className="w-8 h-8 rounded bg-amber-500/10 border border-amber-500/30 flex items-center justify-center">
                     <Coins className="w-4 h-4 text-amber-500" />
                   </div>
                   <div>
                     <h4 className="text-xs font-black text-amber-500 uppercase">MERCHANT TITLES</h4>
-                    <p className="text-[9px] font-bold text-muted-foreground uppercase">商人系統 称号リスト (準備中)</p>
+                    <p className="text-[9px] font-bold text-muted-foreground uppercase">商人系統 称号リスト</p>
                   </div>
                 </div>
-                <div className="h-64 flex items-center justify-center border border-dashed border-border rounded-lg">
-                  <span className="text-[10px] font-black uppercase tracking-widest">COMING SOON</span>
+                
+                <div className="space-y-8 max-h-[1200px] overflow-y-auto pr-4 custom-scrollbar">
+                  {['累計収益', '保守・継続', '月間アクション', '単価・瞬発力', 'リピート・信頼', '複合・時間'].map(cat => (
+                    <div key={cat} className="space-y-3">
+                      <div className="flex items-center gap-2 mb-4">
+                        <div className="px-3 py-1 rounded-full border border-amber-500/30 bg-amber-500/10 backdrop-blur-sm">
+                          <span className="text-[10px] font-black uppercase tracking-widest text-amber-500">{cat}</span>
+                        </div>
+                        <div className="flex-1 h-[1px] bg-border opacity-30" />
+                      </div>
+                      <div className="grid grid-cols-1 gap-2">
+                        {MERCHANT_TITLE_DEFS.filter(d => d.category === cat).map(def => (
+                          <div key={def.id} className="group p-2 rounded bg-secondary/10 border border-border/30 hover:border-amber-500/30 transition-all">
+                            <div className="text-[10px] font-black text-foreground group-hover:text-amber-500 transition-colors">{def.name}</div>
+                            <div className="text-[8px] font-bold text-muted-foreground leading-tight mt-0.5">{def.description}</div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  ))}
                 </div>
               </div>
 
