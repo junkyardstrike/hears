@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import { useHearsStore, ClientData, CaseData } from '@/store/useHearsStore';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -21,10 +21,68 @@ export default function ClientsDashboard() {
   const [editForm, setEditForm] = useState<Partial<ClientData>>({});
   const [expandedClientId, setExpandedClientId] = useState<string | null>(null);
 
-  const filteredClients = clients.filter(c => 
-    c.name.toLowerCase().includes(search.toLowerCase()) ||
-    (c.managerName || '').toLowerCase().includes(search.toLowerCase())
-  );
+  const clientsWithStats = useMemo(() => {
+    const filtered = clients.filter(c => 
+      c.name.toLowerCase().includes(search.toLowerCase()) ||
+      (c.managerName || '').toLowerCase().includes(search.toLowerCase())
+    );
+
+    const now = new Date();
+    
+    return filtered.map(c => {
+      const clientCasesRaw = cases.filter(item => item.clientId === c.id || item.contractEntity === c.name);
+      
+      let clientTotalGross = 0;
+      let clientTotalStock = 0;
+      let clientTotalShot = 0;
+
+      const clientCases = clientCasesRaw.map(caseItem => {
+        let caseGross = 0;
+        let caseStock = 0;
+        let caseShot = 0;
+        let monthsActive = 0;
+        let recognitionMonth = '';
+        
+        if (!caseItem.finance) return { ...caseItem, caseGross, caseStock, caseShot, monthsActive, recognitionMonth };
+        
+        const isStockType = caseItem.genre === 'HP制作' || caseItem.genre === 'SNS運用';
+        if (isStockType) {
+          caseShot = caseItem.finance.oneTimeFee || 0;
+          recognitionMonth = caseItem.finance.oneTimeFeeMonth || caseItem.finance.revenueStartMonth || '';
+          
+          const startStr = caseItem.finance.revenueStartMonth;
+          if (startStr) {
+            const startYear = parseInt(startStr.split('-')[0]);
+            const startMonth = parseInt(startStr.split('-')[1]) - 1;
+            const startD = new Date(startYear, startMonth, 1);
+            const nowD = new Date(now.getFullYear(), now.getMonth(), 1);
+            if (nowD >= startD) {
+               monthsActive = (nowD.getFullYear() - startD.getFullYear()) * 12 + (nowD.getMonth() - startD.getMonth()) + 1;
+               caseStock = (caseItem.finance.maintenanceFee || 0) * monthsActive;
+            }
+          }
+        } else {
+          caseShot = caseItem.finance.spotFee || 0;
+          recognitionMonth = caseItem.finance.spotMonth || caseItem.finance.revenueStartMonth || '';
+        }
+        
+        caseGross = caseStock + caseShot;
+        clientTotalGross += caseGross;
+        clientTotalStock += caseStock;
+        clientTotalShot += caseShot;
+        
+        return { ...caseItem, caseGross, caseStock, caseShot, monthsActive, recognitionMonth };
+      }).sort((a,b) => b.updatedAt - a.updatedAt);
+
+      return {
+        ...c,
+        clientCases,
+        clientTotalGross,
+        clientTotalStock,
+        clientTotalShot
+      };
+    }).sort((a, b) => b.clientTotalGross - a.clientTotalGross);
+  }, [clients, search, cases]);
 
   const handleAdd = () => {
     const name = prompt('取引先法人名を入力してください', '新規取引先');
@@ -82,40 +140,15 @@ export default function ClientsDashboard() {
 
       {/* 一覧 */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-        {filteredClients.length === 0 ? (
+        {clientsWithStats.length === 0 ? (
           <div className="py-24 text-center bg-card border border-dashed border-border rounded-lg animate-in fade-in duration-700 col-span-1 lg:col-span-2">
              <Building2 className="w-16 h-16 text-muted-foreground mx-auto opacity-10 mb-6" />
              <h3 className="text-xl font-bold italic tracking-tighter text-foreground mb-1">NO CLIENTS REGISTERED</h3>
              <p className="text-muted-foreground font-bold text-[10px] uppercase tracking-widest opacity-40">取引先が登録されていません</p>
           </div>
         ) : (
-          filteredClients.sort((a, b) => b.updatedAt - a.updatedAt).map((c) => {
-            const clientCases = cases.filter(item => item.clientId === c.id || item.contractEntity === c.name).sort((a,b) => b.updatedAt - a.updatedAt);
+          clientsWithStats.map((c) => {
             const isExpanded = expandedClientId === c.id;
-            
-            // Calculate total gross revenue for this client
-            let clientTotalGross = 0;
-            const now = new Date();
-            clientCases.forEach(caseItem => {
-              if (!caseItem.finance) return;
-              const isStockType = caseItem.genre === 'HP制作' || caseItem.genre === 'SNS運用';
-              if (isStockType) {
-                clientTotalGross += caseItem.finance.oneTimeFee || 0;
-                const startStr = caseItem.finance.revenueStartMonth;
-                if (startStr) {
-                  const startYear = parseInt(startStr.split('-')[0]);
-                  const startMonth = parseInt(startStr.split('-')[1]) - 1;
-                  const startD = new Date(startYear, startMonth, 1);
-                  const nowD = new Date(now.getFullYear(), now.getMonth(), 1);
-                  if (nowD >= startD) {
-                     const monthsActive = (nowD.getFullYear() - startD.getFullYear()) * 12 + (nowD.getMonth() - startD.getMonth()) + 1;
-                     clientTotalGross += (caseItem.finance.maintenanceFee || 0) * monthsActive;
-                  }
-                }
-              } else {
-                clientTotalGross += caseItem.finance.spotFee || 0;
-              }
-            });
 
             return (
               <div key={c.id} className={cn(
@@ -155,14 +188,14 @@ export default function ClientsDashboard() {
                            <div className="flex flex-col text-left">
                               <span className="text-[8px] font-bold text-muted-foreground uppercase tracking-widest opacity-40 mb-1">CASES</span>
                               <span className="text-lg font-bold italic tracking-tighter text-primary font-[family-name:var(--font-outfit)]">
-                                {clientCases.length}
+                                {c.clientCases.length}
                               </span>
                            </div>
                            <div className="w-px h-8 bg-border/50" />
                            <div className="flex flex-col text-right lg:text-left">
                               <span className="text-[8px] font-bold text-muted-foreground uppercase tracking-widest opacity-40 mb-1">TOTAL REVENUE (GROSS)</span>
                               <span className="text-lg font-bold tracking-tight text-foreground">
-                                ¥{clientTotalGross.toLocaleString()}
+                                ¥{c.clientTotalGross.toLocaleString()}
                               </span>
                            </div>
                         </div>
@@ -206,52 +239,103 @@ export default function ClientsDashboard() {
                    </div>
                 </div>
 
-                {/* 展開時の案件リスト */}
+                {/* 展開時の詳細情報 */}
                 {isExpanded && (
-                  <div className="border-t border-border/50 bg-secondary/5 p-8 animate-in slide-in-from-top-4 duration-300">
+                  <div className="border-t border-border/50 bg-secondary/10 p-4 lg:p-8 animate-in slide-in-from-top-4 duration-300">
+                    <div className="flex flex-col lg:flex-row gap-4 mb-6">
+                      <div className="flex-1 bg-card border border-border p-5 rounded-md flex flex-col gap-4">
+                        <div className="flex flex-col">
+                          <span className="text-[9px] font-bold text-muted-foreground uppercase tracking-widest mb-1">MANAGER / 担当者</span>
+                          <span className="text-sm font-bold text-foreground">{c.managerName || '未設定'}</span>
+                        </div>
+                        <div className="w-full h-px bg-border" />
+                        <div className="flex flex-col">
+                          <span className="text-[9px] font-bold text-muted-foreground uppercase tracking-widest mb-1">MEMO / メモ</span>
+                          <span className="text-sm font-medium whitespace-pre-wrap leading-relaxed">{c.memo || <span className="opacity-40 italic">未入力</span>}</span>
+                        </div>
+                      </div>
+                      
+                      <div className="flex-1 bg-card border border-border p-5 rounded-md flex flex-col justify-center gap-4">
+                        <div className="flex items-center justify-between">
+                          <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">CUMULATIVE MAINTENANCE</span>
+                          <span className="text-lg font-bold tracking-tight text-emerald-500">¥{c.clientTotalStock.toLocaleString()}</span>
+                        </div>
+                        <div className="flex items-center justify-between">
+                          <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">PRODUCTION / SPOT TOTAL</span>
+                          <span className="text-lg font-bold tracking-tight text-blue-500">¥{c.clientTotalShot.toLocaleString()}</span>
+                        </div>
+                      </div>
+                    </div>
+
                     <div className="flex items-center justify-between mb-6">
                       <h4 className="text-sm font-bold italic tracking-tighter text-foreground flex items-center gap-2 font-[family-name:var(--font-outfit)] uppercase">
                         <Briefcase className="w-5 h-5 text-primary" /> ASSOCIATED CASES
                       </h4>
                     </div>
-                    {clientCases.length === 0 ? (
+                    {c.clientCases.length === 0 ? (
                       <div className="text-center py-10 bg-card rounded-lg border border-dashed border-border">
                         <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest opacity-50">紐づく案件はありません</p>
                       </div>
                     ) : (
                       <div className="overflow-x-auto bg-card rounded-lg border border-border">
-                        <table className="w-full text-left">
+                        <table className="w-full text-left whitespace-nowrap">
                           <thead>
                             <tr className="border-b border-border bg-muted/50">
-                              <th className="p-4 text-[9px] font-bold text-muted-foreground uppercase tracking-widest">案件名 / CASE NAME</th>
-                              <th className="p-4 text-[9px] font-bold text-muted-foreground uppercase tracking-widest">ステータス / STATUS</th>
-                              <th className="p-4 text-[9px] font-bold text-muted-foreground uppercase tracking-widest text-right">月額保守 / MONTHLY</th>
-                              <th className="p-4 w-16"></th>
+                              <th className="p-4 text-[9px] font-bold text-muted-foreground uppercase tracking-widest">案件名・カテゴリ</th>
+                              <th className="p-4 text-[9px] font-bold text-muted-foreground uppercase tracking-widest">ステータス</th>
+                              <th className="p-4 text-[9px] font-bold text-muted-foreground uppercase tracking-widest">計上月</th>
+                              <th className="p-4 text-[9px] font-bold text-muted-foreground uppercase tracking-widest text-right">制作/SPOT</th>
+                              <th className="p-4 text-[9px] font-bold text-muted-foreground uppercase tracking-widest text-right">保守(月額/累計/月数)</th>
+                              <th className="p-4 text-[9px] font-bold text-muted-foreground uppercase tracking-widest text-right">TOTAL</th>
+                              <th className="p-4 w-12"></th>
                             </tr>
                           </thead>
                           <tbody className="divide-y divide-border">
-                            {clientCases.map((caseItem) => (
+                            {c.clientCases.map((caseItem) => (
                               <tr 
                                 key={caseItem.id} 
                                 className="group hover:bg-muted/50 transition-colors cursor-pointer"
                                 onClick={() => router.push(`/cases/${caseItem.id}`)}
                               >
                                 <td className="p-4">
-                                  <span className="text-sm font-bold tracking-tight text-foreground">{caseItem.name}</span>
+                                  <div className="flex flex-col">
+                                    <span className="text-sm font-bold tracking-tight text-foreground">{caseItem.name}</span>
+                                    <span className="text-[9px] font-bold text-muted-foreground opacity-60 mt-1">{caseItem.genre || '未分類'}</span>
+                                  </div>
                                 </td>
                                 <td className="p-4">
-                                  <Badge className={cn("border-none font-bold text-[10px] uppercase tracking-widest px-3 py-1 rounded-md", 
+                                  <Badge className={cn("border-none font-bold text-[9px] uppercase tracking-widest px-2 py-0.5 rounded-md", 
                                     caseItem.status === 'active' ? "bg-emerald-500/10 text-emerald-600" : "bg-secondary text-muted-foreground"
                                   )}>
                                     {caseItem.status === 'active' ? '進行中' : 'アーカイブ'}
                                   </Badge>
                                 </td>
-                                <td className="p-4 text-right">
-                                  <span className="text-base font-bold tracking-tight text-foreground">
-                                    ¥{((caseItem.finance?.maintenanceFee || 0)).toLocaleString()}
+                                <td className="p-4">
+                                  <span className="text-[11px] font-bold text-foreground">
+                                    {caseItem.recognitionMonth || '-'}
                                   </span>
                                 </td>
-                                <td className="p-4">
+                                <td className="p-4 text-right">
+                                  <span className="text-[13px] font-bold text-blue-500">
+                                    ¥{caseItem.caseShot.toLocaleString()}
+                                  </span>
+                                </td>
+                                <td className="p-4 text-right">
+                                  <div className="flex flex-col items-end">
+                                    <span className="text-[13px] font-bold text-emerald-500">
+                                      ¥{caseItem.caseStock.toLocaleString()}
+                                    </span>
+                                    <span className="text-[9px] font-bold text-muted-foreground opacity-60 mt-1">
+                                      ¥{(caseItem.finance?.maintenanceFee || 0).toLocaleString()}/月 (x{caseItem.monthsActive}ヶ月)
+                                    </span>
+                                  </div>
+                                </td>
+                                <td className="p-4 text-right">
+                                  <span className="text-[14px] font-bold tracking-tight text-foreground">
+                                    ¥{caseItem.caseGross.toLocaleString()}
+                                  </span>
+                                </td>
+                                <td className="p-4 text-right">
                                   <ArrowUpRight className="w-4 h-4 text-muted-foreground opacity-20 group-hover:opacity-100 transition-opacity ml-auto" />
                                 </td>
                               </tr>

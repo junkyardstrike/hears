@@ -11,11 +11,12 @@ import { format } from 'date-fns';
 import { 
   Plus, Trash2, ExternalLink, Shield, Server, FileText, 
   CheckCircle2, Circle, MoreVertical, X, Check, Clock, ChevronRight, Briefcase,
-  Search, Filter, Tag, LayoutGrid, List, Calendar, RefreshCw
+  Search, Filter, Tag, LayoutGrid, List, Calendar, RefreshCw, ChevronDown, ChevronUp
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Input } from '@/components/ui/input';
-import { Suspense } from 'react';
+import { Suspense, useState } from 'react';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 
 function CasesViewContent() {
   const { cases, createCase, deleteCase, updateCase } = useHearsStore();
@@ -23,6 +24,8 @@ function CasesViewContent() {
   const searchParams = useSearchParams();
   
   const initialFilter = searchParams.get('filter') || 'all';
+  const [sortOption, setSortOption] = useState<'revenueStartMonth' | 'updatedAt' | 'amount'>('revenueStartMonth');
+  const [sortOrder, setSortOrder] = useState<'desc' | 'asc'>('desc');
 
   const handleCreate = () => {
     const name = prompt('案件名を入力してください', '新規案件');
@@ -54,9 +57,49 @@ function CasesViewContent() {
       );
     }
 
+    const sortedList = list.map(c => {
+      let caseGross = 0;
+      if (c.finance) {
+        if (c.genre === 'HP制作' || c.genre === 'SNS運用') {
+          const now = new Date();
+          let caseStock = 0;
+          let caseShot = c.finance.oneTimeFee || 0;
+          const startStr = c.finance.revenueStartMonth;
+          if (startStr) {
+             const startYear = parseInt(startStr.split('-')[0]);
+             const startMonth = parseInt(startStr.split('-')[1]) - 1;
+             const startD = new Date(startYear, startMonth, 1);
+             const nowD = new Date(now.getFullYear(), now.getMonth(), 1);
+             if (nowD >= startD) {
+                const monthsActive = (nowD.getFullYear() - startD.getFullYear()) * 12 + (nowD.getMonth() - startD.getMonth()) + 1;
+                caseStock = (c.finance.maintenanceFee || 0) * monthsActive;
+             }
+          }
+          caseGross = caseShot + caseStock;
+        } else {
+          caseGross = c.finance.spotFee || 0;
+        }
+      }
+      return { ...c, caseGross };
+    }).sort((a, b) => {
+      let comparison = 0;
+      if (sortOption === 'updatedAt') {
+        comparison = a.updatedAt - b.updatedAt;
+      } else if (sortOption === 'amount') {
+        comparison = a.caseGross - b.caseGross;
+      } else if (sortOption === 'revenueStartMonth') {
+        const aMonth = a.finance?.revenueStartMonth || '';
+        const bMonth = b.finance?.revenueStartMonth || '';
+        if (!aMonth && bMonth) return 1; // empty always at bottom
+        if (aMonth && !bMonth) return -1;
+        comparison = aMonth.localeCompare(bMonth);
+      }
+      return sortOrder === 'desc' ? -comparison : comparison;
+    });
+
     return (
       <div className="grid grid-cols-2 lg:grid-cols-1 gap-2 lg:gap-4">
-        {list.sort((a, b) => b.updatedAt - a.updatedAt).map((c, idx) => (
+        {sortedList.map((c, idx) => (
           <div key={`${c.id}-${idx}`} className="block group relative">
             <Link href={`/cases/${c.id}`} className="absolute inset-0 z-0 rounded-lg" />
             <div className="bg-card p-3 lg:p-8 rounded-lg border border-border hover:border-primary/50 transition-all flex flex-col lg:flex-row items-start lg:items-center gap-2 lg:gap-8 relative overflow-hidden pointer-events-none">
@@ -173,6 +216,25 @@ function CasesViewContent() {
           </div>
 
           <div className="flex flex-col sm:flex-row gap-3 w-full xl:w-auto shrink-0">
+            <div className="flex items-center gap-2">
+              <Select value={sortOption} onValueChange={(val: any) => setSortOption(val)}>
+                <SelectTrigger className="h-12 lg:h-14 bg-input border border-border rounded-md font-bold text-[10px] lg:text-xs w-40">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="revenueStartMonth">収益開始月順</SelectItem>
+                  <SelectItem value="updatedAt">編集日順</SelectItem>
+                  <SelectItem value="amount">累計金額順</SelectItem>
+                </SelectContent>
+              </Select>
+              <Button 
+                variant="outline" 
+                className="h-12 lg:h-14 w-12 lg:w-14 px-0 bg-card"
+                onClick={() => setSortOrder(sortOrder === 'desc' ? 'asc' : 'desc')}
+              >
+                {sortOrder === 'desc' ? <ChevronDown className="w-4 h-4" /> : <ChevronUp className="w-4 h-4" />}
+              </Button>
+            </div>
             <div className="relative flex-1 sm:w-80">
               <Search className="absolute left-3 lg:left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground opacity-30" />
               <Input 
