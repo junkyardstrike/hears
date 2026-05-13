@@ -439,7 +439,11 @@ const EvolutionAvatar = ({ type, tier, size = 64, className }: { type: ClassType
              tier >= 3 && "scale-110",
              tier >= 5 && "scale-125 drop-shadow-[0_0_15px_rgba(255,255,255,0.3)]"
            )}
-           style={{ imageRendering: 'pixelated', mixBlendMode: 'screen' }} 
+           style={{ 
+             imageRendering: 'pixelated', 
+             mixBlendMode: 'screen',
+             filter: 'url(#remove-black)' // Double safety chromakey
+           }} 
          />
       </div>
 
@@ -490,6 +494,22 @@ const AvatarNode = ({ classType, tier }: { classType: ClassType, tier: number })
       </div>
 
       <div className="absolute bottom-1 right-1 text-[10px] font-black opacity-40 z-10">T{tier}</div>
+
+      {/* Global SVG Filters for Chromakey */}
+      <svg className="absolute w-0 h-0 overflow-hidden" aria-hidden="true">
+        <filter id="remove-black">
+          {/* 
+            Alpha = R + G + B - threshold 
+            This makes any dark pixel (artifacts or near-black) fully transparent.
+          */}
+          <feColorMatrix type="matrix" values="
+            1 0 0 0 0
+            0 1 0 0 0
+            0 0 1 0 0
+            1.5 1.5 1.5 0 -0.1" 
+          />
+        </filter>
+      </svg>
     </div>
   );
 };
