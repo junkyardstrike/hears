@@ -10,11 +10,11 @@ import { cn } from '@/lib/utils';
 import { Crown, Sparkles, Sword, Coins, ArrowUpRight, Flame, Shield, Star, Wand2, Castle } from 'lucide-react';
 
 const TIER_THRESHOLDS = [
-  { tier: 1, level: 1, min: 0 },
-  { tier: 2, level: 20, min: 2000000 },
-  { tier: 3, level: 50, min: 5000000 },
-  { tier: 4, level: 100, min: 10000000 },
-  { tier: 5, level: 500, min: 50000000 }
+  { tier: 1, level: 1, min: 0, title: "初期ジョブ" },
+  { tier: 2, level: 20, min: 2000000, title: "最初の壁を突破した専門家" },
+  { tier: 3, level: 50, min: 5000000, title: "業界で自立した実力者" },
+  { tier: 4, level: 100, min: 10000000, title: "卓越した技術を持つ熟練者" },
+  { tier: 5, level: 500, min: 50000000, title: "極致に至った伝説の存在" }
 ];
 
 type ClassType = 'mage' | 'merchant' | 'hero';
@@ -24,7 +24,7 @@ const CLASS_INFO = {
     title: "魔法使い系統",
     subTitle: "Web / SNS 開発",
     icon: Wand2,
-    jobs: ["見習い魔法使い", "魔導士", "大魔導士", "賢者", "星詠み"],
+    jobs: ["魔法使い", "魔導師", "大賢者", "真魔導学者", "真理の探求者"],
     colorClass: "text-emerald-500",
     bgClass: "bg-emerald-500",
     borderClass: "border-emerald-500/30",
@@ -34,7 +34,7 @@ const CLASS_INFO = {
     title: "商人系統",
     subTitle: "SiGMARK",
     icon: Coins,
-    jobs: ["見習い商人", "行商人", "豪商", "大富豪", "貿易王"],
+    jobs: ["商人", "豪商", "資本家", "大富豪", "盤上の支配者"],
     colorClass: "text-amber-500",
     bgClass: "bg-amber-500",
     borderClass: "border-amber-500/30",
@@ -44,7 +44,7 @@ const CLASS_INFO = {
     title: "勇者系統",
     subTitle: "OTHER GENRES",
     icon: Sword,
-    jobs: ["見習い戦士", "剣士", "騎士", "勇者", "伝説の勇者"],
+    jobs: ["勇者", "騎士", "聖騎士", "剣聖", "終焉を断つ者"],
     colorClass: "text-blue-500",
     bgClass: "bg-blue-500",
     borderClass: "border-blue-500/30",
@@ -164,6 +164,7 @@ export default function TemplePage() {
        const level = Math.floor(rev / 100000);
        const tier = getTierFromRevenue(rev);
        const jobName = CLASS_INFO[t].jobs[tier - 1];
+       const currentTitle = TIER_THRESHOLDS.find(th => th.tier === tier)?.title || "";
        const nextThreshold = TIER_THRESHOLDS.find(th => th.tier === tier + 1);
        const nextLevel = nextThreshold ? nextThreshold.level : null;
        const toNext = nextLevel ? nextLevel - level : 0;
@@ -196,6 +197,7 @@ export default function TemplePage() {
          level: Math.max(1, level),
          tier,
          jobName,
+         currentTitle,
          toNext,
          progress,
          achieveMonth,
@@ -233,7 +235,8 @@ export default function TemplePage() {
                   <AvatarNode classType={type} tier={stats.tier} />
                   <div className="flex-1 min-w-0">
                     <span className={cn("text-[9px] font-black uppercase tracking-widest mb-1 block", info.colorClass)}>{info.subTitle}</span>
-                    <h2 className="text-2xl font-black tracking-tight text-foreground leading-tight mb-2 truncate">{stats.jobName}</h2>
+                    <h2 className="text-2xl font-black tracking-tight text-foreground leading-tight truncate mb-1">{stats.jobName}</h2>
+                    <div className="text-[9px] font-bold text-muted-foreground opacity-80 mb-2">&quot;{stats.currentTitle}&quot;</div>
                     <div className="flex items-end gap-2">
                       <span className="text-3xl font-black font-[family-name:var(--font-outfit)] leading-none">Lv.{stats.level}</span>
                       <span className="text-[10px] font-bold text-muted-foreground mb-1">({stats.tier}次職)</span>
@@ -302,10 +305,11 @@ export default function TemplePage() {
 
           <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
             {TIER_THRESHOLDS.map((t, idx) => (
-              <div key={t.tier} className={cn("p-4 rounded-lg border", idx === 0 ? "border-muted bg-secondary/50" : "border-border bg-card")}>
+              <div key={t.tier} className={cn("p-4 rounded-lg border flex flex-col h-full", idx === 0 ? "border-muted bg-secondary/50" : "border-border bg-card")}>
                 <div className="text-[9px] font-black text-primary uppercase tracking-widest mb-1">TIER {t.tier}</div>
                 <div className="text-lg font-black font-[family-name:var(--font-outfit)] leading-none mb-2">Lv.{t.level} ~</div>
-                <div className="text-[10px] font-bold text-muted-foreground">累計 ¥{(t.min/10000).toLocaleString()}万</div>
+                <div className="text-[10px] font-bold text-muted-foreground mb-3">累計 ¥{(t.min/10000).toLocaleString()}万</div>
+                <div className="text-[8px] font-bold text-muted-foreground mt-auto pt-3 border-t border-border/50">{t.title}</div>
               </div>
             ))}
           </div>
