@@ -172,8 +172,8 @@ export default function TemplePage() {
       maintenanceTotals[t] += caseMaintenance;
       spotTotals[t] += caseSpot;
 
-      // Aggregate by Client
-      const cName = c.clientName || '不明な取引先';
+      // Aggregate by Client (Ranking)
+      const cName = c.contractEntity || c.clientName || '不明な取引先';
       if (!clientRevenueMap[t][cName]) {
         clientRevenueMap[t][cName] = { name: cName, count: 0, revenue: 0 };
       }

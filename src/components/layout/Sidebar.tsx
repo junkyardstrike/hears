@@ -24,7 +24,7 @@ const PixelBot = () => (
 
 const menuItems = [
   { label: 'TEMPLE', jpLabel: 'ステータス・神殿', icon: Crown, href: '/temple', color: 'text-white' },
-  { label: 'DASHBOARD', jpLabel: '取引先・案件管理', icon: LayoutDashboard, href: '/', color: 'text-white' },
+  { label: 'DASHBOARD', jpLabel: '取引先・案件管理', icon: LayoutDashboard, href: '/clients', color: 'text-white' },
   { label: 'HEARING', jpLabel: 'ヒアリング管理', icon: ClipboardList, href: '/hearing', color: 'text-white' },
   { label: 'CASES', jpLabel: '案件管理', icon: Briefcase, href: '/cases', color: 'text-white' },
   { label: 'FINANCE', jpLabel: '収益分析', icon: BarChart3, href: '/finance', color: 'text-white' },
