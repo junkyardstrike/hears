@@ -644,8 +644,11 @@ export default function TemplePage() {
        }
        if (tier === 1) achieveMonth = "INITIAL";
 
-       const chartData = [];
-       for(let i=11; i>=0; i--) {
+               const chartData = [];
+        const firstMonth = history[t].length > 0 ? history[t].reduce((min, h) => h.month < min ? h.month : min, history[t][0].month) : format(nowD, 'yyyy-MM');
+        const totalMonths = Math.max(12, differenceInMonths(nowD, parseISO(`${firstMonth}-01`)) + 1);
+        
+        for(let i=totalMonths-1; i>=0; i--) {
           const mStr = format(addMonths(nowD, -i), 'yyyy-MM');
           const found = history[t].find(x => x.month === mStr);
           const dateObj = parseISO(`${mStr}-01`);
@@ -1114,9 +1117,9 @@ export default function TemplePage() {
                        <span className="text-[8px] font-black text-muted-foreground uppercase">{stats.chartData[0]?.month.split('-')[0]} - {stats.chartData[stats.chartData.length-1]?.month.split('-')[0]}</span>
                     </div>
                   </div>
-                                    <div className="h-[160px] w-full bg-secondary/10 rounded-xl p-4 border border-border/50 relative overflow-hidden">
-                    <div className="absolute inset-0 bg-gradient-to-b from-transparent to-background/50 pointer-events-none" />
-                    <ResponsiveContainer width="100%" height="100%">
+                                    <div className="h-[180px] w-full bg-secondary/10 rounded-xl border border-border/50 relative overflow-hidden">
+                    <div className="absolute inset-0 bg-gradient-to-b from-transparent to-background/50 pointer-events-none z-20" />
+                    <div className="h-full w-full overflow-x-auto custom-scrollbar p-4"><div style={{ width: Math.max(100, stats.chartData.length * 35) + 'px', minWidth: '100%', height: '100%' }}><ResponsiveContainer width="100%" height="100%">
                       <AreaChart data={stats.chartData} margin={{ top: 10, right: 10, left: 10, bottom: 0 }}>
                         <defs>
                           <linearGradient id={`gradient-${type}`} x1="0" y1="0" x2="0" y2="1">
@@ -1157,7 +1160,7 @@ export default function TemplePage() {
                           animationDuration={1500}
                         />
                       </AreaChart>
-                    </ResponsiveContainer>
+                    </ResponsiveContainer></div></div>
                   </div>
 
                 {/* Title History */}
