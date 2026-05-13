@@ -486,7 +486,7 @@ const AvatarNode = ({ classType, tier }: { classType: ClassType, tier: number })
         <div className="absolute bottom-2 w-12 h-3 bg-black/40 blur-[2px] rounded-[100%]" />
 
         {/* Character Image */}
-        <CSSPixelArt type={classType} tier={tier} size={80} className="relative z-10" />
+        <EvolutionAvatar type={classType} tier={tier} size={88} className="relative z-10" />
       </div>
 
       <div className="absolute bottom-1 right-1 text-[10px] font-black opacity-40 z-10">T{tier}</div>
