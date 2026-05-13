@@ -5,7 +5,7 @@ import { useMemo } from 'react';
 import { useHearsStore, CaseData } from '@/store/useHearsStore';
 import { Card, CardContent } from '@/components/ui/card';
 import { Progress } from '@/components/ui/progress';
-import { BarChart, Bar, XAxis, Tooltip, ResponsiveContainer, Cell, LabelList } from 'recharts';
+import { BarChart, Bar, XAxis, Tooltip, ResponsiveContainer, Cell, LabelList, AreaChart, Area } from 'recharts';
 import { parseISO, isAfter, startOfMonth, format, addMonths, differenceInMonths } from 'date-fns';
 import { cn } from '@/lib/utils';
 import { Crown, Sparkles, Sword, Coins, ArrowUpRight, Flame, Shield, Star, Wand2, Castle } from 'lucide-react';
@@ -206,9 +206,11 @@ export default function TemplePage() {
        // Top Clients Ranking
        const topClients = Object.values(clientRevenueMap[t])
          .sort((a, b) => b.revenue - a.revenue)
-         .slice(0, 3);
+         .slice(0, 5);
          
        const revenueToNextLevel = nextThreshold ? Math.max(0, nextThreshold.min - rev) : 0;
+       const nextLevelExpTarget = (Math.floor(rev / 100000) + 1) * 100000;
+       const revenueToNextExpLevel = Math.max(0, nextLevelExpTarget - rev);
 
        // Calculate achieve month
        history[t].sort((a,b) => a.month.localeCompare(b.month));
@@ -225,10 +227,14 @@ export default function TemplePage() {
        if (tier === 1) achieveMonth = "INITIAL";
 
        const chartData = [];
-       for(let i=5; i>=0; i--) {
+       for(let i=11; i>=0; i--) {
           const mStr = format(addMonths(nowD, -i), 'yyyy-MM');
           const found = history[t].find(x => x.month === mStr);
-          chartData.push({ month: format(parseISO(`${mStr}-01`), 'MMM'), value: found ? found.revenue : 0 });
+          const dateObj = parseISO(`${mStr}-01`);
+          chartData.push({ 
+            month: `${format(dateObj, 'M')}月`, 
+            value: found ? found.revenue : 0 
+          });
        }
 
        result[t] = {
@@ -245,6 +251,7 @@ export default function TemplePage() {
          spotTotal: spotTotals[t],
          topClients,
          revenueToNextLevel,
+         revenueToNextExpLevel,
          chartData
        };
     });
@@ -294,6 +301,10 @@ export default function TemplePage() {
                     <span className="text-xs font-black uppercase">{stats.toNext > 0 ? `あと ${stats.toNext} Lv` : 'MAX TIER'}</span>
                   </div>
                   <Progress value={stats.progress} className={cn("h-2 bg-secondary", `[&>div]:${info.bgClass}`)} />
+                  <div className="flex justify-between items-center text-[9px] font-bold text-muted-foreground uppercase tracking-tight">
+                    <span>Lv.{stats.level}</span>
+                    <span>次レベル(Lv.{stats.level+1})まで: <span className="text-foreground">¥{stats.revenueToNextExpLevel.toLocaleString()}</span></span>
+                  </div>
                 </div>
 
                 {/* Stats List (Always Visible) */}
@@ -322,13 +333,13 @@ export default function TemplePage() {
                         <div className="text-sm font-black text-primary">¥{stats.revenue.toLocaleString()}</div>
                       </div>
                       <div>
-                        <div className="text-[9px] font-bold text-muted-foreground uppercase">次ランクまで</div>
+                        <div className="text-[9px] font-bold text-muted-foreground uppercase">次の転職まで</div>
                         <div className="text-sm font-black text-amber-500">¥{stats.revenueToNextLevel.toLocaleString()}</div>
                       </div>
                     </div>
 
                     <div>
-                      <div className="text-[9px] font-bold text-muted-foreground uppercase mb-2 tracking-widest">討伐記録 (収益TOP3取引先)</div>
+                      <div className="text-[9px] font-bold text-muted-foreground uppercase mb-2 tracking-widest">討伐記録 (収益TOP5取引先)</div>
                       <div className="space-y-2">
                         {stats.topClients.map((client: any, i: number) => (
                           <div key={i} className="flex justify-between items-center bg-background/50 p-2 rounded border border-border/30">
@@ -357,19 +368,22 @@ export default function TemplePage() {
 
                 {/* Chart */}
                 <div className="pt-4 border-t border-border">
-                  <span className="text-[9px] font-bold text-muted-foreground uppercase tracking-widest block mb-4">MONTHLY REVENUE TREND (月別収益推移)</span>
+                  <span className="text-[9px] font-bold text-muted-foreground uppercase tracking-widest block mb-4">ANNUAL REVENUE TREND (年間収益推移)</span>
                   <div className="h-[140px] w-full">
                     <ResponsiveContainer width="100%" height="100%">
-                      <BarChart data={stats.chartData} margin={{ top: 20, right: 0, left: 0, bottom: 0 }}>
-                        <XAxis dataKey="month" axisLine={false} tickLine={false} tick={{fontSize: 9, fontWeight: 'bold', fill: '#94a3b8'}} />
-                        <Tooltip cursor={{fill: 'var(--secondary)'}} contentStyle={{ borderRadius: '8px', border: '1px solid var(--border)', background: 'var(--card)', color: 'var(--foreground)', fontSize: '10px', fontWeight: 'bold' }} formatter={(v: any) => `¥${v.toLocaleString()}`} />
-                        <Bar dataKey="value" radius={[2, 2, 0, 0]}>
-                          <LabelList dataKey="value" position="top" formatter={(v: any) => `¥${(v/10000).toFixed(0)}万`} style={{ fontSize: '8px', fontWeight: 'bold', fill: '#94a3b8' }} />
-                          {stats.chartData.map((entry: any, index: number) => (
-                            <Cell key={`cell-${index}`} fill={info.fillColor} />
-                          ))}
-                        </Bar>
-                      </BarChart>
+                      <AreaChart data={stats.chartData} margin={{ top: 20, right: 0, left: 0, bottom: 0 }}>
+                        <defs>
+                          <linearGradient id={`gradient-${type}`} x1="0" y1="0" x2="0" y2="1">
+                            <stop offset="5%" stopColor={info.fillColor} stopOpacity={0.3}/>
+                            <stop offset="95%" stopColor={info.fillColor} stopOpacity={0}/>
+                          </linearGradient>
+                        </defs>
+                        <XAxis dataKey="month" axisLine={false} tickLine={false} tick={{fontSize: 8, fontWeight: 'bold', fill: '#94a3b8'}} />
+                        <Tooltip cursor={{stroke: info.fillColor, strokeWidth: 1}} contentStyle={{ borderRadius: '8px', border: '1px solid var(--border)', background: 'var(--card)', color: 'var(--foreground)', fontSize: '10px', fontWeight: 'bold' }} formatter={(v: any) => `¥${v.toLocaleString()}`} />
+                        <Area type="monotone" dataKey="value" stroke={info.fillColor} strokeWidth={2} fillOpacity={1} fill={`url(#gradient-${type})`}>
+                          <LabelList dataKey="value" position="top" formatter={(v: any) => v > 0 ? `¥${(v/10000).toFixed(0)}万` : ''} style={{ fontSize: '7px', fontWeight: 'bold', fill: '#94a3b8' }} />
+                        </Area>
+                      </AreaChart>
                     </ResponsiveContainer>
                   </div>
                 </div>
