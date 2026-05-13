@@ -1000,27 +1000,35 @@ export default function TemplePage() {
                 {/* Avatar & Level */}
                 <div className="flex gap-6 items-center relative">
                   <AvatarNode classType={type} tier={stats.tier} />
-                                    <div className="flex-1 min-w-0">
-                                        <div className={cn("inline-block px-6 py-2 rounded-full border text-sm font-black uppercase tracking-[0.4em] mb-6 shadow-[0_0_20px_rgba(0,0,0,0.1)]", info.bgClass.replace('bg-', 'bg-opacity-20 '), info.borderClass, info.colorClass)}>
-                      {info.subTitle}
-                    </div>
-                    <h2 className="text-4xl font-black tracking-tight text-foreground leading-tight truncate mb-1.5">{stats.jobName}</h2>
-                    <div className="text-xs font-bold text-muted-foreground opacity-60 mb-4 tracking-wide">"{stats.currentTitle}"</div>
-                    <div className="flex items-end gap-3">
-                      <span className="text-5xl font-black font-[family-name:var(--font-outfit)] leading-none text-foreground">Lv.{stats.level}</span>
-                      <span className="text-xs font-black text-muted-foreground mb-1.5 opacity-40 uppercase tracking-widest">({stats.tier}次職)</span>
-                    </div>
-                  </div>
-                  {/* Latest Title */}
-                  {stats.titles?.[0] && (
-                    <div className="absolute top-0 right-0 flex flex-col items-end">
-                      <span className="text-[8px] font-bold text-muted-foreground uppercase tracking-widest mb-1">最近取得した称号</span>
-                      <div className="bg-primary/10 border border-primary/20 px-2 py-1 rounded flex items-center gap-1">
-                        <Medal className="w-3 h-3 text-primary" />
-                        <span className="text-[10px] font-black text-primary truncate max-w-[80px]">{stats.titles[0].name}</span>
+                                                      <div className="flex-1 min-w-0">
+                    <div className="flex justify-center mb-6">
+                      <div className={cn("inline-block px-6 py-2 rounded-full border text-sm font-black uppercase tracking-[0.4em] shadow-[0_0_20px_rgba(0,0,0,0.1)]", info.bgClass.replace('bg-', 'bg-opacity-20 '), info.borderClass, info.colorClass)}>
+                        {info.subTitle}
                       </div>
                     </div>
-                  )}
+                    
+                    <div className="flex items-center justify-between gap-4 mb-1.5">
+                      <h2 className="text-2xl font-black tracking-tight text-foreground leading-tight truncate">{stats.jobName}</h2>
+                      
+                      {/* Latest Title (Moved here to align with Job Name) */}
+                      {stats.titles?.[0] && (
+                        <div className="flex flex-col items-end shrink-0">
+                          <span className="text-[7px] font-bold text-muted-foreground uppercase tracking-widest mb-1">最近取得した称号</span>
+                          <div className="bg-primary/10 border border-primary/20 px-2 py-0.5 rounded flex items-center gap-1">
+                            <Medal className="w-2.5 h-2.5 text-primary" />
+                            <span className="text-[9px] font-black text-primary truncate max-w-[100px]">{stats.titles[0].name}</span>
+                          </div>
+                        </div>
+                      )}
+                    </div>
+
+                    <div className="text-xs font-bold text-muted-foreground opacity-60 mb-4 tracking-wide">"{stats.currentTitle}"</div>
+                    
+                    <div className="flex items-end gap-3">
+                      <span className="text-3xl font-black font-[family-name:var(--font-outfit)] leading-none text-foreground">Lv.{stats.level}</span>
+                      <span className="text-[10px] font-black text-muted-foreground mb-1 opacity-40 uppercase tracking-widest">({stats.tier}次職)</span>
+                    </div>
+                  </div>
                 </div>
 
                 {/* Progress */}
