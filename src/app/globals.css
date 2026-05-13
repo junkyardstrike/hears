@@ -46,6 +46,23 @@
   --radius-2xl: calc(var(--radius) * 1.8);
   --radius-3xl: calc(var(--radius) * 2.2);
   --radius-4xl: calc(var(--radius) * 2.6);
+
+  --animate-idle-bob: idle-bob 3s ease-in-out infinite;
+  --animate-particle-float: particle-float 4s ease-in-out infinite;
+  --animate-aura-pulse: aura-pulse 2s ease-in-out infinite;
+  
+  @keyframes idle-bob {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-4px); }
+  }
+  @keyframes particle-float {
+    0%, 100% { transform: translateY(0) scale(1); opacity: 0.4; }
+    50% { transform: translateY(-10px) scale(1.2); opacity: 1; }
+  }
+  @keyframes aura-pulse {
+    0%, 100% { opacity: 0.3; transform: scale(1); }
+    50% { opacity: 0.7; transform: scale(1.15); }
+  }
 }
 
 :root {

@@ -1,4 +1,5 @@
 'use client';
+import Image from 'next/image';
 
 import { useMemo } from 'react';
 import { useHearsStore, CaseData } from '@/store/useHearsStore';
@@ -24,7 +25,7 @@ const CLASS_INFO = {
   mage: {
     title: "魔法使い系統",
     subTitle: "Web / SNS 開発",
-    icon: Wand2,
+    imageSrc: "/assets/avatars/mage.png",
     jobs: ["魔法使い", "魔導師", "大賢者", "真魔導学者", "真理の探求者"],
     colorClass: "text-emerald-500",
     bgClass: "bg-emerald-500",
@@ -35,7 +36,7 @@ const CLASS_INFO = {
   merchant: {
     title: "商人系統",
     subTitle: "SiGMARK",
-    icon: Coins,
+    imageSrc: "/assets/avatars/merchant.png",
     jobs: ["商人", "豪商", "資本家", "大富豪", "盤上の支配者"],
     colorClass: "text-amber-500",
     bgClass: "bg-amber-500",
@@ -46,7 +47,7 @@ const CLASS_INFO = {
   hero: {
     title: "勇者系統",
     subTitle: "OTHER GENRES",
-    icon: Sword,
+    imageSrc: "/assets/avatars/hero.png",
     jobs: ["勇者", "騎士", "聖騎士", "剣聖", "終焉を断つ者"],
     colorClass: "text-blue-500",
     bgClass: "bg-blue-500",
@@ -70,7 +71,6 @@ const getTierFromRevenue = (revenue: number) => {
 // Avatar Component
 const AvatarNode = ({ classType, tier }: { classType: ClassType, tier: number }) => {
   const info = CLASS_INFO[classType];
-  const Icon = info.icon;
   
   return (
     <div className={cn(
@@ -80,20 +80,52 @@ const AvatarNode = ({ classType, tier }: { classType: ClassType, tier: number })
       tier >= 3 && "shadow-lg"
     )}>
       <div className={cn("absolute inset-0 opacity-10", info.bgClass)} />
-      {tier >= 4 && <div className="absolute inset-0 bg-gradient-to-tr from-white/0 via-white/20 to-white/0 animate-shimmer" />}
       
-      <Icon className={cn(
-        "w-12 h-12 transition-transform duration-500", 
-        info.colorClass,
+      {/* Tier 5 God Aura */}
+      {tier >= 5 && <div className={cn("absolute inset-0 opacity-50 mix-blend-screen animate-aura-pulse", info.bgClass)} style={{ filter: 'blur(10px)' }} />}
+
+      {/* Tiers 3+ Light Rays */}
+      {tier >= 3 && <div className="absolute inset-0 bg-gradient-to-tr from-white/0 via-white/10 to-white/0 animate-shimmer" />}
+
+      {/* Floating Particles for Mage */}
+      {classType === 'mage' && tier >= 3 && (
+        <>
+          <div className="absolute top-2 left-2 w-1.5 h-1.5 rounded-full bg-emerald-400 animate-particle-float" style={{ animationDelay: '0s' }} />
+          <div className="absolute bottom-4 right-3 w-2 h-2 rounded-full bg-emerald-300 animate-particle-float" style={{ animationDelay: '1s' }} />
+          <div className="absolute top-1/2 left-1/4 w-1 h-1 rounded-full bg-emerald-200 animate-particle-float" style={{ animationDelay: '2s' }} />
+        </>
+      )}
+
+      {/* Golden Coins for Merchant */}
+      {classType === 'merchant' && tier >= 3 && (
+        <>
+          <div className="absolute bottom-1 left-2 w-2 h-2 bg-yellow-400 rounded-full animate-bounce shadow-[0_0_8px_rgba(250,204,21,0.8)]" style={{ animationDuration: '2s' }} />
+          <div className="absolute bottom-2 right-2 w-3 h-3 bg-yellow-500 rounded-full animate-bounce shadow-[0_0_8px_rgba(250,204,21,0.8)]" style={{ animationDuration: '2.5s' }} />
+        </>
+      )}
+
+      {/* Hero Aura */}
+      {classType === 'hero' && tier >= 4 && (
+        <div className="absolute -bottom-4 w-[150%] h-12 bg-blue-500/30 blur-xl animate-aura-pulse rounded-full" />
+      )}
+
+      {/* Character Image */}
+      <div className={cn(
+        "relative w-20 h-20 transition-transform duration-700 animate-idle-bob mix-blend-screen",
         tier >= 2 && "scale-110",
         tier >= 4 && "scale-125",
-        tier === 5 && "animate-pulse drop-shadow-md"
-      )} />
+        tier >= 5 && "drop-shadow-[0_0_15px_rgba(255,255,255,0.5)]"
+      )}>
+        <Image 
+          src={info.imageSrc} 
+          alt={`${info.title} Avatar`}
+          fill
+          className="object-contain"
+          style={{ imageRendering: 'pixelated' }}
+        />
+      </div>
 
-      {tier >= 3 && <Sparkles className="absolute top-2 right-2 w-4 h-4 text-amber-300 animate-pulse" />}
-      {tier >= 5 && <Crown className="absolute -top-3 -right-3 w-8 h-8 text-yellow-400 drop-shadow-lg -rotate-12" />}
-      
-      <div className="absolute bottom-1 right-1 text-[10px] font-black opacity-40">T{tier}</div>
+      <div className="absolute bottom-1 right-1 text-[10px] font-black opacity-40 z-10">T{tier}</div>
     </div>
   );
 };
