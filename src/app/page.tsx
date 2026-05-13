@@ -234,7 +234,7 @@ export default function ClientsDashboard() {
                    ) : (
                      <div className="flex-1 w-full min-w-0 flex flex-col lg:flex-row items-start lg:items-center gap-4 lg:gap-8">
                         <div className="flex-1 w-full lg:w-auto min-w-0 text-left">
-                           <h3 className="text-lg lg:text-xl font-bold italic tracking-tighter text-foreground group-hover:text-primary transition-colors font-[family-name:var(--font-outfit)] leading-tight mb-1 truncate">
+                           <h3 className="text-base lg:text-lg font-bold italic tracking-tighter text-foreground group-hover:text-primary transition-colors font-[family-name:var(--font-outfit)] leading-snug mb-1 break-words line-clamp-2">
                              {c.name}
                            </h3>
                            <p className="text-[9px] font-bold text-muted-foreground tracking-widest opacity-60">ID: {c.id.toUpperCase().substring(0, 8)}</p>

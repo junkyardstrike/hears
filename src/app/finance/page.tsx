@@ -442,13 +442,14 @@ function NavCard({ label, subLabel, value, unit, icon, color, onClick }: any) {
       </div>
       
       <div className="relative z-10">
-        <div className="flex flex-col mb-0.5">
-          <span className="text-[9px] font-black text-foreground uppercase tracking-widest">{label}</span>
-          <span className="text-[6px] font-bold text-muted-foreground uppercase tracking-widest opacity-40">{subLabel}</span>
+        <div className="flex flex-col mb-1">
+          <span className="text-xs font-black text-foreground uppercase tracking-widest">{label}</span>
+          <span className="text-[8px] font-bold text-primary uppercase tracking-widest">{subLabel}</span>
         </div>
+        <div className="w-6 h-px bg-border my-2" />
         <div className="flex items-baseline gap-1.5">
-          <span className="text-2xl font-bold tracking-tight text-foreground leading-none">{value}</span>
-          <span className="text-[9px] font-bold text-muted-foreground">{unit}</span>
+          <span className="text-3xl font-bold tracking-tight text-foreground leading-none">{value}</span>
+          <span className="text-[10px] font-bold text-muted-foreground">{unit}</span>
         </div>
       </div>
       
@@ -463,9 +464,24 @@ function NavCard({ label, subLabel, value, unit, icon, color, onClick }: any) {
 
 function StatCardCompact({ label, subLabel, value, sub, icon, color, isPercent, onClick }: any) {
   return (
-    <Card className={cn("bg-card border border-border rounded-lg overflow-hidden group transition-all", onClick && "cursor-pointer hover:border-primary/50")} onClick={onClick}>
-      <div className={cn("h-1 w-full opacity-50 group-hover:opacity-100 transition-opacity", color)} />
-      <CardContent className="p-3.5"><div className="flex justify-between items-center mb-2"><div className={cn("p-1.5 rounded-md text-white", color)}>{icon}</div><div className="text-right leading-none"><span className="text-[9px] font-bold text-foreground uppercase tracking-widest block mb-0.5">{label}</span><span className="text-[6px] font-medium text-muted-foreground uppercase tracking-widest">{subLabel}</span></div></div><div className="flex items-baseline gap-1.5"><span className={cn("text-2xl font-bold tracking-tight", isPercent ? (parseInt(value) >= 0 ? "text-primary" : "text-destructive") : "text-foreground")}>{value}</span></div><p className="text-[8px] font-bold text-muted-foreground uppercase tracking-widest mt-1 truncate">{sub}</p></CardContent>
+    <Card className={cn("bg-card border border-border rounded-lg overflow-hidden group transition-all flex flex-col", onClick && "cursor-pointer hover:border-primary/50")} onClick={onClick}>
+      <div className={cn("h-1 w-full opacity-50 group-hover:opacity-100 transition-opacity shrink-0", color)} />
+      <CardContent className="p-4 flex flex-col flex-1">
+        <div className="flex justify-between items-start mb-3">
+          <div className={cn("p-1.5 rounded-md text-white shrink-0", color)}>{icon}</div>
+          <div className="text-right leading-none min-w-0">
+            <span className="text-xs font-black text-foreground uppercase tracking-widest block mb-1 truncate">{label}</span>
+            <span className="text-[8px] font-bold text-primary uppercase tracking-widest truncate block">{subLabel}</span>
+          </div>
+        </div>
+        <div className="mt-auto">
+          <div className="w-full h-px bg-border/50 mb-2" />
+          <div className="flex items-baseline gap-1.5">
+            <span className={cn("text-2xl font-bold tracking-tight", isPercent ? (parseInt(value) >= 0 ? "text-primary" : "text-destructive") : "text-foreground")}>{value}</span>
+          </div>
+          <p className="text-[9px] font-bold text-muted-foreground uppercase tracking-widest mt-1.5 truncate">{sub}</p>
+        </div>
+      </CardContent>
     </Card>
   );
 }
