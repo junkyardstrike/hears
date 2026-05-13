@@ -93,6 +93,17 @@ export default function CaseDetailPage({ params }: { params: Promise<{ id: strin
     });
   };
 
+  const handleCreateClient = () => {
+    const name = prompt('取引先法人名を入力してください', '新規契約先');
+    if (name && name.trim()) {
+      const newId = useHearsStore.getState().createClient(name.trim());
+      handleUpdate(draft => {
+        draft.clientId = newId;
+        draft.contractEntity = name.trim();
+      });
+    }
+  };
+
   const oneTimeTakeHome = c.finance?.oneTimeFeeTakeHome ?? Math.floor((c.finance?.oneTimeFee || 0) * 0.4);
   const spotTakeHome = Math.floor((c.finance?.spotFee || 0) * ((c.finance?.spotRate || 40) / 100));
 
@@ -263,7 +274,7 @@ export default function CaseDetailPage({ params }: { params: Promise<{ id: strin
                             {clients.map(cl => <SelectItem key={cl.id} value={cl.id} className="font-bold py-2">{cl.name}</SelectItem>)}
                           </SelectContent>
                         </Select>
-                        <Button variant="ghost" onClick={() => router.push('/clients')} className="h-12 w-12 bg-secondary rounded-md text-primary hover:bg-primary/10 border border-border"><Building2 className="w-5 h-5" /></Button>
+                        <Button variant="outline" onClick={handleCreateClient} className="h-12 bg-secondary text-primary hover:bg-primary/10 border border-border px-4 font-bold flex items-center gap-2 shrink-0"><Plus className="w-4 h-4" /> 新規作成</Button>
                       </div>
                     </div>
                     <div className="space-y-2">
