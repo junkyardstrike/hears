@@ -74,18 +74,27 @@ const AvatarNode = ({ classType, tier }: { classType: ClassType, tier: number })
   
   return (
     <div className={cn(
-      "relative w-24 h-24 rounded-2xl flex items-center justify-center border-2 bg-card overflow-hidden shrink-0",
-      info.borderClass,
-      tier >= 3 && info.glowClass,
-      tier >= 3 && "shadow-lg"
+      "relative w-24 h-24 flex items-center justify-center shrink-0",
+      tier >= 3 && info.glowClass
     )}>
-      <div className={cn("absolute inset-0 opacity-10", info.bgClass)} />
+      {/* Ambient Glow / Platform Base */}
+      <div className={cn("absolute inset-0 opacity-30 rounded-full blur-md animate-pulse", info.bgClass)} />
+      
+      {/* Rotating Magic Circle */}
+      <div className={cn("absolute inset-0 flex items-center justify-center opacity-50", info.colorClass)}>
+        <svg viewBox="0 0 100 100" className="w-24 h-24 animate-[spin_15s_linear_infinite]">
+          <circle cx="50" cy="50" r="45" fill="none" stroke="currentColor" strokeWidth="1" strokeDasharray="4 4" />
+          <circle cx="50" cy="50" r="35" fill="none" stroke="currentColor" strokeWidth="0.5" />
+          <polygon points="50,10 85,75 15,75" fill="none" stroke="currentColor" strokeWidth="0.5" />
+          <polygon points="50,90 85,25 15,25" fill="none" stroke="currentColor" strokeWidth="0.5" />
+        </svg>
+      </div>
       
       {/* Tier 5 God Aura */}
-      {tier >= 5 && <div className={cn("absolute inset-0 opacity-50 mix-blend-screen animate-aura-pulse", info.bgClass)} style={{ filter: 'blur(10px)' }} />}
+      {tier >= 5 && <div className={cn("absolute inset-0 opacity-50 mix-blend-screen animate-aura-pulse rounded-full", info.bgClass)} style={{ filter: 'blur(10px)' }} />}
 
       {/* Tiers 3+ Light Rays */}
-      {tier >= 3 && <div className="absolute inset-0 bg-gradient-to-tr from-white/0 via-white/10 to-white/0 animate-shimmer" />}
+      {tier >= 3 && <div className="absolute inset-0 bg-gradient-to-tr from-white/0 via-white/10 to-white/0 animate-shimmer rounded-full" />}
 
       {/* Floating Particles for Mage */}
       {classType === 'mage' && tier >= 3 && (
@@ -116,9 +125,12 @@ const AvatarNode = ({ classType, tier }: { classType: ClassType, tier: number })
         classType === 'mage' && "animate-mage-cast",
         classType === 'merchant' && "animate-merchant-jump"
       )}>
-        {/* Character Image */}
+        {/* Ground Shadow */}
+        <div className="absolute bottom-2 w-12 h-3 bg-black/40 blur-[2px] rounded-[100%]" />
+
+        {/* Character Image (Transparent PNG) */}
         <div className={cn(
-          "relative w-20 h-20 transition-transform duration-700 animate-idle-bob mix-blend-screen",
+          "relative w-24 h-24 transition-transform duration-700 animate-idle-bob",
           tier >= 2 && "scale-110",
           tier >= 4 && "scale-125",
           tier >= 5 && "drop-shadow-[0_0_15px_rgba(255,255,255,0.5)]"
