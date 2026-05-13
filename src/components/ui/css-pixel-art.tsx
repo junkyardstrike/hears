@@ -38,31 +38,42 @@ export const CSSPixelArt = ({ type, tier, size, className }: CSSPixelArtProps) =
       gold: '#FFD700',
     };
 
-    if (type === 'mage') return {
+    const mage = {
       ...common,
       primary: '#10b981', // Emerald
       secondary: '#06b6d4', // Cyan
       accent: '#34d399',
       hair: '#1e293b',
       staff: '#78350f',
+      armor: '',
+      clothes: '',
     };
-    if (type === 'merchant') return {
+
+    const merchant = {
       ...common,
       primary: '#f59e0b', // Orange/Amber
       secondary: '#fbbf24', // Gold
       accent: '#d97706',
       hair: '#451a03',
+      staff: '',
+      armor: '',
       clothes: '#7c2d12',
     };
-    // hero
-    return {
+
+    const hero = {
       ...common,
       primary: '#3b82f6', // Blue
       secondary: '#94a3b8', // Silver
       accent: '#ef4444', // Red Cape
       hair: '#fbbf24', // Blonde
+      staff: '',
       armor: '#cbd5e1',
+      clothes: '',
     };
+
+    if (type === 'mage') return mage;
+    if (type === 'merchant') return merchant;
+    return hero;
   }, [type]);
 
   // Procedural Pixel Generation
