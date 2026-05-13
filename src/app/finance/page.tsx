@@ -332,7 +332,7 @@ export default function FinancePage() {
         {/* YoY Performance カードの余白と高さを調整 */}
         <Card className="xl:col-span-2 bg-card border border-border rounded-lg p-5 pb-2">
           <div className="flex justify-between items-center mb-3">
-            <div><h3 className="text-sm font-bold tracking-tight flex items-center gap-2 uppercase"><History className="w-4 h-4 text-primary" /> YoY PERFORMANCE</h3><p className="text-[8px] font-bold text-muted-foreground uppercase tracking-widest opacity-60 ml-6">実績比較：<span className="text-primary">確定</span> • <span className="text-amber-500">予定</span> • <span className="text-muted-foreground">前年</span></p></div>
+            <div><h3 className="text-sm font-bold tracking-tight flex items-center gap-2 uppercase"><History className="w-4 h-4 text-primary" /> YoY PERFORMANCE</h3><p className="text-[11px] font-bold text-muted-foreground uppercase tracking-widest ml-6">実績比較：<span className="text-primary">確定</span> • <span className="text-amber-500">予定</span> • <span className="text-muted-foreground">前年</span></p></div>
             <div className="flex gap-3">
                <div className="flex items-center gap-1"><div className="w-1.5 h-1.5 rounded-full bg-primary" /><span className="text-[9px] font-bold text-muted-foreground">確定</span></div>
                <div className="flex items-center gap-1"><div className="w-1.5 h-1.5 rounded-full bg-amber-400" /><span className="text-[9px] font-bold text-muted-foreground">予定</span></div>
@@ -342,8 +342,8 @@ export default function FinancePage() {
             <ResponsiveContainer width="100%" height="100%">
               <BarChart data={yoyComparison}>
                 <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f5f5f5" />
-                <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{fontSize: 9, fontWeight: 'bold', fill: '#94a3b8'}} />
-                <YAxis axisLine={false} tickLine={false} tick={{fontSize: 9, fontWeight: 'bold', fill: '#94a3b8'}} tickFormatter={(v) => `${(v/1000).toLocaleString()}k`} />
+                <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{fontSize: 11, fontWeight: 'bold', fill: '#94a3b8'}} />
+                <YAxis axisLine={false} tickLine={false} tick={{fontSize: 11, fontWeight: 'bold', fill: '#94a3b8'}} tickFormatter={(v) => `${(v/1000).toLocaleString()}k`} />
                 <Tooltip contentStyle={{ borderRadius: '8px', border: '1px solid var(--border)', background: 'var(--card)', color: 'var(--foreground)', fontSize: '10px' }} formatter={(v: any) => v === null ? '---' : `${(v/1000).toLocaleString()}千円`} />
                 <Bar dataKey="confirmed" fill="var(--primary)" radius={[3, 3, 0, 0]} barSize={16} name="確定収益" />
                 <Bar dataKey="planned" fill="#f59e0b" radius={[3, 3, 0, 0]} barSize={16} name="収益予定" />
@@ -400,8 +400,8 @@ export default function FinancePage() {
             <AreaChart data={stackData}>
               <defs><linearGradient id="colorStock" x1="0" y1="0" x2="0" y2="1"><stop offset="5%" stopColor="#00896B" stopOpacity={0.1}/><stop offset="95%" stopColor="#00896B" stopOpacity={0}/></linearGradient></defs>
               <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f5f5f5" />
-              <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{fontSize: 9, fontWeight: 'bold', fill: '#94a3b8'}} />
-              <YAxis axisLine={false} tickLine={false} tick={{fontSize: 9, fontWeight: 'bold', fill: '#94a3b8'}} tickFormatter={(v) => `${(v/1000).toLocaleString()}k`} />
+              <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{fontSize: 11, fontWeight: 'bold', fill: '#94a3b8'}} />
+              <YAxis axisLine={false} tickLine={false} tick={{fontSize: 11, fontWeight: 'bold', fill: '#94a3b8'}} tickFormatter={(v) => `${(v/1000).toLocaleString()}k`} />
               <Tooltip contentStyle={{ borderRadius: '8px', border: '1px solid var(--border)', background: 'var(--card)', color: 'var(--foreground)', fontSize: '10px' }} formatter={(v: any) => v === null ? '---' : `${(v/1000).toLocaleString()}k`} />
               <Area type="monotone" dataKey="stock" stroke="var(--primary)" strokeWidth={2.5} fill="url(#colorStock)" stackId="1" name="保守" />
               <Area type="monotone" dataKey="shot" stroke="#3498db" strokeWidth={1} fillOpacity={0.05} stackId="1" name="案件" />
@@ -423,7 +423,12 @@ function NavCard({ label, subLabel, value, unit, icon, color, onClick }: any) {
   return (
     <button 
       onClick={onClick}
-      className="relative group overflow-hidden bg-card p-4 rounded-lg border border-border hover:border-primary/50 transition-all text-left"
+      className={cn(
+        "relative group overflow-hidden p-4 rounded-lg border transition-all text-left",
+        color === 'emerald' ? 'bg-emerald-500/5 border-emerald-500/20 hover:border-emerald-500/50 hover:bg-emerald-500/10' :
+        color === 'blue' ? 'bg-blue-500/5 border-blue-500/20 hover:border-blue-500/50 hover:bg-blue-500/10' : 
+        'bg-amber-500/5 border-amber-500/20 hover:border-amber-500/50 hover:bg-amber-500/10'
+      )}
     >
       <div className={cn(
         "absolute right-[-5px] top-[-5px] w-20 h-20 bg-gradient-to-br opacity-[0.03] group-hover:opacity-[0.08] transition-all rounded-full",

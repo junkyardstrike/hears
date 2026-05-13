@@ -11,6 +11,16 @@ import { useHearsStore } from '@/store/useHearsStore';
 import { cn } from '@/lib/utils';
 import { Progress } from '@/components/ui/progress';
 
+const PixelBot = () => (
+  <div className="w-full flex justify-center mb-6">
+    <div className="w-8 h-8 text-primary/30 animate-bounce hover:text-primary transition-colors cursor-default" style={{ animationDuration: '2.5s' }}>
+      <svg viewBox="0 0 16 16" width="100%" height="100%" shapeRendering="crispEdges">
+        <path d="M 4 2 h 8 v 2 H 4 Z M 2 4 h 2 v 2 H 2 Z M 12 4 h 2 v 2 H 12 Z M 2 6 h 12 v 6 H 2 Z M 5 7 v 2 h 2 v -2 Z M 9 7 v 2 h 2 v -2 Z M 4 12 h 2 v 2 H 4 Z M 10 12 h 2 v 2 H 10 Z" fill="currentColor" fillRule="evenodd" />
+      </svg>
+    </div>
+  </div>
+);
+
 const menuItems = [
   { label: 'DASHBOARD', jpLabel: '取引先・案件管理', icon: LayoutDashboard, href: '/', color: 'text-white' },
   { label: 'HEARING', jpLabel: 'ヒアリング管理', icon: ClipboardList, href: '/hearing', color: 'text-white' },
@@ -82,6 +92,7 @@ export function Sidebar({ isMobile = false }: { isMobile?: boolean }) {
 
       {/* Footer / Revenue Meter */}
       <div className="p-6 mt-auto border-t border-border bg-card/50">
+        <PixelBot />
         <div className="mb-6">
           <div className="flex items-center justify-between mb-3">
             <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest flex flex-col">
@@ -99,7 +110,7 @@ export function Sidebar({ isMobile = false }: { isMobile?: boolean }) {
               <span className="text-xl font-bold tracking-tight text-foreground">¥{Math.floor(currentRevenue).toLocaleString()}</span>
               <span className="text-[9px] text-muted-foreground font-bold uppercase tracking-tight">/ 500k TARGET</span>
             </div>
-            <span className="text-[7px] font-medium text-muted-foreground uppercase tracking-widest mt-1">現在の月額手取り額 / 目標 50万円</span>
+            <span className="text-[7px] font-medium text-muted-foreground uppercase tracking-widest mt-1">現在の月額歩合額 / 目標 50万円</span>
           </div>
         </div>
 
