@@ -5,18 +5,18 @@ import { useMemo } from 'react';
 import { useHearsStore, CaseData } from '@/store/useHearsStore';
 import { Card, CardContent } from '@/components/ui/card';
 import { Progress } from '@/components/ui/progress';
-import { BarChart, Bar, XAxis, Tooltip, ResponsiveContainer, Cell } from 'recharts';
+import { BarChart, Bar, XAxis, Tooltip, ResponsiveContainer, Cell, LabelList } from 'recharts';
 import { parseISO, isAfter, startOfMonth, format, min, addMonths, differenceInMonths } from 'date-fns';
 import { cn } from '@/lib/utils';
 import { useState } from 'react';
 import { Crown, Sparkles, Sword, Coins, ArrowUpRight, Flame, Shield, Star, Wand2, Castle, ChevronDown } from 'lucide-react';
 
 const TIER_THRESHOLDS = [
-  { tier: 1, level: 1, min: 0, title: "初期ジョブ" },
-  { tier: 2, level: 20, min: 2000000, title: "最初の壁を突破した専門家" },
-  { tier: 3, level: 50, min: 5000000, title: "業界で自立した実力者" },
-  { tier: 4, level: 100, min: 10000000, title: "卓越した技術を持つ熟練者" },
-  { tier: 5, level: 500, min: 50000000, title: "極致に至った伝説の存在" }
+  { tier: 1, level: 1, min: 0, title: "初期ジョブ", jobs: { mage: "魔法使い", merchant: "商人", hero: "勇者" }, image: "/assets/avatars/tier1.png" },
+  { tier: 2, level: 20, min: 2000000, title: "最初の壁を突破した専門家", jobs: { mage: "魔導師", merchant: "豪商", hero: "騎士" }, image: "/assets/avatars/tier2.png" },
+  { tier: 3, level: 50, min: 5000000, title: "業界で自立した実力者", jobs: { mage: "大賢者", merchant: "資本家", hero: "聖騎士" }, image: "/assets/avatars/tier3.png" },
+  { tier: 4, level: 100, min: 10000000, title: "卓越した技術を持つ熟練者", jobs: { mage: "真魔導学者", merchant: "大富豪", hero: "剣聖" }, image: "/assets/avatars/tier4.png" },
+  { tier: 5, level: 500, min: 50000000, title: "極致に至った伝説の存在", jobs: { mage: "真理の探求者", merchant: "盤上の支配者", hero: "終焉を断つ者" }, image: "/assets/avatars/tier5.png" },
 ];
 
 type ClassType = 'mage' | 'merchant' | 'hero';
@@ -73,67 +73,20 @@ const AvatarNode = ({ classType, tier }: { classType: ClassType, tier: number })
   const info = CLASS_INFO[classType];
   
   return (
-    <div className={cn(
-      "relative w-24 h-24 flex items-center justify-center shrink-0",
-      tier >= 3 && info.glowClass
-    )}>
+    <div className="relative w-24 h-24 flex items-center justify-center shrink-0">
       {/* Ambient Glow / Platform Base */}
-      <div className={cn("absolute inset-0 opacity-30 rounded-full blur-md animate-pulse", info.bgClass)} />
+      <div className={cn("absolute inset-0 opacity-30 rounded-full blur-md", info.bgClass)} />
       
-      {/* Rotating Magic Circle */}
-      <div className={cn("absolute inset-0 flex items-center justify-center opacity-50", info.colorClass)}>
-        <svg viewBox="0 0 100 100" className="w-24 h-24 animate-[spin_15s_linear_infinite]">
-          <circle cx="50" cy="50" r="45" fill="none" stroke="currentColor" strokeWidth="1" strokeDasharray="4 4" />
-          <circle cx="50" cy="50" r="35" fill="none" stroke="currentColor" strokeWidth="0.5" />
-          <polygon points="50,10 85,75 15,75" fill="none" stroke="currentColor" strokeWidth="0.5" />
-          <polygon points="50,90 85,25 15,25" fill="none" stroke="currentColor" strokeWidth="0.5" />
-        </svg>
-      </div>
-      
-      {/* Tier 5 God Aura */}
-      {tier >= 5 && <div className={cn("absolute inset-0 opacity-50 mix-blend-screen animate-aura-pulse rounded-full", info.bgClass)} style={{ filter: 'blur(10px)' }} />}
-
-      {/* Tiers 3+ Light Rays */}
-      {tier >= 3 && <div className="absolute inset-0 bg-gradient-to-tr from-white/0 via-white/10 to-white/0 animate-shimmer rounded-full" />}
-
-      {/* Floating Particles for Mage */}
-      {classType === 'mage' && tier >= 3 && (
-        <>
-          <div className="absolute top-2 left-2 w-1.5 h-1.5 rounded-full bg-emerald-400 animate-particle-float" style={{ animationDelay: '0s' }} />
-          <div className="absolute bottom-4 right-3 w-2 h-2 rounded-full bg-emerald-300 animate-particle-float" style={{ animationDelay: '1s' }} />
-          <div className="absolute top-1/2 left-1/4 w-1 h-1 rounded-full bg-emerald-200 animate-particle-float" style={{ animationDelay: '2s' }} />
-        </>
-      )}
-
-      {/* Golden Coins for Merchant */}
-      {classType === 'merchant' && tier >= 3 && (
-        <>
-          <div className="absolute bottom-1 left-2 w-2 h-2 bg-yellow-400 rounded-full animate-bounce shadow-[0_0_8px_rgba(250,204,21,0.8)]" style={{ animationDuration: '2s' }} />
-          <div className="absolute bottom-2 right-2 w-3 h-3 bg-yellow-500 rounded-full animate-bounce shadow-[0_0_8px_rgba(250,204,21,0.8)]" style={{ animationDuration: '2.5s' }} />
-        </>
-      )}
-
-      {/* Hero Aura */}
-      {classType === 'hero' && tier >= 4 && (
-        <div className="absolute -bottom-4 w-[150%] h-12 bg-blue-500/30 blur-xl animate-aura-pulse rounded-full" />
-      )}
-
-      {/* Action Animation Wrapper */}
-      <div className={cn(
-        "absolute inset-0 flex items-center justify-center",
-        classType === 'hero' && "animate-hero-attack",
-        classType === 'mage' && "animate-mage-cast",
-        classType === 'merchant' && "animate-merchant-jump"
-      )}>
+      {/* Action Animation Wrapper (Animations Removed) */}
+      <div className="absolute inset-0 flex items-center justify-center">
         {/* Ground Shadow */}
         <div className="absolute bottom-2 w-12 h-3 bg-black/40 blur-[2px] rounded-[100%]" />
 
-        {/* Character Image (Transparent PNG) */}
+        {/* Character Image (Transparent PNG, No Bobbing Animation) */}
         <div className={cn(
-          "relative w-24 h-24 transition-transform duration-700 animate-idle-bob",
+          "relative w-24 h-24 transition-transform duration-700",
           tier >= 2 && "scale-110",
-          tier >= 4 && "scale-125",
-          tier >= 5 && "drop-shadow-[0_0_15px_rgba(255,255,255,0.5)]"
+          tier >= 4 && "scale-125"
         )}>
           <Image 
             src={info.imageSrc} 
@@ -144,41 +97,6 @@ const AvatarNode = ({ classType, tier }: { classType: ClassType, tier: number })
           />
         </div>
       </div>
-
-      {/* Hero Slash Effect */}
-      {classType === 'hero' && (
-        <div className="absolute inset-0 flex items-center justify-center pointer-events-none z-20 mix-blend-screen overflow-visible">
-          <div className="w-32 h-32 opacity-0 animate-slash-effect absolute">
-            <svg viewBox="0 0 100 100" className="w-full h-full text-white drop-shadow-[0_0_10px_rgba(255,255,255,1)]">
-              <path d="M 10,90 Q 50,50 90,10 L 100,0 L 90,10 Q 50,40 10,90 Z" fill="currentColor" />
-            </svg>
-          </div>
-        </div>
-      )}
-
-      {/* Mage Magic Burst */}
-      {classType === 'mage' && (
-        <div className="absolute inset-0 flex items-center justify-center pointer-events-none z-20 mix-blend-screen">
-          <div className="w-24 h-24 opacity-0 animate-magic-burst">
-            <svg viewBox="0 0 100 100" className="w-full h-full text-emerald-300 drop-shadow-[0_0_8px_rgba(16,185,129,1)]">
-              <circle cx="50" cy="50" r="40" fill="none" stroke="currentColor" strokeWidth="2" strokeDasharray="10 5" />
-              <polygon points="50,10 90,90 10,90" fill="none" stroke="currentColor" strokeWidth="1" />
-              <polygon points="50,90 90,10 10,10" fill="none" stroke="currentColor" strokeWidth="1" />
-            </svg>
-          </div>
-        </div>
-      )}
-
-      {/* Merchant Coin Rain */}
-      {classType === 'merchant' && (
-        <div className="absolute inset-0 flex items-center justify-center pointer-events-none z-20">
-          <div className="w-full h-full opacity-0 animate-coin-rain flex justify-around">
-            <div className="w-3 h-3 bg-yellow-400 rounded-full shadow-[0_0_10px_rgba(250,204,21,1)]" />
-            <div className="w-4 h-4 bg-yellow-500 rounded-full shadow-[0_0_10px_rgba(250,204,21,1)] mt-4" />
-            <div className="w-3 h-3 bg-yellow-300 rounded-full shadow-[0_0_10px_rgba(250,204,21,1)] mt-2" />
-          </div>
-        </div>
-      )}
 
       <div className="absolute bottom-1 right-1 text-[10px] font-black opacity-40 z-10">T{tier}</div>
     </div>
@@ -193,8 +111,12 @@ export default function TemplePage() {
     
     const totals = { mage: 0, merchant: 0, hero: 0 };
     const counts = { mage: 0, merchant: 0, hero: 0 };
-    const casesInClass: Record<ClassType, {name: string, rev: number}[]> = { mage: [], merchant: [], hero: [] };
+    const casesInClass: Record<ClassType, CaseData[]> = { mage: [], merchant: [], hero: [] };
     const history: Record<ClassType, { month: string, revenue: number }[]> = { mage: [], merchant: [], hero: [] };
+    
+    // For expanded stats
+    const maintenanceTotals = { mage: 0, merchant: 0, hero: 0 };
+    const spotTotals = { mage: 0, merchant: 0, hero: 0 };
 
     cases.forEach(c => {
       const g = c.genre || '';
@@ -202,45 +124,52 @@ export default function TemplePage() {
       
       if (!c.finance || !c.finance.revenueStartMonth) return;
       counts[t]++;
+      casesInClass[t].push(c);
       
       const startStr = c.finance.revenueStartMonth;
       const startD = parseISO(`${startStr}-01`);
       
-      // Calculate revenue up to current month by evaluating each month since start
+      // Calculate revenue up to current month
       const isStockType = g === 'HP制作' || g === 'SNS運用';
       let caseTotal = 0;
+      let caseMaintenance = 0;
+      let caseSpot = 0;
       
-      // Collect monthly increments
       const caseHistory: { month: string, amount: number }[] = [];
       
       if (isStockType) {
         const recM = c.finance.oneTimeFeeMonth || startStr;
         const recD = parseISO(`${recM}-01`);
         if (!isAfter(recD, nowD)) {
-           caseHistory.push({ month: recM, amount: c.finance.oneTimeFee || 0 });
-           caseTotal += c.finance.oneTimeFee || 0;
+           const amt = c.finance.oneTimeFee || 0;
+           caseHistory.push({ month: recM, amount: amt });
+           caseTotal += amt;
+           caseSpot += amt;
         }
         if (!isAfter(startD, nowD)) {
            const months = differenceInMonths(nowD, startD) + 1;
            for(let i=0; i<months; i++) {
               const mStr = format(addMonths(startD, i), 'yyyy-MM');
-              caseHistory.push({ month: mStr, amount: c.finance.maintenanceFee || 0 });
-              caseTotal += c.finance.maintenanceFee || 0;
+              const amt = c.finance.maintenanceFee || 0;
+              caseHistory.push({ month: mStr, amount: amt });
+              caseTotal += amt;
+              caseMaintenance += amt;
            }
         }
       } else {
         const recM = c.finance.spotMonth || startStr;
         const recD = parseISO(`${recM}-01`);
         if (!isAfter(recD, nowD)) {
-           caseHistory.push({ month: recM, amount: c.finance.spotFee || 0 });
-           caseTotal += c.finance.spotFee || 0;
+           const amt = c.finance.spotFee || 0;
+           caseHistory.push({ month: recM, amount: amt });
+           caseTotal += amt;
+           caseSpot += amt;
         }
       }
       
       totals[t] += caseTotal;
-      if (caseTotal > 0) {
-        casesInClass[t].push({ name: c.name, rev: caseTotal });
-      }
+      maintenanceTotals[t] += caseMaintenance;
+      spotTotals[t] += caseSpot;
       
       // Merge into class history
       caseHistory.forEach(h => {
@@ -265,7 +194,27 @@ export default function TemplePage() {
        const toNext = nextLevel ? nextLevel - level : 0;
        const progress = nextThreshold ? Math.min(100, (rev - TIER_THRESHOLDS[tier-1].min) / (nextThreshold.min - TIER_THRESHOLDS[tier-1].min) * 100) : 100;
        
-       // Calculate first month achieving current tier
+       // Top Clients
+       const clientMap: Record<string, { name: string, count: number, revenue: number }> = {};
+       casesInClass[t].forEach(c => {
+         if (!clientMap[c.clientName]) clientMap[c.clientName] = { name: c.clientName, count: 0, revenue: 0 };
+         clientMap[c.clientName].count++;
+         // This is a rough estimation of client revenue within class
+         const cRev = (c.finance.oneTimeFee || 0) + (c.finance.spotFee || 0);
+         clientMap[c.clientName].revenue += cRev;
+         // Add maintenance if applicable
+         if (c.genre === 'HP制作' || c.genre === 'SNS運用') {
+            const startD = parseISO(`${c.finance.revenueStartMonth}-01`);
+            if (!isAfter(startD, nowD)) {
+               const months = differenceInMonths(nowD, startD) + 1;
+               clientMap[c.clientName].revenue += (c.finance.maintenanceFee || 0) * months;
+            }
+         }
+       });
+       const topClients = Object.values(clientMap).sort((a,b) => b.revenue - a.revenue).slice(0, 3);
+       const revenueToNextLevel = nextThreshold ? Math.max(0, nextThreshold.min - rev) : 0;
+
+       // Calculate achieve month
        history[t].sort((a,b) => a.month.localeCompare(b.month));
        let acc = 0;
        let achieveMonth = "----";
@@ -279,7 +228,6 @@ export default function TemplePage() {
        }
        if (tier === 1) achieveMonth = "INITIAL";
 
-       // Fill empty months for chart (last 6 months)
        const chartData = [];
        for(let i=5; i>=0; i--) {
           const mStr = format(addMonths(nowD, -i), 'yyyy-MM');
@@ -297,7 +245,10 @@ export default function TemplePage() {
          progress,
          achieveMonth,
          count: counts[t],
-         cases: casesInClass[t].sort((a,b) => b.rev - a.rev),
+         maintenanceTotal: maintenanceTotals[t],
+         spotTotal: spotTotals[t],
+         topClients,
+         revenueToNextLevel,
          chartData
        };
     });
@@ -345,7 +296,7 @@ export default function TemplePage() {
                 {/* Progress */}
                 <div className="space-y-2">
                   <div className="flex justify-between items-end">
-                    <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">NEXT JOB</span>
+                    <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">NEXT JOB (次の目標)</span>
                     <span className="text-xs font-black uppercase">{stats.toNext > 0 ? `あと ${stats.toNext} Lv` : 'MAX TIER'}</span>
                   </div>
                   <Progress value={stats.progress} className={cn("h-2 bg-secondary", `[&>div]:${info.bgClass}`)} />
@@ -358,7 +309,7 @@ export default function TemplePage() {
                     onClick={() => setExpandedClass(expandedClass === type ? null : type)}
                   >
                     <div className="flex items-center gap-1 text-[10px] font-bold text-muted-foreground uppercase tracking-widest">
-                       累計売上額 & 案件数
+                       詳細ステータス & 討伐記録
                        <ChevronDown className={cn("w-3 h-3 transition-transform", expandedClass === type && "rotate-180")} />
                     </div>
                   </div>
@@ -369,14 +320,43 @@ export default function TemplePage() {
                   </div>
 
                   {expandedClass === type && (
-                    <div className="mt-2 bg-secondary/30 rounded-md p-3 space-y-2 max-h-[150px] overflow-y-auto custom-scrollbar animate-in slide-in-from-top-2">
-                      {stats.cases.map((c: any, i: number) => (
-                        <div key={i} className="flex justify-between items-center pb-2 border-b border-border/50 last:border-0 last:pb-0">
-                          <span className="text-xs font-bold truncate max-w-[120px]">{c.name}</span>
-                          <span className="text-xs font-black text-primary">¥{c.rev.toLocaleString()}</span>
+                    <div className="mt-2 bg-secondary/30 rounded-md p-4 space-y-4 animate-in slide-in-from-top-2">
+                      <div className="grid grid-cols-2 gap-4 pb-4 border-b border-border/50">
+                        <div>
+                          <div className="text-[9px] font-bold text-muted-foreground uppercase">保守累計</div>
+                          <div className="text-sm font-black">¥{stats.maintenanceTotal.toLocaleString()}</div>
                         </div>
-                      ))}
-                      {stats.cases.length === 0 && <span className="text-[10px] opacity-50">案件がありません</span>}
+                        <div>
+                          <div className="text-[9px] font-bold text-muted-foreground uppercase">制作・スポット累計</div>
+                          <div className="text-sm font-black">¥{stats.spotTotal.toLocaleString()}</div>
+                        </div>
+                        <div>
+                          <div className="text-[9px] font-bold text-muted-foreground uppercase">総合計</div>
+                          <div className="text-sm font-black text-primary">¥{stats.revenue.toLocaleString()}</div>
+                        </div>
+                        <div>
+                          <div className="text-[9px] font-bold text-muted-foreground uppercase">次ランクまで</div>
+                          <div className="text-sm font-black text-amber-500">¥{stats.revenueToNextLevel.toLocaleString()}</div>
+                        </div>
+                      </div>
+
+                      <div>
+                        <div className="text-[9px] font-bold text-muted-foreground uppercase mb-2 tracking-widest">討伐記録 (収益TOP3取引先)</div>
+                        <div className="space-y-2">
+                          {stats.topClients.map((client: any, i: number) => (
+                            <div key={i} className="flex justify-between items-center bg-background/50 p-2 rounded border border-border/30">
+                              <div className="flex items-center gap-2">
+                                <span className="text-[10px] font-black text-primary">#{i+1}</span>
+                                <span className="text-xs font-bold truncate max-w-[100px]">{client.name}</span>
+                              </div>
+                              <div className="text-right">
+                                <div className="text-[10px] font-black">¥{client.revenue.toLocaleString()}</div>
+                                <div className="text-[8px] font-bold text-muted-foreground">{client.count} 案件</div>
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
                     </div>
                   )}
 
@@ -388,13 +368,14 @@ export default function TemplePage() {
 
                 {/* Chart */}
                 <div className="pt-4 border-t border-border">
-                  <span className="text-[9px] font-bold text-muted-foreground uppercase tracking-widest block mb-4">MONTHLY REVENUE TREND (6 MONTHS)</span>
-                  <div className="h-[120px] w-full">
+                  <span className="text-[9px] font-bold text-muted-foreground uppercase tracking-widest block mb-4">MONTHLY REVENUE TREND (月別収益推移)</span>
+                  <div className="h-[140px] w-full">
                     <ResponsiveContainer width="100%" height="100%">
-                      <BarChart data={stats.chartData}>
+                      <BarChart data={stats.chartData} margin={{ top: 20, right: 0, left: 0, bottom: 0 }}>
                         <XAxis dataKey="month" axisLine={false} tickLine={false} tick={{fontSize: 9, fontWeight: 'bold', fill: '#94a3b8'}} />
                         <Tooltip cursor={{fill: 'var(--secondary)'}} contentStyle={{ borderRadius: '8px', border: '1px solid var(--border)', background: 'var(--card)', color: 'var(--foreground)', fontSize: '10px', fontWeight: 'bold' }} formatter={(v: any) => `¥${v.toLocaleString()}`} />
                         <Bar dataKey="value" radius={[2, 2, 0, 0]}>
+                          <LabelList dataKey="value" position="top" formatter={(v: any) => `¥${(v/10000).toFixed(0)}万`} style={{ fontSize: '8px', fontWeight: 'bold', fill: '#94a3b8' }} />
                           {stats.chartData.map((entry: any, index: number) => (
                             <Cell key={`cell-${index}`} fill={info.fillColor} />
                           ))}
@@ -415,18 +396,33 @@ export default function TemplePage() {
           <div className="flex items-center gap-3 mb-8">
             <Star className="w-5 h-5 text-amber-500" />
             <div>
-              <h3 className="text-base font-black tracking-tight uppercase">CLASS ROADMAP</h3>
+              <h3 className="text-base font-black tracking-tight uppercase">CLASS ROADMAP (クラスと転職)</h3>
               <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">転職の必要レベルと条件</p>
             </div>
           </div>
 
-          <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
             {TIER_THRESHOLDS.map((t, idx) => (
-              <div key={t.tier} className={cn("p-4 rounded-lg border flex flex-col h-full", idx === 0 ? "border-muted bg-secondary/50" : "border-border bg-card")}>
+              <div key={t.tier} className={cn("p-4 rounded-lg border flex flex-col h-full relative overflow-hidden", idx === 0 ? "border-muted bg-secondary/50" : "border-border bg-card")}>
+                <div className="absolute top-2 right-2 w-10 h-10 opacity-60">
+                   <Image src={t.image} alt={`Tier ${t.tier} Badge`} width={40} height={40} style={{ imageRendering: 'pixelated' }} />
+                </div>
                 <div className="text-[9px] font-black text-primary uppercase tracking-widest mb-1">TIER {t.tier}</div>
                 <div className="text-lg font-black font-[family-name:var(--font-outfit)] leading-none mb-2">Lv.{t.level} ~</div>
                 <div className="text-[10px] font-bold text-muted-foreground mb-3">累計 ¥{(t.min/10000).toLocaleString()}万</div>
-                <div className="text-[8px] font-bold text-muted-foreground mt-auto pt-3 border-t border-border/50">{t.title}</div>
+                
+                <div className="space-y-1 mt-auto pt-3 border-t border-border/50">
+                  <div className="flex justify-between items-center text-[8px] font-bold">
+                    <span className="text-emerald-500">魔法: {t.jobs.mage}</span>
+                  </div>
+                  <div className="flex justify-between items-center text-[8px] font-bold">
+                    <span className="text-amber-500">商人: {t.jobs.merchant}</span>
+                  </div>
+                  <div className="flex justify-between items-center text-[8px] font-bold">
+                    <span className="text-blue-500">勇者: {t.jobs.hero}</span>
+                  </div>
+                  <div className="text-[7px] font-bold text-muted-foreground mt-1 opacity-60 italic">{t.title}</div>
+                </div>
               </div>
             ))}
           </div>

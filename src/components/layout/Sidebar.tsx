@@ -23,11 +23,11 @@ const PixelBot = () => (
 
 
 const menuItems = [
+  { label: 'TEMPLE', jpLabel: 'ステータス・神殿', icon: Crown, href: '/temple', color: 'text-white' },
   { label: 'DASHBOARD', jpLabel: '取引先・案件管理', icon: LayoutDashboard, href: '/', color: 'text-white' },
   { label: 'HEARING', jpLabel: 'ヒアリング管理', icon: ClipboardList, href: '/hearing', color: 'text-white' },
   { label: 'CASES', jpLabel: '案件管理', icon: Briefcase, href: '/cases', color: 'text-white' },
   { label: 'FINANCE', jpLabel: '収益分析', icon: BarChart3, href: '/finance', color: 'text-white' },
-  { label: 'TEMPLE', jpLabel: 'ステータス・神殿', icon: Crown, href: '/temple', color: 'text-white' },
   { label: 'TASKS', jpLabel: '全体タスク', icon: ListTodo, href: '/todo', color: 'text-white' },
 ];
 
@@ -49,7 +49,7 @@ export function Sidebar({ isMobile = false }: { isMobile?: boolean }) {
     )}>
       {/* Branding */}
       <div className="p-10">
-        <Link href="/" className="group inline-block">
+        <Link href="/temple" className="group inline-block">
           <div className="flex items-center gap-3 mb-1">
             <div className="bg-white/20 p-2 rounded-xl backdrop-blur-md">
               <ShieldCheck className="w-6 h-6 text-white" />

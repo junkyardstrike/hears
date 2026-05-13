@@ -3,7 +3,7 @@ const fs = require('fs');
 const path = require('path');
 
 const dir = path.join(__dirname, 'public/assets/avatars');
-const files = ['mage.png', 'merchant.png', 'hero.png'];
+const files = ['tier1.png', 'tier2.png', 'tier3.png', 'tier4.png', 'tier5.png'];
 
 async function processImage(filename) {
   const filepath = path.join(dir, filename);
