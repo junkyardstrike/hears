@@ -4,6 +4,7 @@ import { use, useState, useEffect } from 'react';
 import { useHearsStore, CaseData, ProjectData, ClientData } from '@/store/useHearsStore';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import { NumericInput } from '@/components/ui/numeric-input';
 import { Textarea } from '@/components/ui/textarea';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
@@ -314,7 +315,7 @@ export default function CaseDetailPage({ params }: { params: Promise<{ id: strin
                             <label className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest ml-1">MONTHLY FEE / 月額保守料 (Gross)</label>
                             <div className="relative">
                               <span className="absolute left-4 top-1/2 -translate-y-1/2 font-bold text-primary text-lg">¥</span>
-                              <Input type="number" value={c.finance?.maintenanceFee || 0} onChange={(e) => updateFinance('maintenanceFee', parseInt(e.target.value) || 0)} className="h-12 bg-input border border-border rounded-md font-bold text-xl pl-10 pr-4 focus-visible:ring-1 focus-visible:ring-primary" />
+                              <NumericInput value={c.finance?.maintenanceFee || 0} onChange={(val) => updateFinance('maintenanceFee', val)} className="h-12 bg-input border border-border rounded-md font-bold text-xl pl-10 pr-4 focus-visible:ring-1 focus-visible:ring-primary" />
                             </div>
                           </div>
                           <div className="space-y-2">
@@ -332,14 +333,14 @@ export default function CaseDetailPage({ params }: { params: Promise<{ id: strin
                             <label className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest ml-1">PRODUCTION FEE / 制作費 (Gross)</label>
                             <div className="relative">
                               <span className="absolute left-4 top-1/2 -translate-y-1/2 font-bold text-blue-500 text-lg">¥</span>
-                              <Input type="number" value={c.finance?.oneTimeFee || 0} onChange={(e) => updateFinance('oneTimeFee', parseInt(e.target.value) || 0)} className="h-12 bg-input border border-border rounded-md font-bold text-xl pl-10 pr-4 focus-visible:ring-1 focus-visible:ring-primary" />
+                              <NumericInput value={c.finance?.oneTimeFee || 0} onChange={(val) => updateFinance('oneTimeFee', val)} className="h-12 bg-input border border-border rounded-md font-bold text-xl pl-10 pr-4 focus-visible:ring-1 focus-visible:ring-primary" />
                             </div>
                           </div>
                           <div className="space-y-2">
                             <label className="text-[10px] font-bold text-blue-500 uppercase tracking-widest ml-1">COMMISSION / 歩合額</label>
                             <div className="relative">
                               <span className="absolute left-4 top-1/2 -translate-y-1/2 font-bold text-emerald-500 text-lg">¥</span>
-                              <Input type="number" value={c.finance?.oneTimeFeeTakeHome ?? Math.floor((c.finance?.oneTimeFee || 0) * 0.4)} onChange={(e) => updateFinance('oneTimeFeeTakeHome', parseInt(e.target.value) || 0)} className="h-12 bg-input border border-border focus-visible:border-emerald-500/50 rounded-md font-bold text-xl pl-10 pr-4 text-emerald-500 focus-visible:ring-1 focus-visible:ring-emerald-500" />
+                              <NumericInput value={c.finance?.oneTimeFeeTakeHome ?? Math.floor((c.finance?.oneTimeFee || 0) * 0.4)} onChange={(val) => updateFinance('oneTimeFeeTakeHome', val)} className="h-12 bg-input border border-border focus-visible:border-emerald-500/50 rounded-md font-bold text-xl pl-10 pr-4 text-emerald-500 focus-visible:ring-1 focus-visible:ring-emerald-500" />
                             </div>
                           </div>
                           <div className="space-y-2">
@@ -358,14 +359,14 @@ export default function CaseDetailPage({ params }: { params: Promise<{ id: strin
                           <label className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest ml-1">TOTAL AMOUNT / 案件総額 (Gross)</label>
                           <div className="relative">
                             <span className="absolute left-4 top-1/2 -translate-y-1/2 font-bold text-amber-500 text-lg">¥</span>
-                            <Input type="number" value={c.finance?.spotFee || 0} onChange={(e) => updateFinance('spotFee', parseInt(e.target.value) || 0)} className="h-12 bg-input border border-border rounded-md font-bold text-xl pl-10 pr-4 focus-visible:ring-1 focus-visible:ring-primary" />
+                            <NumericInput value={c.finance?.spotFee || 0} onChange={(val) => updateFinance('spotFee', val)} className="h-12 bg-input border border-border rounded-md font-bold text-xl pl-10 pr-4 focus-visible:ring-1 focus-visible:ring-primary" />
                           </div>
                         </div>
                         <div className="space-y-2">
                           <label className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest ml-1">TAKE-HOME RATE / 還元率 (%)</label>
                           <div className="relative">
                             <Percent className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-primary" />
-                            <Input type="number" value={c.finance?.spotRate ?? 40} onChange={(e) => updateFinance('spotRate', parseInt(e.target.value) || 0)} className="h-12 bg-input border border-border rounded-md font-bold text-xl pl-10 pr-4 focus-visible:ring-1 focus-visible:ring-primary" />
+                            <NumericInput value={c.finance?.spotRate ?? 40} onChange={(val) => updateFinance('spotRate', val)} className="h-12 bg-input border border-border rounded-md font-bold text-xl pl-10 pr-4 focus-visible:ring-1 focus-visible:ring-primary" />
                           </div>
                         </div>
                         <div className="space-y-2">

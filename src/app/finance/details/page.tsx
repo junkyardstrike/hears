@@ -7,6 +7,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
+import { NumericInput } from '@/components/ui/numeric-input';
 import { 
   ChevronLeft, Wallet, ArrowUpRight, TrendingUp, Calendar, 
   Landmark, Activity, Briefcase, FileText, LayoutGrid, List,
@@ -241,10 +242,9 @@ function BreakdownCard({ item, onUpdateBaseSalary }: { item: any, onUpdateBaseSa
             <div className="flex items-center gap-2">
               <div className="relative group/input">
                 <span className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground font-bold text-xs">¥</span>
-                <Input 
-                  type="number" 
-                  value={localAmount} 
-                  onChange={(e) => setLocalAmount(e.target.value)} 
+                <NumericInput 
+                  value={parseInt(localAmount) || 0} 
+                  onChange={(val) => setLocalAmount(val.toString())} 
                   className="h-10 w-32 bg-input border border-border rounded-md font-bold text-base pl-7 pr-3 text-foreground focus:border-primary transition-all text-right"
                 />
               </div>

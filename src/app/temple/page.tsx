@@ -1238,7 +1238,7 @@ export default function TemplePage() {
                             )}>
                               {isAcquired && (
                                 <div className="absolute inset-0 bg-emerald-500/10 backdrop-blur-[1px] flex items-center justify-center pointer-events-none z-10">
-                                  <span className="text-[10px] font-black text-emerald-500 uppercase tracking-tighter rotate-[-12deg] border border-emerald-500 px-1 py-0.5 bg-background/90 shadow-sm">COMPLETE</span>
+                                  <span className="text-[10px] font-black text-emerald-500 uppercase tracking-tighter border border-emerald-500 px-1 py-0.5 bg-background/90 shadow-sm">COMPLETE</span>
                                 </div>
                               )}
                               <div className="text-[10px] font-black text-foreground group-hover:text-emerald-500 transition-colors">{def.name}</div>
@@ -1286,7 +1286,7 @@ export default function TemplePage() {
                             )}>
                               {isAcquired && (
                                 <div className="absolute inset-0 bg-amber-500/10 backdrop-blur-[1px] flex items-center justify-center pointer-events-none z-10">
-                                  <span className="text-[10px] font-black text-amber-500 uppercase tracking-tighter rotate-[-12deg] border border-amber-500 px-1 py-0.5 bg-background/90 shadow-sm">COMPLETE</span>
+                                  <span className="text-[10px] font-black text-amber-500 uppercase tracking-tighter border border-amber-500 px-1 py-0.5 bg-background/90 shadow-sm">COMPLETE</span>
                                 </div>
                               )}
                               <div className="text-[10px] font-black text-foreground group-hover:text-amber-500 transition-colors">{def.name}</div>
@@ -1334,7 +1334,7 @@ export default function TemplePage() {
                             )}>
                               {isAcquired && (
                                 <div className="absolute inset-0 bg-blue-500/10 backdrop-blur-[1px] flex items-center justify-center pointer-events-none z-10">
-                                  <span className="text-[10px] font-black text-blue-500 uppercase tracking-tighter rotate-[-12deg] border border-blue-500 px-1 py-0.5 bg-background/90 shadow-sm">COMPLETE</span>
+                                  <span className="text-[10px] font-black text-blue-500 uppercase tracking-tighter border border-blue-500 px-1 py-0.5 bg-background/90 shadow-sm">COMPLETE</span>
                                 </div>
                               )}
                               <div className="text-[10px] font-black text-foreground group-hover:text-blue-500 transition-colors">{def.name}</div>

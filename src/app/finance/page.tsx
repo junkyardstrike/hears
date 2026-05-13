@@ -4,6 +4,7 @@ import { useState, useMemo } from 'react';
 import { useHearsStore } from '@/store/useHearsStore';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
+import { NumericInput } from '@/components/ui/numeric-input';
 import { Button } from '@/components/ui/button';
 import { 
   AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
@@ -313,7 +314,7 @@ export default function FinancePage() {
           <div className="flex items-center gap-2.5 bg-input px-3 py-1 rounded-md border border-border flex-1 md:flex-none justify-between md:justify-start">
              <span className="text-[9px] font-bold text-muted-foreground uppercase tracking-widest opacity-60 leading-none">基本給設定</span>
              <div className="flex items-center gap-1">
-               <Input type="number" value={baseSalaryInput} onChange={(e) => setBaseSalaryInput(e.target.value)} className="h-5 w-16 border-none bg-transparent font-bold text-sm p-0 focus-visible:ring-0 text-foreground text-right" />
+               <NumericInput value={parseInt(baseSalaryInput) || 0} onChange={(val) => setBaseSalaryInput(val.toString())} className="h-5 w-16 border-none bg-transparent font-bold text-sm p-0 focus-visible:ring-0 text-foreground text-right" />
                <Button size="icon" variant="ghost" onClick={handleSaveBaseSalary} className="h-6 w-6 hover:bg-secondary rounded-sm">{isSalarySaved ? <Check className="w-3 h-3 text-emerald-500" /> : <Settings2 className="w-3 h-3 text-muted-foreground" />}</Button>
              </div>
           </div>
