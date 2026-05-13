@@ -221,6 +221,7 @@ export default function FinancePage() {
     const reachRate = lastYearFullTotal === 0 ? 0 : Math.round((yearlyTotal / lastYearFullTotal) * 100);
 
     let allTimeGrossTotal = 0;
+    const nowD = startOfMonth(now);
     cases.forEach(c => {
       if (!c.finance) return;
       const startStr = c.finance.revenueStartMonth;
@@ -228,18 +229,25 @@ export default function FinancePage() {
       
       const isStockType = c.genre === 'HP制作' || c.genre === 'SNS運用';
       if (isStockType) {
-        allTimeGrossTotal += c.finance.oneTimeFee || 0;
+        const recognitionMonth = c.finance.oneTimeFeeMonth || startStr;
+        const recD = parseISO(`${recognitionMonth}-01`);
+        if (!isAfter(recD, nowD)) {
+          allTimeGrossTotal += c.finance.oneTimeFee || 0;
+        }
         
         // Calculate months since start
         const startD = parseISO(`${startStr}-01`);
-        const nowD = startOfMonth(new Date());
         let monthsActive = 0;
         if (!isAfter(startD, nowD)) {
            monthsActive = (nowD.getFullYear() - startD.getFullYear()) * 12 + (nowD.getMonth() - startD.getMonth()) + 1;
         }
         allTimeGrossTotal += (c.finance.maintenanceFee || 0) * Math.max(0, monthsActive);
       } else {
-        allTimeGrossTotal += c.finance.spotFee || 0;
+        const recognitionMonth = c.finance.spotMonth || startStr;
+        const recD = parseISO(`${recognitionMonth}-01`);
+        if (!isAfter(recD, nowD)) {
+          allTimeGrossTotal += c.finance.spotFee || 0;
+        }
       }
     });
 

@@ -13,6 +13,50 @@ import { useRouter } from 'next/navigation';
 import { cn } from '@/lib/utils';
 import { Badge } from '@/components/ui/badge';
 
+const ClientDetailForm = ({ client, updateClient }: { client: ClientData, updateClient: any }) => {
+  const [managerName, setManagerName] = useState(client.managerName || '');
+  const [memo, setMemo] = useState(client.memo || '');
+  const [isSaved, setIsSaved] = useState(false);
+
+  const handleSave = () => {
+    updateClient(client.id, (draft: any) => {
+      draft.managerName = managerName;
+      draft.memo = memo;
+    });
+    setIsSaved(true);
+    setTimeout(() => setIsSaved(false), 2000);
+  };
+
+  return (
+    <div className="flex-1 bg-card border border-border p-5 rounded-md flex flex-col gap-4 relative">
+      <div className="absolute top-4 right-4">
+        <Button onClick={handleSave} className="h-8 px-3 bg-primary text-primary-foreground font-bold text-[10px]">
+          {isSaved ? <Check className="w-3 h-3 mr-1" /> : <Save className="w-3 h-3 mr-1" />} 保存
+        </Button>
+      </div>
+      <div className="flex flex-col">
+        <span className="text-[9px] font-bold text-muted-foreground uppercase tracking-widest mb-1">MANAGER / 担当者</span>
+        <Input 
+          value={managerName} 
+          onChange={e => setManagerName(e.target.value)} 
+          className="h-10 bg-input border-border font-bold text-sm w-3/4 lg:w-2/3" 
+          placeholder="担当者名を入力"
+        />
+      </div>
+      <div className="w-full h-px bg-border" />
+      <div className="flex flex-col">
+        <span className="text-[9px] font-bold text-muted-foreground uppercase tracking-widest mb-1">MEMO / メモ</span>
+        <textarea 
+          value={memo} 
+          onChange={e => setMemo(e.target.value)} 
+          className="min-h-[80px] bg-input border border-border rounded-md p-3 text-sm font-medium resize-y" 
+          placeholder="メモを入力"
+        />
+      </div>
+    </div>
+  );
+};
+
 export default function ClientsDashboard() {
   const router = useRouter();
   const { clients, createClient, updateClient, deleteClient, cases } = useHearsStore();
@@ -193,6 +237,13 @@ export default function ClientsDashboard() {
                            </div>
                            <div className="w-px h-8 bg-border/50" />
                            <div className="flex flex-col text-right lg:text-left">
+                              <span className="text-[8px] font-bold text-muted-foreground uppercase tracking-widest opacity-40 mb-1">MAINTENANCE / 保守累計</span>
+                              <span className="text-lg font-bold tracking-tight text-emerald-500">
+                                ¥{c.clientTotalStock.toLocaleString()}
+                              </span>
+                           </div>
+                           <div className="w-px h-8 bg-border/50" />
+                           <div className="flex flex-col text-right lg:text-left">
                               <span className="text-[8px] font-bold text-muted-foreground uppercase tracking-widest opacity-40 mb-1">TOTAL REVENUE (GROSS) / 累計総売上</span>
                               <span className="text-lg font-bold tracking-tight text-foreground">
                                 ¥{c.clientTotalGross.toLocaleString()}
@@ -241,19 +292,9 @@ export default function ClientsDashboard() {
 
                 {/* 展開時の詳細情報 */}
                 {isExpanded && (
-                  <div className="border-t border-border/50 bg-secondary/10 p-4 lg:p-8 animate-in slide-in-from-top-4 duration-300">
+                  <div className="border-t border-border/50 bg-secondary/10 p-4 lg:p-8 animate-in slide-in-from-top-4 duration-300 cursor-default" onClick={e => e.stopPropagation()}>
                     <div className="flex flex-col lg:flex-row gap-4 mb-6">
-                      <div className="flex-1 bg-card border border-border p-5 rounded-md flex flex-col gap-4">
-                        <div className="flex flex-col">
-                          <span className="text-[9px] font-bold text-muted-foreground uppercase tracking-widest mb-1">MANAGER / 担当者</span>
-                          <span className="text-sm font-bold text-foreground">{c.managerName || '未設定'}</span>
-                        </div>
-                        <div className="w-full h-px bg-border" />
-                        <div className="flex flex-col">
-                          <span className="text-[9px] font-bold text-muted-foreground uppercase tracking-widest mb-1">MEMO / メモ</span>
-                          <span className="text-sm font-medium whitespace-pre-wrap leading-relaxed">{c.memo || <span className="opacity-40 italic">未入力</span>}</span>
-                        </div>
-                      </div>
+                      <ClientDetailForm client={c} updateClient={updateClient} />
                       
                       <div className="flex-1 bg-card border border-border p-5 rounded-md flex flex-col justify-center gap-4">
                         <div className="flex items-center justify-between">

@@ -51,6 +51,14 @@ function FinanceDetailsContent() {
           const d = parseISO(`${c.finance.revenueStartMonth}-01`);
           if (d < earliestDate) earliestDate = d;
         }
+        if (c.finance?.oneTimeFeeMonth) {
+          const d = parseISO(`${c.finance.oneTimeFeeMonth}-01`);
+          if (d < earliestDate) earliestDate = d;
+        }
+        if (c.finance?.spotMonth) {
+          const d = parseISO(`${c.finance.spotMonth}-01`);
+          if (d < earliestDate) earliestDate = d;
+        }
       });
     }
 
