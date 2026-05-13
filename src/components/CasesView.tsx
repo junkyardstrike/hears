@@ -72,12 +72,15 @@ function CasesViewContent() {
                 )}>
                   {c.status === 'active' ? '進行中 / active' : '完了済 / completed'}
                 </Badge>
-                <div className="flex flex-col lg:flex-row lg:flex-wrap items-start lg:items-center gap-1 lg:gap-4">
-                  <div className="flex items-center gap-1 lg:gap-2 text-[8px] lg:text-[10px] font-bold text-primary tracking-tighter italic">
-                    <Tag className="w-3 h-3 lg:w-3.5 lg:h-3.5" /> <span className="truncate max-w-[100px] lg:max-w-none">{c.genre || '未設定'}</span>
+                <div className="flex flex-col items-start gap-1 lg:gap-1.5">
+                  <div className="flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-primary/10 text-primary">
+                    <Tag className="w-2.5 h-2.5 lg:w-3 lg:h-3" />
+                    <span className="text-[8px] lg:text-[10px] font-bold tracking-tighter italic truncate max-w-[100px] lg:max-w-none">
+                      {c.genre || '未設定'}
+                    </span>
                   </div>
-                  <div className="flex items-center gap-1 lg:gap-2 text-[8px] lg:text-[10px] font-bold text-muted-foreground tracking-widest opacity-60">
-                    <Calendar className="w-3 h-3 lg:w-3.5 lg:h-3.5" /> {c.finance?.revenueStartMonth || '未設定'}
+                  <div className="flex items-center gap-1 lg:gap-1.5 text-[8px] lg:text-[9px] font-bold text-muted-foreground tracking-widest opacity-60 ml-1">
+                    <Calendar className="w-3 h-3" /> {c.finance?.revenueStartMonth || '未設定'}
                   </div>
                 </div>
               </div>

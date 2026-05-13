@@ -92,6 +92,36 @@ export default function Editor() {
             案件管理に変換して作成
           </Button>
           
+          <div className="relative group">
+            <Button variant="outline" className="flex-1 sm:flex-none border-blue-600/50 text-blue-500 font-bold h-12 px-6 rounded-md hover:bg-blue-600/10">
+              既存の案件に紐付け
+            </Button>
+            <div className="absolute top-full mt-2 right-0 w-80 bg-popover border border-border rounded-md shadow-lg z-50 p-4 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all">
+              <h4 className="text-xs font-bold text-muted-foreground uppercase mb-2">紐付ける案件を選択</h4>
+              <div className="max-h-48 overflow-y-auto space-y-1 custom-scrollbar">
+                {useHearsStore.getState().cases.length === 0 ? (
+                  <p className="text-[10px] text-muted-foreground py-2 text-center">案件がありません</p>
+                ) : (
+                  useHearsStore.getState().cases.map(c => (
+                    <button key={c.id} onClick={() => {
+                      if (confirm(`「${c.name}」にこのヒアリングシートを紐付けますか？`)) {
+                        useHearsStore.getState().updateCase(c.id, draft => { 
+                          draft.projectId = project.id; 
+                          if (!draft.clientName) draft.clientName = project.basicInfo.clientName || project.name;
+                          if (!draft.technicalInfo.url) draft.technicalInfo.url = project.basicInfo.urlOrDomain; 
+                        });
+                        useHearsStore.getState().updateProject(project.id, p => { p.folder = 'backup'; });
+                        router.push(`/cases/${c.id}`);
+                      }
+                    }} className="w-full text-left p-2 hover:bg-secondary rounded-md text-sm font-bold truncate">
+                      {c.name}
+                    </button>
+                  ))
+                )}
+              </div>
+            </div>
+          </div>
+          
           <Button onClick={() => router.push('/hearing')} className="flex-1 sm:flex-none bg-primary hover:brightness-110 text-primary-foreground font-bold h-12 px-8 rounded-md transition-all active:scale-95 shadow-none">
             <Save className="w-4 h-4 mr-2" />
             保存して戻る

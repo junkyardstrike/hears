@@ -220,9 +220,32 @@ export default function FinancePage() {
 
     const reachRate = lastYearFullTotal === 0 ? 0 : Math.round((yearlyTotal / lastYearFullTotal) * 100);
 
+    let allTimeGrossTotal = 0;
+    cases.forEach(c => {
+      if (!c.finance) return;
+      const startStr = c.finance.revenueStartMonth;
+      if (!startStr) return;
+      
+      const isStockType = c.genre === 'HP制作' || c.genre === 'SNS運用';
+      if (isStockType) {
+        allTimeGrossTotal += c.finance.oneTimeFee || 0;
+        
+        // Calculate months since start
+        const startD = parseISO(`${startStr}-01`);
+        const nowD = startOfMonth(new Date());
+        let monthsActive = 0;
+        if (!isAfter(startD, nowD)) {
+           monthsActive = (nowD.getFullYear() - startD.getFullYear()) * 12 + (nowD.getMonth() - startD.getMonth()) + 1;
+        }
+        allTimeGrossTotal += (c.finance.maintenanceFee || 0) * Math.max(0, monthsActive);
+      } else {
+        allTimeGrossTotal += c.finance.spotFee || 0;
+      }
+    });
+
     return { 
       yearlyTotal, 
-      yearlyGrossTotal,
+      allTimeGrossTotal,
       currentMonthPrediction: Math.floor(currentMonthPrediction),  
       reachRate,
       totalProjects: cases.length,
@@ -290,7 +313,7 @@ export default function FinancePage() {
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-5 gap-3">
-        <StatCardCompact label={`${viewYear}年度 法人総売上 (100%)`} subLabel="GROSS TOTAL" value={`¥${stats.yearlyGrossTotal.toLocaleString()}`} sub="基本給を含まない案件総売上" icon={<Landmark className="w-4 h-4" />} color="bg-indigo-600" onClick={() => router.push(`/finance/details?year=${viewYear}&mode=gross`)} />
+        <StatCardCompact label={`累計 法人総売上 (100%)`} subLabel="ALL TIME GROSS" value={`¥${stats.allTimeGrossTotal.toLocaleString()}`} sub="基本給を含まない累計総売上" icon={<Landmark className="w-4 h-4" />} color="bg-indigo-600" onClick={() => router.push(`/finance/details?mode=gross`)} />
         <StatCardCompact label={`${viewYear}年度 累計実績`} subLabel="CUMULATIVE" value={`¥${stats.yearlyTotal.toLocaleString()}`} sub="今日までの確定手取り額" icon={<Wallet className="w-4 h-4" />} color="bg-primary" onClick={() => router.push(`/finance/details?year=${viewYear}&mode=year`)} />
         <StatCardCompact label={`${viewYear - 1}年度 実績`} subLabel="PREVIOUS" value={`¥${lastYearFullTotal.toLocaleString()}`} sub="前年度の最終着地実績" icon={<TargetIcon className="w-4 h-4" />} color="bg-slate-500" onClick={() => router.push(`/finance/details?year=${viewYear - 1}&mode=year`)} />
         <StatCardCompact label="当月推定手取り額" subLabel="MONTHLY" value={`¥${stats.currentMonthPrediction.toLocaleString()}`} sub="基本給 ＋ 保守還元合算" icon={<Activity className="w-4 h-4" />} color="bg-blue-600" onClick={() => router.push(`/finance/details?year=${new Date().getFullYear()}&month=${stats.currentMonthNum}&mode=month`)} />
