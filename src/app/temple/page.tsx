@@ -1089,7 +1089,7 @@ export default function TemplePage() {
                       <div className="text-[9px] font-bold text-muted-foreground uppercase mb-2 tracking-widest">討伐記録 (収益TOP5取引先)</div>
                       <div className="space-y-2">
                         {stats.topClients.map((client: any, i: number) => (
-                          <div key={i} className={cn("flex justify-between items-center bg-background/50 p-2 rounded border transition-all", client.isPlaceholder ? "border-dashed border-border/20 opacity-20" : "border-border/30 hover:bg-background/80")}>
+                          <div key={i} className={cn("flex justify-between items-center bg-background/50 p-2 rounded border transition-all h-[40px]", client.isPlaceholder ? "border-dashed border-border/20 opacity-20" : "border-border/30 hover:bg-background/80")}>
                             <div className="flex items-center gap-2">
                               <span className="text-[10px] font-black text-primary">#{i+1}</span>
                               <span className="text-xs font-bold truncate max-w-[120px]">{client.name}</span>
