@@ -1001,7 +1001,7 @@ export default function TemplePage() {
                 <div className="flex gap-6 items-center relative">
                   <AvatarNode classType={type} tier={stats.tier} />
                                     <div className="flex-1 min-w-0">
-                    <div className={cn("inline-block px-4 py-1.5 rounded-full border text-xs font-black uppercase tracking-[0.3em] mb-4 shadow-sm", info.bgClass.replace('bg-', 'bg-opacity-10 '), info.borderClass, info.colorClass)}>
+                                        <div className={cn("inline-block px-6 py-2 rounded-full border text-sm font-black uppercase tracking-[0.4em] mb-6 shadow-[0_0_20px_rgba(0,0,0,0.1)]", info.bgClass.replace('bg-', 'bg-opacity-20 '), info.borderClass, info.colorClass)}>
                       {info.subTitle}
                     </div>
                     <h2 className="text-4xl font-black tracking-tight text-foreground leading-tight truncate mb-1.5">{stats.jobName}</h2>
@@ -1105,46 +1105,50 @@ export default function TemplePage() {
                        <span className="text-[8px] font-black text-muted-foreground uppercase">{stats.chartData[0]?.month.split('-')[0]} - {stats.chartData[stats.chartData.length-1]?.month.split('-')[0]}</span>
                     </div>
                   </div>
-                  <div className="h-[140px] w-full overflow-x-auto custom-scrollbar bg-secondary/5 rounded p-2">
-                    <div style={{ width: Math.max(100, stats.chartData.length * 15) + 'px', minWidth: '100%' }}>
-                      <ResponsiveContainer width="100%" height="100%">
-                        <AreaChart data={stats.chartData} margin={{ top: 20, right: 10, left: 0, bottom: 0 }}>
-                          <defs>
-                            <linearGradient id={`gradient-${type}`} x1="0" y1="0" x2="0" y2="1">
-                              <stop offset="5%" stopColor={info.fillColor} stopOpacity={0.3}/>
-                              <stop offset="95%" stopColor={info.fillColor} stopOpacity={0}/>
-                            </linearGradient>
-                          </defs>
-                          <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#ffffff05" />
-                                                    <XAxis 
-                            dataKey="month" 
-                            axisLine={false} 
-                            tickLine={false} 
-                            tick={({ x, y, payload }) => {
-                              const val = payload?.value || "";
-                              const parts = val.split('-');
-                              return (
-                                <g transform={`translate(${x},${y})`}>
-                                  <text x={0} y={0} dy={16} textAnchor="middle" fill="#94a3b8" fontSize="7" fontWeight="bold">
-                                    {parts[1] ? `${parts[1]}月` : val}
-                                  </text>
-                                  {parts[1] === '01' && (
-                                    <text x={0} y={0} dy={28} textAnchor="middle" fill={info.fillColor} fontSize="6" fontWeight="black">
-                                      {parts[0]}
-                                    </text>
-                                  )}
-                                </g>
-                              );
-                            }}
-                            interval={0}
-                          />
-                          <Tooltip cursor={{stroke: info.fillColor, strokeWidth: 1}} contentStyle={{ borderRadius: '8px', border: '1px solid var(--border)', background: 'var(--card)', color: 'var(--foreground)', fontSize: '10px', fontWeight: 'bold' }} formatter={(v: any) => `¥${v.toLocaleString()}`} />
-                          <Area type="monotone" dataKey="value" stroke={info.fillColor} strokeWidth={2} fillOpacity={1} fill={`url(#gradient-${type})`}>
-                            <LabelList dataKey="value" position="top" formatter={(v: any) => v > 100000 ? `¥${(v/10000).toFixed(0)}万` : ''} style={{ fontSize: '7px', fontWeight: 'bold', fill: '#94a3b8' }} />
-                          </Area>
-                        </AreaChart>
-                      </ResponsiveContainer>
-                    </div>
+                                    <div className="h-[160px] w-full bg-secondary/10 rounded-xl p-4 border border-border/50 relative overflow-hidden">
+                    <div className="absolute inset-0 bg-gradient-to-b from-transparent to-background/50 pointer-events-none" />
+                    <ResponsiveContainer width="100%" height="100%">
+                      <AreaChart data={stats.chartData} margin={{ top: 10, right: 10, left: 10, bottom: 0 }}>
+                        <defs>
+                          <linearGradient id={`gradient-${type}`} x1="0" y1="0" x2="0" y2="1">
+                            <stop offset="5%" stopColor={info.fillColor} stopOpacity={0.5}/>
+                            <stop offset="95%" stopColor={info.fillColor} stopOpacity={0}/>
+                          </linearGradient>
+                        </defs>
+                        <CartesianGrid strokeDasharray="3 3" vertical={false} stroke={info.fillColor} strokeOpacity={0.1} />
+                        <XAxis 
+                          dataKey="month" 
+                          axisLine={false} 
+                          tickLine={false} 
+                          tick={({ x, y, payload }) => {
+                            const val = payload?.value || "";
+                            const parts = val.split('-');
+                            return (
+                              <g transform={`translate(${x},${y})`}>
+                                <text x={0} y={0} dy={16} textAnchor="middle" fill="#94a3b8" fontSize="8" fontWeight="bold">
+                                  {parts[1] ? `${parts[1]}月` : val}
+                                </text>
+                              </g>
+                            );
+                          }}
+                          interval={0}
+                        />
+                        <Tooltip 
+                          cursor={{stroke: info.fillColor, strokeWidth: 2, strokeDasharray: '5 5'}} 
+                          contentStyle={{ borderRadius: '12px', border: '1px solid var(--border)', background: 'rgba(var(--card-rgb), 0.9)', backdropFilter: 'blur(8px)', color: 'var(--foreground)', fontSize: '11px', fontWeight: 'bold' }} 
+                          formatter={(v: any) => [`¥${v.toLocaleString()}`, "収益"]}
+                        />
+                        <Area 
+                          type="monotone" 
+                          dataKey="value" 
+                          stroke={info.fillColor} 
+                          strokeWidth={4} 
+                          fillOpacity={1} 
+                          fill={`url(#gradient-${type})`}
+                          animationDuration={1500}
+                        />
+                      </AreaChart>
+                    </ResponsiveContainer>
                   </div>
 
                 {/* Title History */}
