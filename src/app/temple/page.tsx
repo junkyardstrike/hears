@@ -395,8 +395,8 @@ const HERO_TITLE_DEFS: TitleCondition[] = [
   { id: 'hero_zenith', name: '一億の神話', description: '勇者系統累計売上 1 億円達成', category: '勇者の矜持' },
 ];
 
-// Evolution Sequence Component
-const EvolutionSequence = ({ type, currentTier, color }: { type: ClassType, currentTier: number, color: string }) => {
+// Evolution Avatar Component (Crops from spritesheet)
+const EvolutionAvatar = ({ type, tier, size = 64, className }: { type: ClassType, tier: number, size?: number, className?: string }) => {
   const images = {
     mage: '/assets/avatars/mage_evo.png',
     merchant: '/assets/avatars/merchant_evo.png',
@@ -404,29 +404,15 @@ const EvolutionSequence = ({ type, currentTier, color }: { type: ClassType, curr
   };
   
   return (
-    <div className="flex items-center gap-0.5 ml-auto bg-background/40 backdrop-blur-sm p-1 rounded-md border border-border/30 shadow-inner">
-      {[1, 2, 3, 4, 5].map((t) => (
-        <div 
-          key={t} 
-          className={cn(
-            "w-8 h-8 rounded-sm border border-border/20 bg-background/60 flex items-center justify-center overflow-hidden transition-all relative group/evo",
-            t <= currentTier ? "ring-1 ring-primary/40 opacity-100 shadow-[0_0_10px_rgba(var(--primary),0.2)]" : "opacity-10 grayscale border-dashed"
-          )}
-          style={{ '--primary': color === 'text-emerald-500' ? '16, 185, 129' : (color === 'text-amber-500' ? '245, 158, 11' : '59, 130, 246') } as any}
-        >
-          <div className="w-[500%] h-full relative" style={{ left: `-${(t-1)*100}%` }}>
-            <img 
-              src={images[type]} 
-              alt={`${type} tier ${t}`}
-              className="absolute inset-0 w-full h-full object-contain"
-            />
-          </div>
-          <div className="absolute inset-0 bg-gradient-to-t from-background/20 to-transparent opacity-0 group-hover/evo:opacity-100 transition-opacity" />
-          {t === currentTier && (
-            <div className="absolute bottom-0 left-0 right-0 h-[1px] bg-primary animate-pulse" />
-          )}
-        </div>
-      ))}
+    <div className={cn("relative overflow-hidden", className)} style={{ width: size, height: size }}>
+      <div className="w-[500%] h-full relative" style={{ left: `-${(tier-1)*100}%`, filter: 'url(#remove-white)' }}>
+        <img 
+          src={images[type]} 
+          alt={`${type} tier ${tier}`}
+          className="absolute inset-0 w-full h-full object-contain"
+          style={{ imageRendering: 'pixelated' }}
+        />
+      </div>
     </div>
   );
 };
@@ -458,12 +444,11 @@ const AvatarNode = ({ classType, tier }: { classType: ClassType, tier: number })
           tier >= 2 && "scale-110",
           tier >= 4 && "scale-125"
         )}>
-          <Image 
-            src={info.imageSrc} 
-            alt={`${info.title} Avatar`}
-            fill
-            className="object-contain"
-            style={{ imageRendering: 'pixelated' }}
+          <EvolutionAvatar 
+            type={classType} 
+            tier={tier} 
+            size={96}
+            className="transition-transform duration-700"
           />
         </div>
       </div>
@@ -1172,8 +1157,12 @@ export default function TemplePage() {
               <div key={th.tier} className="bg-secondary/20 rounded-md p-4 border border-border relative overflow-hidden group">
                 <div className="absolute top-2 right-2 text-3xl font-black opacity-5 group-hover:opacity-10 transition-opacity">T{th.tier}</div>
                 <div className="flex flex-col gap-3 relative z-10">
-                   <div className="w-12 h-12 bg-background rounded-md flex items-center justify-center border border-border shadow-sm">
-                      <Image src={th.image} alt={th.title} width={32} height={32} className="object-contain" style={{ imageRendering: 'pixelated' }} />
+                   <div className="w-16 h-16 bg-background/40 backdrop-blur-sm rounded-md flex items-center justify-center border border-border/50 shadow-inner group-hover:border-primary/30 transition-all overflow-hidden p-1">
+                      <div className="flex gap-1 items-center">
+                         <EvolutionAvatar type="mage" tier={th.tier} size={18} className="opacity-80 group-hover:opacity-100 transition-opacity" />
+                         <EvolutionAvatar type="merchant" tier={th.tier} size={18} className="opacity-80 group-hover:opacity-100 transition-opacity" />
+                         <EvolutionAvatar type="hero" tier={th.tier} size={18} className="opacity-80 group-hover:opacity-100 transition-opacity" />
+                      </div>
                    </div>
                    <div>
                      <div className="text-[10px] font-black text-primary uppercase">Lv.{th.level}</div>
@@ -1206,7 +1195,6 @@ export default function TemplePage() {
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">
               {/* Mage Titles */}
               <div className="space-y-8">
-                <div className="flex items-center justify-between gap-3">
                   <div className="flex items-center gap-3">
                     <div className="w-8 h-8 rounded bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center">
                       <Wand2 className="w-4 h-4 text-emerald-500" />
@@ -1216,8 +1204,6 @@ export default function TemplePage() {
                       <p className="text-[9px] font-bold text-muted-foreground uppercase">魔法使い系統 称号リスト</p>
                     </div>
                   </div>
-                  <EvolutionSequence type="mage" currentTier={data.mage.tier} color="text-emerald-500" />
-                </div>
                 
                 <div className="space-y-8 max-h-[1200px] overflow-y-auto pr-4 custom-scrollbar">
                   {['累計収益', '保守・継続', '月間アクション', '単価・瞬発力', 'リピート・信頼', '複合・時間'].map(cat => (
@@ -1254,7 +1240,6 @@ export default function TemplePage() {
 
               {/* Merchant Titles */}
               <div className="space-y-8">
-                <div className="flex items-center justify-between gap-3">
                   <div className="flex items-center gap-3">
                     <div className="w-8 h-8 rounded bg-amber-500/10 border border-amber-500/30 flex items-center justify-center">
                       <Coins className="w-4 h-4 text-amber-500" />
@@ -1264,8 +1249,6 @@ export default function TemplePage() {
                       <p className="text-[9px] font-bold text-muted-foreground uppercase">商人系統 称号リスト</p>
                     </div>
                   </div>
-                  <EvolutionSequence type="merchant" currentTier={data.merchant.tier} color="text-amber-500" />
-                </div>
                 
                 <div className="space-y-8 max-h-[1200px] overflow-y-auto pr-4 custom-scrollbar">
                   {['累計収益', '保守・継続', '月間アクション', '単価・瞬発力', 'リピート・信頼', '複合・時間'].map(cat => (
@@ -1302,7 +1285,6 @@ export default function TemplePage() {
 
               {/* Hero Titles */}
               <div className="space-y-8">
-                <div className="flex items-center justify-between gap-3">
                   <div className="flex items-center gap-3">
                     <div className="w-8 h-8 rounded bg-blue-500/10 border border-blue-500/30 flex items-center justify-center">
                       <Sword className="w-4 h-4 text-blue-500" />
@@ -1312,8 +1294,6 @@ export default function TemplePage() {
                       <p className="text-[9px] font-bold text-muted-foreground uppercase">勇者系統 称号リスト</p>
                     </div>
                   </div>
-                  <EvolutionSequence type="hero" currentTier={data.hero.tier} color="text-blue-500" />
-                </div>
                 
                 <div className="space-y-8 max-h-[1200px] overflow-y-auto pr-4 custom-scrollbar">
                   {['武勲の蓄積', '行軍の足跡', '必殺の技', '静岡の英雄', '鍛錬の成果', '勇者の矜持'].map(cat => (
@@ -1351,6 +1331,13 @@ export default function TemplePage() {
           </div>
         </div>
       </Card>
+      {/* SVG Filters for Transparency */}
+      <svg className="hidden">
+        <filter id="remove-white">
+          {/* Converts white (255,255,255) to transparent */}
+          <feColorMatrix type="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  -1 -1 -1 1 1" />
+        </filter>
+      </svg>
     </div>
   );
 }
