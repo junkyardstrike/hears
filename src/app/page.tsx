@@ -81,9 +81,9 @@ export default function ClientsDashboard() {
       </div>
 
       {/* 一覧 */}
-      <div className="grid grid-cols-2 lg:grid-cols-1 gap-2 lg:gap-4">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
         {filteredClients.length === 0 ? (
-          <div className="py-24 text-center bg-card border border-dashed border-border rounded-lg animate-in fade-in duration-700 col-span-2 lg:col-span-1">
+          <div className="py-24 text-center bg-card border border-dashed border-border rounded-lg animate-in fade-in duration-700 col-span-1 lg:col-span-2">
              <Building2 className="w-16 h-16 text-muted-foreground mx-auto opacity-10 mb-6" />
              <h3 className="text-xl font-bold italic tracking-tighter text-foreground mb-1">NO CLIENTS REGISTERED</h3>
              <p className="text-muted-foreground font-bold text-[10px] uppercase tracking-widest opacity-40">取引先が登録されていません</p>
@@ -92,14 +92,38 @@ export default function ClientsDashboard() {
           filteredClients.sort((a, b) => b.updatedAt - a.updatedAt).map((c) => {
             const clientCases = cases.filter(item => item.clientId === c.id || item.contractEntity === c.name).sort((a,b) => b.updatedAt - a.updatedAt);
             const isExpanded = expandedClientId === c.id;
+            
+            // Calculate total gross revenue for this client
+            let clientTotalGross = 0;
+            const now = new Date();
+            clientCases.forEach(caseItem => {
+              if (!caseItem.finance) return;
+              const isStockType = caseItem.genre === 'HP制作' || caseItem.genre === 'SNS運用';
+              if (isStockType) {
+                clientTotalGross += caseItem.finance.oneTimeFee || 0;
+                const startStr = caseItem.finance.revenueStartMonth;
+                if (startStr) {
+                  const startYear = parseInt(startStr.split('-')[0]);
+                  const startMonth = parseInt(startStr.split('-')[1]) - 1;
+                  const startD = new Date(startYear, startMonth, 1);
+                  const nowD = new Date(now.getFullYear(), now.getMonth(), 1);
+                  if (nowD >= startD) {
+                     const monthsActive = (nowD.getFullYear() - startD.getFullYear()) * 12 + (nowD.getMonth() - startD.getMonth()) + 1;
+                     clientTotalGross += (caseItem.finance.maintenanceFee || 0) * monthsActive;
+                  }
+                }
+              } else {
+                clientTotalGross += caseItem.finance.spotFee || 0;
+              }
+            });
 
             return (
               <div key={c.id} className={cn(
                 "bg-card rounded-lg border overflow-hidden transition-all",
-                isExpanded ? "border-primary ring-1 ring-primary col-span-2 lg:col-span-1" : "border-border hover:border-primary/50"
+                isExpanded ? "border-primary ring-1 ring-primary col-span-1 lg:col-span-2" : "border-border hover:border-primary/50"
               )}>
                 <div 
-                  className="p-3 lg:p-8 flex flex-col lg:flex-row items-start lg:items-center gap-2 lg:gap-8 group relative cursor-pointer"
+                  className="p-4 lg:p-6 flex flex-col lg:flex-row items-start lg:items-center gap-4 lg:gap-6 group relative cursor-pointer"
                   onClick={() => setExpandedClientId(isExpanded ? null : c.id)}
                 >
                    <div className="absolute left-0 top-0 bottom-0 w-2 bg-primary/20 group-hover:bg-primary transition-all" />
@@ -120,22 +144,25 @@ export default function ClientsDashboard() {
                         </div>
                      </div>
                    ) : (
-                     <div className="flex-1 w-full min-w-0 flex flex-col lg:flex-row items-start lg:items-center gap-2 lg:gap-10">
+                     <div className="flex-1 w-full min-w-0 flex flex-col lg:flex-row items-start lg:items-center gap-4 lg:gap-8">
                         <div className="flex-1 w-full lg:w-auto min-w-0 text-left">
-                           <h3 className="text-sm lg:text-2xl font-bold italic tracking-tighter text-foreground group-hover:text-primary transition-colors font-[family-name:var(--font-outfit)] leading-tight mb-0 lg:mb-1 truncate">
+                           <h3 className="text-xl lg:text-2xl font-bold italic tracking-tighter text-foreground group-hover:text-primary transition-colors font-[family-name:var(--font-outfit)] leading-tight mb-1 truncate">
                              {c.name}
                            </h3>
-                           <p className="text-[7px] lg:text-[10px] font-bold text-muted-foreground tracking-widest opacity-60">ID: {c.id.toUpperCase().substring(0, 8)}</p>
+                           <p className="text-[9px] font-bold text-muted-foreground tracking-widest opacity-60">ID: {c.id.toUpperCase().substring(0, 8)}</p>
                         </div>
-                        <div className="flex flex-row lg:flex-row items-center justify-between lg:justify-start gap-2 lg:gap-10 px-0 lg:px-10 border-t lg:border-t-0 lg:border-x border-border/50 shrink-0 w-full lg:w-auto pt-2 lg:pt-0">
-                           <div className="flex flex-col text-left lg:text-center min-w-0 lg:min-w-[120px] max-w-[80px] lg:max-w-none">
-                              <span className="text-[6px] lg:text-[9px] font-bold text-muted-foreground uppercase tracking-widest opacity-40 mb-0.5 lg:mb-1">MANAGER</span>
-                              <span className="text-[10px] lg:text-sm font-bold text-foreground truncate">{c.managerName || '未設定'}</span>
-                           </div>
-                           <div className="flex flex-col text-right lg:text-center min-w-0 lg:min-w-[100px]">
-                              <span className="text-[6px] lg:text-[9px] font-bold text-muted-foreground uppercase tracking-widest opacity-40 mb-0.5 lg:mb-1">CASES</span>
-                              <span className="text-xs lg:text-xl font-bold italic tracking-tighter text-primary font-[family-name:var(--font-outfit)]">
+                        <div className="flex flex-row items-center justify-between lg:justify-start gap-6 border-t lg:border-t-0 lg:border-x border-border/50 shrink-0 w-full lg:w-auto pt-4 lg:pt-0 lg:px-8">
+                           <div className="flex flex-col text-left">
+                              <span className="text-[8px] font-bold text-muted-foreground uppercase tracking-widest opacity-40 mb-1">CASES</span>
+                              <span className="text-lg font-bold italic tracking-tighter text-primary font-[family-name:var(--font-outfit)]">
                                 {clientCases.length}
+                              </span>
+                           </div>
+                           <div className="w-px h-8 bg-border/50" />
+                           <div className="flex flex-col text-right lg:text-left">
+                              <span className="text-[8px] font-bold text-muted-foreground uppercase tracking-widest opacity-40 mb-1">TOTAL REVENUE (GROSS)</span>
+                              <span className="text-lg font-bold tracking-tight text-foreground">
+                                ¥{clientTotalGross.toLocaleString()}
                               </span>
                            </div>
                         </div>
