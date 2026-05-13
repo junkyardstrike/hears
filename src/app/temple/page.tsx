@@ -621,10 +621,13 @@ export default function TemplePage() {
        const toNext = nextLevel ? nextLevel - level : 0;
        const progress = nextThreshold ? Math.min(100, (rev - TIER_THRESHOLDS[tier-1].min) / (nextThreshold.min - TIER_THRESHOLDS[tier-1].min) * 100) : 100;
        
-       // Top Clients Ranking
-       const topClients = Object.values(clientRevenueMap[t])
-         .sort((a, b) => b.revenue - a.revenue)
-         .slice(0, 5);
+       // Top Clients Ranking (Padded to 5 for consistent UI height)
+        const topClients = Object.values(clientRevenueMap[t])
+          .sort((a, b) => b.revenue - a.revenue)
+          .slice(0, 5);
+        while (topClients.length < 5) {
+          topClients.push({ name: '---', count: 0, revenue: 0, isPlaceholder: true } as any);
+        }
          
        const revenueToNextLevel = nextThreshold ? Math.max(0, nextThreshold.min - rev) : 0;
        const nextLevelExpTarget = (Math.floor(rev / 100000) + 1) * 100000;
