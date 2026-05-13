@@ -153,8 +153,8 @@ function FinanceDetailsContent() {
     return { items: results.sort((a, b) => b.amount - a.amount), groupedItems: grouped, totalTakeHome: totalStock + totalShot + combinedBaseSalaryTotal, baseSalaryTotal: combinedBaseSalaryTotal };
   }, [cases, globalFinance, mode, yearParam, monthParam, isGross]);
 
-  const pageTitle = mode === 'gross' ? `${yearParam}年度 法人総売上内訳` : mode === 'year' ? `${yearParam}年度 累計実績内訳` : `${yearParam}年 ${monthParam}月度 内訳`;
-  const pageSubTitle = mode === 'gross' ? 'YEARLY GROSS REVENUE BREAKDOWN' : mode === 'year' ? 'YEARLY CUMULATIVE REVENUE BREAKDOWN' : 'MONTHLY ESTIMATED REVENUE BREAKDOWN';
+  const pageTitle = mode === 'gross' ? '全期間 法人総売上内訳' : mode === 'year' ? `${yearParam}年度 累計実績内訳` : `${yearParam}年 ${monthParam}月度 内訳`;
+  const pageSubTitle = mode === 'gross' ? 'ALL TIME GROSS REVENUE BREAKDOWN' : mode === 'year' ? 'YEARLY CUMULATIVE REVENUE BREAKDOWN' : 'MONTHLY ESTIMATED REVENUE BREAKDOWN';
 
   return (
     <div className="space-y-8 animate-in fade-in duration-500 font-sans pb-20">
@@ -169,7 +169,7 @@ function FinanceDetailsContent() {
             <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-[0.2em] opacity-40">{pageSubTitle}</p>
           </div>
         </div>
-        <div className="text-right"><span className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest opacity-40 block mb-1">{mode === 'gross' ? 'TOTAL GROSS REVENUE / 法人総売上' : 'TOTAL TAKE-HOME / 合計手取り額'}</span><span className="text-4xl font-bold tracking-tight text-primary">¥{totalTakeHome.toLocaleString()}</span></div>
+        <div className="text-right"><span className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest opacity-40 block mb-1">{mode === 'gross' ? 'TOTAL GROSS REVENUE / 法人総売上' : 'TOTAL PAY / 確定給与総額'}</span><span className="text-4xl font-bold tracking-tight text-primary">¥{totalTakeHome.toLocaleString()}</span></div>
       </div>
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         <div className="space-y-6">
@@ -180,7 +180,7 @@ function FinanceDetailsContent() {
                 <SummaryItem label="案件売上合計 (100%)" value={`¥${totalTakeHome.toLocaleString()}`} sub="GROSS REVENUE TOTAL" color="text-indigo-500" isLarge />
               </CardContent>
             ) : (
-              <CardContent className="p-6 pt-6 space-y-6"><SummaryItem label="基本給 (計上分)" value={`¥${baseSalaryTotal.toLocaleString()}`} sub="BASE SALARY TOTAL" color="text-muted-foreground" /><SummaryItem label="案件手取り合計" value={`¥${(totalTakeHome - baseSalaryTotal).toLocaleString()}`} sub="CASE REVENUE TOTAL" color="text-emerald-500" /><div className="pt-4 border-t border-dashed border-border"><SummaryItem label="総合計額" value={`¥${totalTakeHome.toLocaleString()}`} sub="GRAND TOTAL" color="text-primary" isLarge /></div></CardContent>
+              <CardContent className="p-6 pt-6 space-y-6"><SummaryItem label="基本給 (計上分)" value={`¥${baseSalaryTotal.toLocaleString()}`} sub="BASE SALARY TOTAL" color="text-muted-foreground" /><SummaryItem label="案件歩合合計" value={`¥${(totalTakeHome - baseSalaryTotal).toLocaleString()}`} sub="CASE COMMISSION TOTAL" color="text-emerald-500" /><div className="pt-4 border-t border-dashed border-border"><SummaryItem label="総合計額" value={`¥${totalTakeHome.toLocaleString()}`} sub="GRAND TOTAL" color="text-primary" isLarge /></div></CardContent>
             )}
           </Card>
           <Card className="bg-card border border-border rounded-lg overflow-hidden shadow-none p-6"><div className="flex items-center gap-4 text-amber-500 mb-4"><Landmark className="w-6 h-6" /><span className="text-[10px] font-bold uppercase tracking-widest leading-tight">計算ルール<br/><span className="opacity-60 text-[8px]">REVENUE RULE</span></span></div><p className="text-xs font-bold text-muted-foreground leading-relaxed">基本給は内訳から直接編集して月ごとに調整可能です。案件の収益計算は各還元率に基づきます。</p></Card>

@@ -318,7 +318,7 @@ export default function CaseDetailPage({ params }: { params: Promise<{ id: strin
                             </div>
                           </div>
                           <div className="space-y-2">
-                            <label className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest ml-1">NET (40%) / 保守手取り額</label>
+                            <label className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest ml-1">NET (40%) / 保守歩合額</label>
                             <div className="h-12 bg-secondary/50 rounded-md flex items-center px-4 border border-border">
                               <span className="text-xl font-bold text-emerald-500">¥{Math.floor((c.finance?.maintenanceFee || 0) * 0.4).toLocaleString()}</span>
                             </div>
@@ -336,7 +336,7 @@ export default function CaseDetailPage({ params }: { params: Promise<{ id: strin
                             </div>
                           </div>
                           <div className="space-y-2">
-                            <label className="text-[10px] font-bold text-blue-500 uppercase tracking-widest ml-1">TAKE-HOME / 手取り額</label>
+                            <label className="text-[10px] font-bold text-blue-500 uppercase tracking-widest ml-1">COMMISSION / 歩合額</label>
                             <div className="relative">
                               <span className="absolute left-4 top-1/2 -translate-y-1/2 font-bold text-emerald-500 text-lg">¥</span>
                               <Input type="number" value={c.finance?.oneTimeFeeTakeHome ?? Math.floor((c.finance?.oneTimeFee || 0) * 0.4)} onChange={(e) => updateFinance('oneTimeFeeTakeHome', parseInt(e.target.value) || 0)} className="h-12 bg-input border border-border focus-visible:border-emerald-500/50 rounded-md font-bold text-xl pl-10 pr-4 text-emerald-500 focus-visible:ring-1 focus-visible:ring-emerald-500" />
@@ -369,7 +369,7 @@ export default function CaseDetailPage({ params }: { params: Promise<{ id: strin
                           </div>
                         </div>
                         <div className="space-y-2">
-                          <label className="text-[10px] font-bold text-emerald-500 uppercase tracking-widest ml-1">CALCULATED NET / 手取り額</label>
+                          <label className="text-[10px] font-bold text-emerald-500 uppercase tracking-widest ml-1">CALCULATED NET / 歩合額</label>
                           <div className="h-12 bg-secondary/50 border border-border rounded-md flex items-center px-4">
                             <span className="text-xl font-bold text-emerald-500">¥{spotTakeHome.toLocaleString()}</span>
                           </div>
@@ -399,7 +399,7 @@ export default function CaseDetailPage({ params }: { params: Promise<{ id: strin
 
               <Card className="bg-card border border-border rounded-lg overflow-hidden shadow-none">
                 <CardHeader className="p-6 pb-4 border-b border-border/50 bg-secondary/50">
-                  <div className="flex flex-col"><CardTitle className="text-[11px] font-bold text-muted-foreground uppercase tracking-[0.2em] flex items-center gap-3"><TrendingUp className="w-4 h-4 text-emerald-500" /> TOTAL TAKE-HOME</CardTitle><p className="text-[9px] font-medium text-muted-foreground uppercase tracking-widest opacity-60 ml-7">この案件の手取り額合計</p></div>
+                  <div className="flex flex-col"><CardTitle className="text-[11px] font-bold text-muted-foreground uppercase tracking-[0.2em] flex items-center gap-3"><TrendingUp className="w-4 h-4 text-emerald-500" /> TOTAL COMMISSION</CardTitle><p className="text-[9px] font-medium text-muted-foreground uppercase tracking-widest opacity-60 ml-7">この案件の歩合額合計</p></div>
                 </CardHeader>
                 <CardContent className="p-6 pt-6">
                   <div className="flex items-baseline gap-2 mb-1">
