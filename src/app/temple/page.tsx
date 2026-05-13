@@ -395,7 +395,41 @@ const HERO_TITLE_DEFS: TitleCondition[] = [
   { id: 'hero_zenith', name: '一億の神話', description: '勇者系統累計売上 1 億円達成', category: '勇者の矜持' },
 ];
 
-// Avatar Component
+// Evolution Sequence Component
+const EvolutionSequence = ({ type, currentTier, color }: { type: ClassType, currentTier: number, color: string }) => {
+  const images = {
+    mage: '/assets/avatars/mage_evo.png',
+    merchant: '/assets/avatars/merchant_evo.png',
+    hero: '/assets/avatars/hero_evo.png'
+  };
+  
+  return (
+    <div className="flex items-center gap-0.5 ml-auto bg-background/40 backdrop-blur-sm p-1 rounded-md border border-border/30 shadow-inner">
+      {[1, 2, 3, 4, 5].map((t) => (
+        <div 
+          key={t} 
+          className={cn(
+            "w-8 h-8 rounded-sm border border-border/20 bg-background/60 flex items-center justify-center overflow-hidden transition-all relative group/evo",
+            t <= currentTier ? "ring-1 ring-primary/40 opacity-100 shadow-[0_0_10px_rgba(var(--primary),0.2)]" : "opacity-10 grayscale border-dashed"
+          )}
+          style={{ '--primary': color === 'text-emerald-500' ? '16, 185, 129' : (color === 'text-amber-500' ? '245, 158, 11' : '59, 130, 246') } as any}
+        >
+          <div className="w-[500%] h-full relative" style={{ left: `-${(t-1)*100}%` }}>
+            <img 
+              src={images[type]} 
+              alt={`${type} tier ${t}`}
+              className="absolute inset-0 w-full h-full object-contain"
+            />
+          </div>
+          <div className="absolute inset-0 bg-gradient-to-t from-background/20 to-transparent opacity-0 group-hover/evo:opacity-100 transition-opacity" />
+          {t === currentTier && (
+            <div className="absolute bottom-0 left-0 right-0 h-[1px] bg-primary animate-pulse" />
+          )}
+        </div>
+      ))}
+    </div>
+  );
+};
 const AvatarNode = ({ classType, tier }: { classType: ClassType, tier: number }) => {
   const info = CLASS_INFO[classType];
   
@@ -1172,14 +1206,17 @@ export default function TemplePage() {
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">
               {/* Mage Titles */}
               <div className="space-y-8">
-                <div className="flex items-center gap-3">
-                  <div className="w-8 h-8 rounded bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center">
-                    <Wand2 className="w-4 h-4 text-emerald-500" />
+                <div className="flex items-center justify-between gap-3">
+                  <div className="flex items-center gap-3">
+                    <div className="w-8 h-8 rounded bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center">
+                      <Wand2 className="w-4 h-4 text-emerald-500" />
+                    </div>
+                    <div>
+                      <h4 className="text-xs font-black text-emerald-500 uppercase">MAGE TITLES</h4>
+                      <p className="text-[9px] font-bold text-muted-foreground uppercase">魔法使い系統 称号リスト</p>
+                    </div>
                   </div>
-                  <div>
-                    <h4 className="text-xs font-black text-emerald-500 uppercase">MAGE TITLES</h4>
-                    <p className="text-[9px] font-bold text-muted-foreground uppercase">魔法使い系統 称号リスト</p>
-                  </div>
+                  <EvolutionSequence type="mage" currentTier={data.mage.tier} color="text-emerald-500" />
                 </div>
                 
                 <div className="space-y-8 max-h-[1200px] overflow-y-auto pr-4 custom-scrollbar">
@@ -1217,14 +1254,17 @@ export default function TemplePage() {
 
               {/* Merchant Titles */}
               <div className="space-y-8">
-                <div className="flex items-center gap-3">
-                  <div className="w-8 h-8 rounded bg-amber-500/10 border border-amber-500/30 flex items-center justify-center">
-                    <Coins className="w-4 h-4 text-amber-500" />
+                <div className="flex items-center justify-between gap-3">
+                  <div className="flex items-center gap-3">
+                    <div className="w-8 h-8 rounded bg-amber-500/10 border border-amber-500/30 flex items-center justify-center">
+                      <Coins className="w-4 h-4 text-amber-500" />
+                    </div>
+                    <div>
+                      <h4 className="text-xs font-black text-amber-500 uppercase">MERCHANT TITLES</h4>
+                      <p className="text-[9px] font-bold text-muted-foreground uppercase">商人系統 称号リスト</p>
+                    </div>
                   </div>
-                  <div>
-                    <h4 className="text-xs font-black text-amber-500 uppercase">MERCHANT TITLES</h4>
-                    <p className="text-[9px] font-bold text-muted-foreground uppercase">商人系統 称号リスト</p>
-                  </div>
+                  <EvolutionSequence type="merchant" currentTier={data.merchant.tier} color="text-amber-500" />
                 </div>
                 
                 <div className="space-y-8 max-h-[1200px] overflow-y-auto pr-4 custom-scrollbar">
@@ -1262,14 +1302,17 @@ export default function TemplePage() {
 
               {/* Hero Titles */}
               <div className="space-y-8">
-                <div className="flex items-center gap-3">
-                  <div className="w-8 h-8 rounded bg-blue-500/10 border border-blue-500/30 flex items-center justify-center">
-                    <Sword className="w-4 h-4 text-blue-500" />
+                <div className="flex items-center justify-between gap-3">
+                  <div className="flex items-center gap-3">
+                    <div className="w-8 h-8 rounded bg-blue-500/10 border border-blue-500/30 flex items-center justify-center">
+                      <Sword className="w-4 h-4 text-blue-500" />
+                    </div>
+                    <div>
+                      <h4 className="text-xs font-black text-blue-500 uppercase">HERO TITLES</h4>
+                      <p className="text-[9px] font-bold text-muted-foreground uppercase">勇者系統 称号リスト</p>
+                    </div>
                   </div>
-                  <div>
-                    <h4 className="text-xs font-black text-blue-500 uppercase">HERO TITLES</h4>
-                    <p className="text-[9px] font-bold text-muted-foreground uppercase">勇者系統 称号リスト</p>
-                  </div>
+                  <EvolutionSequence type="hero" currentTier={data.hero.tier} color="text-blue-500" />
                 </div>
                 
                 <div className="space-y-8 max-h-[1200px] overflow-y-auto pr-4 custom-scrollbar">
