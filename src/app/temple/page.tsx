@@ -1281,9 +1281,8 @@ export default function TemplePage() {
                     </div>
                   </div>
                 </div>
-              </div>
-            ))}
-          </div>
+              ))}
+            </div>
 
           {/* 3-Column Title List Section */}
           <div className="pt-10 border-t border-border">
