@@ -996,21 +996,22 @@ export default function TemplePage() {
             <Card key={type} className="bg-card border-border overflow-hidden relative group">
               <div className={cn("absolute top-0 left-0 w-full h-1", info.bgClass)} />
               
-              <CardContent className="p-8 space-y-8">
+                            <CardContent className="p-8 space-y-8">
+                {/* System Title (True Centering) */}
+                <div className="flex justify-center -mt-2 mb-2">
+                  <div className={cn("inline-block px-6 py-2 rounded-full border text-sm font-black uppercase tracking-[0.4em] shadow-[0_0_20px_rgba(0,0,0,0.1)]", info.bgClass.replace('bg-', 'bg-opacity-20 '), info.borderClass, info.colorClass)}>
+                    {info.subTitle}
+                  </div>
+                </div>
+
                 {/* Avatar & Level */}
-                <div className="flex gap-6 items-center relative">
+                <div className="flex gap-6 items-center relative pt-2">
                   <AvatarNode classType={type} tier={stats.tier} />
-                                                      <div className="flex-1 min-w-0">
-                    <div className="flex justify-center mb-6">
-                      <div className={cn("inline-block px-6 py-2 rounded-full border text-sm font-black uppercase tracking-[0.4em] shadow-[0_0_20px_rgba(0,0,0,0.1)]", info.bgClass.replace('bg-', 'bg-opacity-20 '), info.borderClass, info.colorClass)}>
-                        {info.subTitle}
-                      </div>
-                    </div>
-                    
+                  <div className="flex-1 min-w-0">
                     <div className="flex items-center justify-between gap-4 mb-1.5">
                       <h2 className="text-2xl font-black tracking-tight text-foreground leading-tight truncate">{stats.jobName}</h2>
                       
-                      {/* Latest Title (Moved here to align with Job Name) */}
+                      {/* Latest Title */}
                       {stats.titles?.[0] && (
                         <div className="flex flex-col items-end shrink-0">
                           <span className="text-[7px] font-bold text-muted-foreground uppercase tracking-widest mb-1">最近取得した称号</span>
@@ -1082,20 +1083,20 @@ export default function TemplePage() {
                       <div className="text-[9px] font-bold text-muted-foreground uppercase mb-2 tracking-widest">討伐記録 (収益TOP5取引先)</div>
                       <div className="space-y-2">
                         {stats.topClients.map((client: any, i: number) => (
-                          <div key={i} className="flex justify-between items-center bg-background/50 p-2 rounded border border-border/30">
+                          <div key={i} className={cn("flex justify-between items-center bg-background/50 p-2 rounded border transition-all", client.isPlaceholder ? "border-dashed border-border/20 opacity-20" : "border-border/30 hover:bg-background/80")}>
                             <div className="flex items-center gap-2">
                               <span className="text-[10px] font-black text-primary">#{i+1}</span>
                               <span className="text-xs font-bold truncate max-w-[120px]">{client.name}</span>
                             </div>
-                            <div className="text-right">
-                              <div className="text-[10px] font-black">¥{client.revenue.toLocaleString()}</div>
-                              <div className="text-[8px] font-bold text-muted-foreground">{client.count} 案件</div>
-                            </div>
+                            {!client.isPlaceholder && (
+                              <div className="text-right">
+                                <div className="text-[10px] font-black">¥{client.revenue.toLocaleString()}</div>
+                                <div className="text-[8px] font-bold text-muted-foreground">{client.count} 案件</div>
+                              </div>
+                            )}
                           </div>
                         ))}
-                        {stats.topClients.length === 0 && (
-                          <div className="text-[10px] opacity-30 text-center py-2">記録なし</div>
-                        )}
+                        
                       </div>
                     </div>
                   </div>
