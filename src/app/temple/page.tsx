@@ -7,7 +7,8 @@ import { Progress } from '@/components/ui/progress';
 import { BarChart, Bar, XAxis, Tooltip, ResponsiveContainer, Cell } from 'recharts';
 import { parseISO, isAfter, startOfMonth, format, min, addMonths, differenceInMonths } from 'date-fns';
 import { cn } from '@/lib/utils';
-import { Crown, Sparkles, Sword, Coins, ArrowUpRight, Flame, Shield, Star, Wand2, Castle } from 'lucide-react';
+import { useState } from 'react';
+import { Crown, Sparkles, Sword, Coins, ArrowUpRight, Flame, Shield, Star, Wand2, Castle, ChevronDown } from 'lucide-react';
 
 const TIER_THRESHOLDS = [
   { tier: 1, level: 1, min: 0, title: "初期ジョブ" },
@@ -28,7 +29,8 @@ const CLASS_INFO = {
     colorClass: "text-emerald-500",
     bgClass: "bg-emerald-500",
     borderClass: "border-emerald-500/30",
-    glowClass: "shadow-emerald-500/50"
+    glowClass: "shadow-emerald-500/50",
+    fillColor: "#10b981"
   },
   merchant: {
     title: "商人系統",
@@ -38,7 +40,8 @@ const CLASS_INFO = {
     colorClass: "text-amber-500",
     bgClass: "bg-amber-500",
     borderClass: "border-amber-500/30",
-    glowClass: "shadow-amber-500/50"
+    glowClass: "shadow-amber-500/50",
+    fillColor: "#f59e0b"
   },
   hero: {
     title: "勇者系統",
@@ -48,7 +51,8 @@ const CLASS_INFO = {
     colorClass: "text-blue-500",
     bgClass: "bg-blue-500",
     borderClass: "border-blue-500/30",
-    glowClass: "shadow-blue-500/50"
+    glowClass: "shadow-blue-500/50",
+    fillColor: "#3b82f6"
   }
 };
 
@@ -70,7 +74,7 @@ const AvatarNode = ({ classType, tier }: { classType: ClassType, tier: number })
   
   return (
     <div className={cn(
-      "relative w-24 h-24 rounded-2xl flex items-center justify-center border-2 bg-card overflow-hidden",
+      "relative w-24 h-24 rounded-2xl flex items-center justify-center border-2 bg-card overflow-hidden shrink-0",
       info.borderClass,
       tier >= 3 && info.glowClass,
       tier >= 3 && "shadow-lg"
@@ -102,6 +106,7 @@ export default function TemplePage() {
     
     const totals = { mage: 0, merchant: 0, hero: 0 };
     const counts = { mage: 0, merchant: 0, hero: 0 };
+    const casesInClass: Record<ClassType, {name: string, rev: number}[]> = { mage: [], merchant: [], hero: [] };
     const history: Record<ClassType, { month: string, revenue: number }[]> = { mage: [], merchant: [], hero: [] };
 
     cases.forEach(c => {
@@ -146,6 +151,9 @@ export default function TemplePage() {
       }
       
       totals[t] += caseTotal;
+      if (caseTotal > 0) {
+        casesInClass[t].push({ name: c.name, rev: caseTotal });
+      }
       
       // Merge into class history
       caseHistory.forEach(h => {
@@ -202,12 +210,15 @@ export default function TemplePage() {
          progress,
          achieveMonth,
          count: counts[t],
+         cases: casesInClass[t].sort((a,b) => b.rev - a.rev),
          chartData
        };
     });
 
     return result;
   }, [cases]);
+
+  const [expandedClass, setExpandedClass] = useState<ClassType | null>(null);
 
   return (
     <div className="space-y-8 animate-in fade-in duration-500 font-sans pb-20 max-w-[1600px] mx-auto">
@@ -234,7 +245,7 @@ export default function TemplePage() {
                 <div className="flex gap-6 items-center">
                   <AvatarNode classType={type} tier={stats.tier} />
                   <div className="flex-1 min-w-0">
-                    <span className={cn("text-[9px] font-black uppercase tracking-widest mb-1 block", info.colorClass)}>{info.subTitle}</span>
+                    <span className={cn("text-xs font-black uppercase tracking-widest mb-1 block", info.colorClass)}>{info.subTitle}</span>
                     <h2 className="text-2xl font-black tracking-tight text-foreground leading-tight truncate mb-1">{stats.jobName}</h2>
                     <div className="text-[9px] font-bold text-muted-foreground opacity-80 mb-2">&quot;{stats.currentTitle}&quot;</div>
                     <div className="flex items-end gap-2">
@@ -255,15 +266,34 @@ export default function TemplePage() {
 
                 {/* Stats List */}
                 <div className="space-y-4 pt-4 border-t border-border">
-                  <div className="flex justify-between items-center">
-                    <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">累計売上額</span>
-                    <span className="text-lg font-black tracking-tight">¥{stats.revenue.toLocaleString()}</span>
+                  <div 
+                    className="flex justify-between items-center cursor-pointer hover:opacity-80 transition-opacity" 
+                    onClick={() => setExpandedClass(expandedClass === type ? null : type)}
+                  >
+                    <div className="flex items-center gap-1 text-[10px] font-bold text-muted-foreground uppercase tracking-widest">
+                       累計売上額 & 案件数
+                       <ChevronDown className={cn("w-3 h-3 transition-transform", expandedClass === type && "rotate-180")} />
+                    </div>
                   </div>
-                  <div className="flex justify-between items-center">
-                    <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">対応案件数</span>
-                    <span className="text-base font-bold">{stats.count} 件</span>
+                  
+                  <div className="flex justify-between items-end">
+                    <div className="text-base font-bold">{stats.count} <span className="text-[10px]">件</span></div>
+                    <div className="text-xl font-black tracking-tight">¥{stats.revenue.toLocaleString()}</div>
                   </div>
-                  <div className="flex justify-between items-center">
+
+                  {expandedClass === type && (
+                    <div className="mt-2 bg-secondary/30 rounded-md p-3 space-y-2 max-h-[150px] overflow-y-auto custom-scrollbar animate-in slide-in-from-top-2">
+                      {stats.cases.map((c: any, i: number) => (
+                        <div key={i} className="flex justify-between items-center pb-2 border-b border-border/50 last:border-0 last:pb-0">
+                          <span className="text-xs font-bold truncate max-w-[120px]">{c.name}</span>
+                          <span className="text-xs font-black text-primary">¥{c.rev.toLocaleString()}</span>
+                        </div>
+                      ))}
+                      {stats.cases.length === 0 && <span className="text-[10px] opacity-50">案件がありません</span>}
+                    </div>
+                  )}
+
+                  <div className="flex justify-between items-center pt-2">
                     <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">前回昇格年月</span>
                     <span className="text-sm font-bold text-primary">{stats.achieveMonth}</span>
                   </div>
@@ -279,7 +309,7 @@ export default function TemplePage() {
                         <Tooltip cursor={{fill: 'var(--secondary)'}} contentStyle={{ borderRadius: '8px', border: '1px solid var(--border)', background: 'var(--card)', color: 'var(--foreground)', fontSize: '10px', fontWeight: 'bold' }} formatter={(v: any) => `¥${v.toLocaleString()}`} />
                         <Bar dataKey="value" radius={[2, 2, 0, 0]}>
                           {stats.chartData.map((entry: any, index: number) => (
-                            <Cell key={`cell-${index}`} className={info.colorClass.replace('text-', 'fill-')} />
+                            <Cell key={`cell-${index}`} fill={info.fillColor} />
                           ))}
                         </Bar>
                       </BarChart>
