@@ -650,7 +650,7 @@ export default function TemplePage() {
           const found = history[t].find(x => x.month === mStr);
           const dateObj = parseISO(`${mStr}-01`);
           chartData.push({ 
-            month: `${format(dateObj, 'M')}月`, 
+            month: mStr, 
             value: found ? found.revenue : 0 
           });
        }
