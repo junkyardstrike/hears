@@ -6,9 +6,8 @@ import { useHearsStore, CaseData } from '@/store/useHearsStore';
 import { Card, CardContent } from '@/components/ui/card';
 import { Progress } from '@/components/ui/progress';
 import { BarChart, Bar, XAxis, Tooltip, ResponsiveContainer, Cell, LabelList, AreaChart, Area } from 'recharts';
-import { parseISO, isAfter, startOfMonth, format, addMonths, differenceInMonths } from 'date-fns';
-import { cn } from '@/lib/utils';
-import { Crown, Sparkles, Sword, Coins, ArrowUpRight, Flame, Shield, Star, Wand2, Castle } from 'lucide-react';
+import { Crown, Sparkles, Sword, Coins, ArrowUpRight, Flame, Shield, Star, Wand2, Castle, Medal, Trophy, Clock, History } from 'lucide-react';
+import { parseISO, isAfter, startOfMonth, format, addMonths, differenceInMonths, getHours, isWeekend, isSameMonth, subMonths } from 'date-fns';
 
 const TIER_THRESHOLDS = [
   { tier: 1, level: 1, min: 0, title: "初期ジョブ", jobs: { mage: "魔法使い", merchant: "商人", hero: "勇者" }, image: "/assets/avatars/tier1.png" },
@@ -67,6 +66,117 @@ const getTierFromRevenue = (revenue: number) => {
   return currentTier;
 };
 
+// --- Title Definitions ---
+interface TitleCondition {
+  id: string;
+  name: string;
+  description: string;
+  category: string;
+}
+
+const MAGE_TITLE_DEFS: TitleCondition[] = [
+  { id: 'mage_rev_1', name: 'はじまりの呪文', description: '魔法使い系統で最初の1円を記録', category: '累計収益' },
+  { id: 'mage_rev_10k', name: '初級魔力の覚醒', description: '累計売上1万円突破', category: '累計収益' },
+  { id: 'mage_rev_20k', name: 'マナのしずく', description: '累計売上2万円突破', category: '累計収益' },
+  { id: 'mage_rev_30k', name: '術師の第一歩', description: '累計売上3万円突破', category: '累計収益' },
+  { id: 'mage_rev_40k', name: '使い魔との契約', description: '累計売上4万円突破', category: '累計収益' },
+  { id: 'mage_rev_50k', name: '魔導の基礎', description: '累計売上5万円突破', category: '累計収益' },
+  { id: 'mage_rev_60k', name: '初級呪文のマスター', description: '累計売上6万円突破', category: '累計収益' },
+  { id: 'mage_rev_70k', name: '魔力回路の形成', description: '累計売上7万円突破', category: '累計収益' },
+  { id: 'mage_rev_80k', name: '見習い魔導士の誇り', description: '累計売上8万円突破', category: '累計収益' },
+  { id: 'mage_rev_90k', name: '魔導書への記名', description: '累計売上9万円突破', category: '累計収益' },
+  { id: 'mage_rev_100k', name: '見習い卒業', description: '累計売上10万円突破', category: '累計収益' },
+  { id: 'mage_rev_200k', name: '魔導士の門出', description: '累計売上20万円突破', category: '累計収益' },
+  { id: 'mage_rev_300k', name: '中級魔法の心得', description: '累計売上30万円突破', category: '累計収益' },
+  { id: 'mage_rev_400k', name: '魔力の奔流', description: '累計売上40万円突破', category: '累計収益' },
+  { id: 'mage_rev_500k', name: '魔力の胎動', description: '累計売上50万円突破', category: '累計収益' },
+  { id: 'mage_rev_600k', name: '熟練の杖捌き', description: '累計売上60万円突破', category: '累計収益' },
+  { id: 'mage_rev_700k', name: '高位魔法の予感', description: '累計売上70万円突破', category: '累計収益' },
+  { id: 'mage_rev_800k', name: '魔導の探求者', description: '累計売上80万円突破', category: '累計収益' },
+  { id: 'mage_rev_900k', name: '英知の入り口', description: '累計売上90万円突破', category: '累計収益' },
+  { id: 'mage_rev_1m', name: '中級術師の自覚', description: '累計売上100万円突破', category: '累計収益' },
+  { id: 'mage_rev_1.1m', name: '銀の杖の主', description: '累計売上110万円突破', category: '累計収益' },
+  { id: 'mage_rev_1.2m', name: '魔力結晶の精製', description: '累計売上120万円突破', category: '累計収益' },
+  { id: 'mage_rev_1.3m', name: '元素の理解', description: '累計売上130万円突破', category: '累計収益' },
+  { id: 'mage_rev_1.4m', name: '魔導回路の拡張', description: '累計売上140万円突破', category: '累計収益' },
+  { id: 'mage_rev_1.5m', name: '中堅魔導士の威厳', description: '累計売上150万円突破', category: '累計収益' },
+  { id: 'mage_rev_1.6m', name: '術式の最適化', description: '累計売上160万円突破', category: '累計収益' },
+  { id: 'mage_rev_1.7m', name: '深淵への一歩', description: '累計売上170万円突破', category: '累計収益' },
+  { id: 'mage_rev_1.8m', name: '魔力制御の極致', description: '累計売上180万円突破', category: '累計収益' },
+  { id: 'mage_rev_1.9m', name: '叡智の萌芽', description: '累計売上190万円突破', category: '累計収益' },
+  { id: 'mage_rev_3m', name: '魔導の担い手', description: '累計売上300万円突破', category: '累計収益' },
+  { id: 'mage_rev_3.5m', name: '金色の魔導書', description: '累計売上350万円突破', category: '累計収益' },
+  { id: 'mage_rev_4m', name: '高位魔導士の証', description: '累計売上400万円突破', category: '累計収益' },
+  { id: 'mage_rev_4.5m', name: '魔力の海を泳ぐ者', description: '累計売上450万円突破', category: '累計収益' },
+  { id: 'mage_rev_5m', name: '大魔導への道', description: '累計売上500万円突破', category: '累計収益' },
+  { id: 'mage_rev_5.5m', name: '星詠みの術師', description: '累計売上550万円突破', category: '累計収益' },
+  { id: 'mage_rev_6m', name: '魔導の求道者', description: '累計売上600万円突破', category: '累計収益' },
+  { id: 'mage_rev_6.5m', name: '精霊の加護', description: '累計売上650万円突破', category: '累計収益' },
+  { id: 'mage_rev_7m', name: '叡智の守護者', description: '累計売上700万円突破', category: '累計収益' },
+  { id: 'mage_rev_7.5m', name: '聖域の魔導士', description: '累計売上750万円突破', category: '累計収益' },
+  { id: 'mage_rev_8m', name: '次元の理解者', description: '累計売上800万円突破', category: '累計収益' },
+  { id: 'mage_rev_8.5m', name: '賢者の領域', description: '累計売上850万円突破', category: '累計収益' },
+  { id: 'mage_rev_9m', name: '古の呪文の継承者', description: '累計売上900万円突破', category: '累計収益' },
+  { id: 'mage_rev_9.5m', name: '真理の門の番人', description: '累計売上950万円突破', category: '累計収益' },
+  { id: 'mage_rev_10m', name: '伝説の魔導師', description: '累計売上1,000万円突破', category: '累計収益' },
+  { id: 'mage_rev_12m', name: '禁忌の扉を叩く者', description: '累計売上1,200万円突破', category: '累計収益' },
+  { id: 'mage_rev_15m', name: '魔法都市の主', description: '累計売上1,500万円突破', category: '累計収益' },
+  { id: 'mage_rev_18m', name: '魔力の支配者', description: '累計売上1,800万円突破', category: '累計収益' },
+  { id: 'mage_rev_20m', name: '叡智の頂', description: '累計売上2,000万円突破', category: '累計収益' },
+  { id: 'mage_rev_30m', name: '理の超越', description: '累計売上3,000万円突破', category: '累計収益' },
+  { id: 'mage_rev_50m', name: '真理の探求者', description: '累計売上5,000万円達成', category: '累計収益' },
+  { id: 'mage_maint_10k', name: '聖域の小石', description: '保守累計収益1万円突破', category: '保守・継続' },
+  { id: 'mage_maint_50k', name: '静かなる守護', description: '保守累計収益5万円突破', category: '保守・継続' },
+  { id: 'mage_maint_100k', name: '聖域の柱', description: '保守累計収益10万円突破', category: '保守・継続' },
+  { id: 'mage_maint_200k', name: '不落の魔力供給', description: '保守累計収益20万円突破', category: '保守・継続' },
+  { id: 'mage_maint_300k', name: '不変の結界', description: '保守累計収益30万円突破', category: '保守・継続' },
+  { id: 'mage_maint_1m', name: '聖域の賢者', description: '保守累計収益100万円突破', category: '保守・継続' },
+  { id: 'mage_maint_2m', name: '永久機関の構築', description: '保守累計収益200万円突破', category: '保守・継続' },
+  { id: 'mage_maint_3m', name: '信頼の芽', description: '保守収益が3ヶ月連続発生', category: '保守・継続' },
+  { id: 'mage_maint_6m', name: '番人の日常', description: '保守収益が6ヶ月連続発生', category: '保守・継続' },
+  { id: 'mage_maint_12m', name: '不変の魔力', description: '保守収益が12ヶ月連続発生', category: '保守・継続' },
+  { id: 'mage_maint_24m', name: 'マナの源流', description: '保守収益が24ヶ月連続発生', category: '保守・継続' },
+  { id: 'mage_maint_36m', name: '伝説の維持者', description: '保守収益が36ヶ月連続発生', category: '保守・継続' },
+  { id: 'mage_cast_double', name: '二重詠唱（ダブルキャスト）', description: '同一月に「HP制作」と「SNS運用」の両方で売上を記録', category: '月間アクション' },
+  { id: 'mage_cast_triple', name: '三連詠唱（トリプルキャスト）', description: '同一月にHP制作/SNS運用に加え、さらにもう1件別のWeb案件を完了', category: '月間アクション' },
+  { id: 'mage_cast_quad', name: '四重詠唱（クアドラキャスト）', description: '同一月にWeb系統案件を4件完了', category: '月間アクション' },
+  { id: 'mage_cast_penta', name: '五重詠唱（ペンタキャスト）', description: '同一月にWeb系統案件を5件完了', category: '月間アクション' },
+  { id: 'mage_cast_multi', name: '神速のマルチキャスト', description: '同一月にWeb系統案件を10件完了', category: '月間アクション' },
+  { id: 'mage_cast_storm', name: '乱れ打ち', description: '同一月にWeb系統案件を15件完了', category: '月間アクション' },
+  { id: 'mage_stream_6m', name: 'マナの潮流', description: '魔法使い系統の総収益が6ヶ月連続で発生', category: '月間アクション' },
+  { id: 'mage_stream_12m', name: '魔導の黄金時代', description: '魔法使い系統の総収益が12ヶ月連続で発生', category: '月間アクション' },
+  { id: 'mage_stream_24m', name: '止まらぬ詠唱', description: '魔法使い系統の総収益が24ヶ月連続で発生', category: '月間アクション' },
+  { id: 'mage_speed_7d', name: 'クイックキャスト', description: '案件作成から完了までが7日以内', category: '単価・瞬発力' },
+  { id: 'mage_speed_3d', name: '瞬唱', description: '案件作成から完了までが3日以内', category: '単価・瞬発力' },
+  { id: 'mage_speed_24h', name: '神速の具現化', description: '案件作成から完了までが24時間以内', category: '単価・瞬発力' },
+  { id: 'mage_power_500k', name: '一撃の極大魔法', description: '1件の案件単価が50万円以上', category: '単価・瞬発力' },
+  { id: 'mage_power_1m', name: '禁忌の究極魔法', description: '1件の案件単価が100万円以上', category: '単価・瞬発力' },
+  { id: 'mage_power_2m', name: '天変地異', description: '1件の案件単価が200万円以上', category: '単価・瞬発力' },
+  { id: 'mage_limit_break', name: '限界突破', description: '魔法使い系統の案件単価が過去最高額を更新', category: '単価・瞬発力' },
+  { id: 'mage_pioneer', name: '魔導の開拓者', description: 'これまで扱ったことのない新しい取引先とWeb案件を完了', category: '単価・瞬発力' },
+  { id: 'mage_repeat_2', name: '契約の更新', description: '同一取引先から累計2件完了', category: 'リピート・信頼' },
+  { id: 'mage_repeat_3', name: '御用達の魔導士', description: '同一取引先から累計3件完了', category: 'リピート・信頼' },
+  { id: 'mage_repeat_5', name: '宮廷魔導士', description: '同一取引先から累計5件完了', category: 'リピート・信頼' },
+  { id: 'mage_repeat_10', name: '専属契約の真理', description: '同一取引先から累計10件完了', category: 'リピート・信頼' },
+  { id: 'mage_trust_1m', name: '運命の共同体', description: '同一取引先からの累計売上が100万円突破', category: 'リピート・信頼' },
+  { id: 'mage_trust_3m', name: '国の筆頭魔導士', description: '同一取引先からの累計売上が300万円突破', category: 'リピート・信頼' },
+  { id: 'mage_trust_5m', name: '魔法界の重鎮', description: '同一取引先からの累計売上が500万円突破', category: 'リピート・信頼' },
+  { id: 'mage_network_10', name: '知の集積地', description: '取引先名の重複なし数が10社に到達', category: 'リピート・信頼' },
+  { id: 'mage_network_30', name: '世界を繋ぐ魔導網', description: '取引先名の重複なし数が30社に到達', category: 'リピート・信頼' },
+  { id: 'mage_network_50', name: '全知のネットワーク', description: '取引先名の重複なし数が50社に到達', category: 'リピート・信頼' },
+  { id: 'mage_time_midnight', name: '夜明けの魔導士', description: '深夜（24時〜5時）にWeb案件を完了', category: '複合・時間' },
+  { id: 'mage_time_night', name: '月光の詠唱者', description: '22時〜24時の間にWeb案件を完了', category: '複合・時間' },
+  { id: 'mage_time_weekend', name: '安息日の開拓者', description: '土日祝日にWeb案件を完了', category: '複合・時間' },
+  { id: 'mage_routine', name: '魔導のルーチン', description: '同一週内に3件以上のWeb案件を完了', category: '複合・時間' },
+  { id: 'mage_gold_month', name: '黄金の月', description: '魔法使い系統の月間売上が過去最高を更新', category: '複合・時間' },
+  { id: 'mage_gold_year', name: '奇跡の世代', description: '魔法使い系統の年間売上が前年比2倍突破', category: '複合・時間' },
+  { id: 'mage_hybrid', name: 'ハイブリッド・メイジ', description: 'HP制作とSNS運用の累計件数がそれぞれ10件到達', category: '複合・時間' },
+  { id: 'mage_sns_master', name: 'SNSの魔術師', description: 'SNS運用カテゴリの累計売上が100万円突破', category: '複合・時間' },
+  { id: 'mage_hp_architect', name: 'HPの建築家', description: 'HP制作カテゴリの累計売上が500万円突破', category: '複合・時間' },
+  { id: 'mage_hall_of_fame', name: '魔導の殿堂入り', description: '魔法使い系統の全称号の50%を獲得', category: '複合・時間' },
+  { id: 'mage_zenith', name: 'アルケミストの極致', description: '魔法使い系統の累計売上が1億円に到達', category: '複合・時間' },
+];
+
 // Avatar Component
 const AvatarNode = ({ classType, tier }: { classType: ClassType, tier: number }) => {
   const info = CLASS_INFO[classType];
@@ -124,8 +234,9 @@ export default function TemplePage() {
     
     // For expanded stats & Rankings
     const maintenanceTotals = { mage: 0, merchant: 0, hero: 0 };
+    const currentMonthMaint = { mage: 0, merchant: 0, hero: 0 };
     const spotTotals = { mage: 0, merchant: 0, hero: 0 };
-    const clientRevenueMap: Record<ClassType, Record<string, { name: string, count: number, revenue: number }>> = {
+    const clientRevenueMap: Record<ClassType, Record<string, { name: string, count: number, revenue: number, caseIds: string[] }>> = {
       mage: {}, merchant: {}, hero: {}
     };
 
@@ -159,11 +270,16 @@ export default function TemplePage() {
         if (!isAfter(startD, nowD)) {
            const months = differenceInMonths(nowD, startD) + 1;
            for(let i=0; i<months; i++) {
-              const mStr = format(addMonths(startD, i), 'yyyy-MM');
+              const dateObj = addMonths(startD, i);
+              const mStr = format(dateObj, 'yyyy-MM');
               const amt = c.finance.maintenanceFee || 0;
               caseHistory.push({ month: mStr, amount: amt });
               caseTotal += amt;
               caseMaintenance += amt;
+              
+              if (isSameMonth(dateObj, nowD)) {
+                currentMonthMaint[t] += amt;
+              }
            }
         }
       } else {
@@ -184,10 +300,11 @@ export default function TemplePage() {
       // Aggregate by Client (Ranking)
       const cName = c.contractEntity || c.clientName || '不明な取引先';
       if (!clientRevenueMap[t][cName]) {
-        clientRevenueMap[t][cName] = { name: cName, count: 0, revenue: 0 };
+        clientRevenueMap[t][cName] = { name: cName, count: 0, revenue: 0, caseIds: [] };
       }
       clientRevenueMap[t][cName].count += 1;
       clientRevenueMap[t][cName].revenue += caseTotal;
+      clientRevenueMap[t][cName].caseIds.push(c.id);
       
       // Merge into class history
       caseHistory.forEach(h => {
@@ -257,16 +374,150 @@ export default function TemplePage() {
          achieveMonth,
          count: counts[t],
          maintenanceTotal: maintenanceTotals[t],
+         currentMonthMaint: currentMonthMaint[t],
          spotTotal: spotTotals[t],
          topClients,
          revenueToNextLevel,
          revenueToNextExpLevel,
-         chartData
+         chartData,
+         titles: t === 'mage' ? calculateTitles(t, cases, history[t], maintenanceTotals[t]) : []
        };
     });
 
     return result;
   }, [cases]);
+
+  // Helper to calculate titles
+  function calculateTitles(type: ClassType, allCases: CaseData[], typeHistory: any[], typeMaintTotal: number) {
+    if (type !== 'mage') return [];
+    
+    const acquired: any[] = [];
+    const mageCases = allCases.filter(c => c.genre === 'HP制作' || c.genre === 'SNS運用');
+    
+    // Revenue Based
+    const thresholds = [
+      { id: 'mage_rev_1', val: 1 }, { id: 'mage_rev_10k', val: 10000 }, { id: 'mage_rev_20k', val: 20000 },
+      { id: 'mage_rev_30k', val: 30000 }, { id: 'mage_rev_40k', val: 40000 }, { id: 'mage_rev_50k', val: 50000 },
+      { id: 'mage_rev_60k', val: 60000 }, { id: 'mage_rev_70k', val: 70000 }, { id: 'mage_rev_80k', val: 80000 },
+      { id: 'mage_rev_90k', val: 90000 }, { id: 'mage_rev_100k', val: 100000 }, { id: 'mage_rev_200k', val: 200000 },
+      { id: 'mage_rev_300k', val: 300000 }, { id: 'mage_rev_400k', val: 400000 }, { id: 'mage_rev_500k', val: 500000 },
+      { id: 'mage_rev_600k', val: 600000 }, { id: 'mage_rev_700k', val: 700000 }, { id: 'mage_rev_800k', val: 800000 },
+      { id: 'mage_rev_900k', val: 900000 }, { id: 'mage_rev_1m', val: 1000000 }, { id: 'mage_rev_1.1m', val: 1100000 },
+      { id: 'mage_rev_1.2m', val: 1200000 }, { id: 'mage_rev_1.3m', val: 1300000 }, { id: 'mage_rev_1.4m', val: 1400000 },
+      { id: 'mage_rev_1.5m', val: 1500000 }, { id: 'mage_rev_1.6m', val: 1600000 }, { id: 'mage_rev_1.7m', val: 1700000 },
+      { id: 'mage_rev_1.8m', val: 1800000 }, { id: 'mage_rev_1.9m', val: 1900000 }, { id: 'mage_rev_3m', val: 3000000 },
+      { id: 'mage_rev_3.5m', val: 3500000 }, { id: 'mage_rev_4m', val: 4000000 }, { id: 'mage_rev_4.5m', val: 4500000 },
+      { id: 'mage_rev_5m', val: 5000000 }, { id: 'mage_rev_5.5m', val: 5500000 }, { id: 'mage_rev_6m', val: 6000000 },
+      { id: 'mage_rev_6.5m', val: 6500000 }, { id: 'mage_rev_7m', val: 7000000 }, { id: 'mage_rev_7.5m', val: 7500000 },
+      { id: 'mage_rev_8m', val: 8000000 }, { id: 'mage_rev_8.5m', val: 8500000 }, { id: 'mage_rev_9m', val: 9000000 },
+      { id: 'mage_rev_9.5m', val: 9500000 }, { id: 'mage_rev_10m', val: 10000000 }, { id: 'mage_rev_12m', val: 12000000 },
+      { id: 'mage_rev_15m', val: 15000000 }, { id: 'mage_rev_18m', val: 18000000 }, { id: 'mage_rev_20m', val: 20000000 },
+      { id: 'mage_rev_30m', val: 30000000 }, { id: 'mage_rev_50m', val: 50000000 }, { id: 'mage_zenith', val: 100000000 }
+    ];
+    
+    let cumulative = 0;
+    const sortedHistory = [...typeHistory].sort((a,b) => a.month.localeCompare(b.month));
+    sortedHistory.forEach(h => {
+      cumulative += h.revenue;
+      thresholds.forEach(t => {
+        if (cumulative >= t.val && !acquired.some(a => a.id === t.id)) {
+          const def = MAGE_TITLE_DEFS.find(d => d.id === t.id);
+          if (def) acquired.push({ ...def, acquiredAt: `${h.month}-01` });
+        }
+      });
+    });
+
+    // Continuity Checks
+    let consecutiveRevenue = 0;
+    let consecutiveMaint = 0;
+    sortedHistory.forEach((h, i) => {
+      if (h.revenue > 0) consecutiveRevenue++;
+      else consecutiveRevenue = 0;
+
+      if (consecutiveRevenue >= 6 && !acquired.some(a => a.id === 'mage_stream_6m')) acquired.push({ ...MAGE_TITLE_DEFS.find(d => d.id === 'mage_stream_6m'), acquiredAt: h.month });
+      if (consecutiveRevenue >= 12 && !acquired.some(a => a.id === 'mage_stream_12m')) acquired.push({ ...MAGE_TITLE_DEFS.find(d => d.id === 'mage_stream_12m'), acquiredAt: h.month });
+      if (consecutiveRevenue >= 24 && !acquired.some(a => a.id === 'mage_stream_24m')) acquired.push({ ...MAGE_TITLE_DEFS.find(d => d.id === 'mage_stream_24m'), acquiredAt: h.month });
+    });
+
+    // Case Specific
+    let maxSingleFee = 0;
+    mageCases.forEach(c => {
+      const finishDate = new Date(c.updatedAt);
+      const finishMonthStr = format(finishDate, 'yyyy-MM');
+      const finishFullDateStr = format(finishDate, 'yyyy-MM-dd');
+      const diffMs = c.updatedAt - c.createdAt;
+      const diffDays = diffMs / (1000 * 60 * 60 * 24);
+      const hour = getHours(finishDate);
+      
+      const fee = (c.finance?.oneTimeFee || 0) + (c.finance?.spotFee || 0);
+      if (fee > maxSingleFee) {
+        if (maxSingleFee > 0 && !acquired.some(a => a.id === 'mage_limit_break')) acquired.push({ ...MAGE_TITLE_DEFS.find(d => d.id === 'mage_limit_break'), acquiredAt: finishFullDateStr });
+        maxSingleFee = fee;
+      }
+
+      if (diffDays <= 7 && !acquired.some(a => a.id === 'mage_speed_7d')) acquired.push({ ...MAGE_TITLE_DEFS.find(d => d.id === 'mage_speed_7d'), acquiredAt: finishFullDateStr });
+      if (diffDays <= 3 && !acquired.some(a => a.id === 'mage_speed_3d')) acquired.push({ ...MAGE_TITLE_DEFS.find(d => d.id === 'mage_speed_3d'), acquiredAt: finishFullDateStr });
+      if (diffDays <= 1 && !acquired.some(a => a.id === 'mage_speed_24h')) acquired.push({ ...MAGE_TITLE_DEFS.find(d => d.id === 'mage_speed_24h'), acquiredAt: finishFullDateStr });
+      
+      if (fee >= 500000 && !acquired.some(a => a.id === 'mage_power_500k')) acquired.push({ ...MAGE_TITLE_DEFS.find(d => d.id === 'mage_power_500k'), acquiredAt: finishFullDateStr });
+      if (fee >= 1000000 && !acquired.some(a => a.id === 'mage_power_1m')) acquired.push({ ...MAGE_TITLE_DEFS.find(d => d.id === 'mage_power_1m'), acquiredAt: finishFullDateStr });
+      if (fee >= 2000000 && !acquired.some(a => a.id === 'mage_power_2m')) acquired.push({ ...MAGE_TITLE_DEFS.find(d => d.id === 'mage_power_2m'), acquiredAt: finishFullDateStr });
+      
+      if (hour >= 0 && hour < 5 && !acquired.some(a => a.id === 'mage_time_midnight')) acquired.push({ ...MAGE_TITLE_DEFS.find(d => d.id === 'mage_time_midnight'), acquiredAt: finishFullDateStr });
+      if (hour >= 22 && hour < 24 && !acquired.some(a => a.id === 'mage_time_night')) acquired.push({ ...MAGE_TITLE_DEFS.find(d => d.id === 'mage_time_night'), acquiredAt: finishFullDateStr });
+      if (isWeekend(finishDate) && !acquired.some(a => a.id === 'mage_time_weekend')) acquired.push({ ...MAGE_TITLE_DEFS.find(d => d.id === 'mage_time_weekend'), acquiredAt: finishFullDateStr });
+    });
+
+    // Multi-cast (same month)
+    const casesByMonth: Record<string, CaseData[]> = {};
+    mageCases.forEach(c => {
+      const m = format(new Date(c.updatedAt), 'yyyy-MM');
+      if (!casesByMonth[m]) casesByMonth[m] = [];
+      casesByMonth[m].push(c);
+    });
+    Object.entries(casesByMonth).forEach(([m, monthCases]) => {
+      const genres = new Set(monthCases.map(c => c.genre));
+      if (genres.has('HP制作') && genres.has('SNS運用') && !acquired.some(a => a.id === 'mage_cast_double')) acquired.push({ ...MAGE_TITLE_DEFS.find(d => d.id === 'mage_cast_double'), acquiredAt: m });
+      if (genres.has('HP制作') && genres.has('SNS運用') && monthCases.length >= 3 && !acquired.some(a => a.id === 'mage_cast_triple')) acquired.push({ ...MAGE_TITLE_DEFS.find(d => d.id === 'mage_cast_triple'), acquiredAt: m });
+      if (monthCases.length >= 4 && !acquired.some(a => a.id === 'mage_cast_quad')) acquired.push({ ...MAGE_TITLE_DEFS.find(d => d.id === 'mage_cast_quad'), acquiredAt: m });
+      if (monthCases.length >= 5 && !acquired.some(a => a.id === 'mage_cast_penta')) acquired.push({ ...MAGE_TITLE_DEFS.find(d => d.id === 'mage_cast_penta'), acquiredAt: m });
+      if (monthCases.length >= 10 && !acquired.some(a => a.id === 'mage_cast_multi')) acquired.push({ ...MAGE_TITLE_DEFS.find(d => d.id === 'mage_cast_multi'), acquiredAt: m });
+      if (monthCases.length >= 15 && !acquired.some(a => a.id === 'mage_cast_storm')) acquired.push({ ...MAGE_TITLE_DEFS.find(d => d.id === 'mage_cast_storm'), acquiredAt: m });
+    });
+
+    // Maintenance Milestones
+    const maintThresholds = [
+      { id: 'mage_maint_10k', val: 10000 }, { id: 'mage_maint_50k', val: 50000 }, { id: 'mage_maint_100k', val: 100000 },
+      { id: 'mage_maint_200k', val: 200000 }, { id: 'mage_maint_300k', val: 300000 }, { id: 'mage_maint_1m', val: 1000000 },
+      { id: 'mage_maint_2m', val: 2000000 }
+    ];
+    maintThresholds.forEach(mt => {
+      if (typeMaintTotal >= mt.val) {
+        const def = MAGE_TITLE_DEFS.find(d => d.id === mt.id);
+        if (def) acquired.push({ ...def, acquiredAt: 'ACHIEVED' });
+      }
+    });
+
+    // Network / Hybrid
+    const uniqueClients = new Set(mageCases.map(c => c.contractEntity || c.clientName).filter(Boolean));
+    if (uniqueClients.size >= 10) acquired.push({ ...MAGE_TITLE_DEFS.find(d => d.id === 'mage_network_10'), acquiredAt: 'ACHIEVED' });
+    if (uniqueClients.size >= 30) acquired.push({ ...MAGE_TITLE_DEFS.find(d => d.id === 'mage_network_30'), acquiredAt: 'ACHIEVED' });
+    if (uniqueClients.size >= 50) acquired.push({ ...MAGE_TITLE_DEFS.find(d => d.id === 'mage_network_50'), acquiredAt: 'ACHIEVED' });
+
+    const hpCount = mageCases.filter(c => c.genre === 'HP制作').length;
+    const snsCount = mageCases.filter(c => c.genre === 'SNS運用').length;
+    if (hpCount >= 10 && snsCount >= 10 && !acquired.some(a => a.id === 'mage_hybrid')) acquired.push({ ...MAGE_TITLE_DEFS.find(d => d.id === 'mage_hybrid'), acquiredAt: 'ACHIEVED' });
+
+    const snsRev = mageCases.filter(c => c.genre === 'SNS運用').reduce((acc, c) => acc + (c.finance?.oneTimeFee || 0) + (c.finance?.spotFee || 0) + (c.finance?.maintenanceFee || 0), 0);
+    if (snsRev >= 1000000 && !acquired.some(a => a.id === 'mage_sns_master')) acquired.push({ ...MAGE_TITLE_DEFS.find(d => d.id === 'mage_sns_master'), acquiredAt: 'ACHIEVED' });
+
+    const hpRev = mageCases.filter(c => c.genre === 'HP制作').reduce((acc, c) => acc + (c.finance?.oneTimeFee || 0) + (c.finance?.spotFee || 0) + (c.finance?.maintenanceFee || 0), 0);
+    if (hpRev >= 5000000 && !acquired.some(a => a.id === 'mage_hp_architect')) acquired.push({ ...MAGE_TITLE_DEFS.find(d => d.id === 'mage_hp_architect'), acquiredAt: 'ACHIEVED' });
+
+    if (acquired.length >= MAGE_TITLE_DEFS.length * 0.5) acquired.push({ ...MAGE_TITLE_DEFS.find(d => d.id === 'mage_hall_of_fame'), acquiredAt: 'ACHIEVED' });
+
+    return acquired.sort((a, b) => (b.acquiredAt || '').localeCompare(a.acquiredAt || ''));
+  }
 
   return (
     <div className="space-y-8 animate-in fade-in duration-500 font-sans pb-20 max-w-[1600px] mx-auto">
@@ -294,7 +545,7 @@ export default function TemplePage() {
               
               <CardContent className="p-8 space-y-8">
                 {/* Avatar & Level */}
-                <div className="flex gap-6 items-center">
+                <div className="flex gap-6 items-center relative">
                   <AvatarNode classType={type} tier={stats.tier} />
                   <div className="flex-1 min-w-0">
                     <span className={cn("text-xs font-black uppercase tracking-widest mb-1 block", info.colorClass)}>{info.subTitle}</span>
@@ -305,6 +556,16 @@ export default function TemplePage() {
                       <span className="text-[10px] font-bold text-muted-foreground mb-1">({stats.tier}次職)</span>
                     </div>
                   </div>
+                  {/* Latest Title */}
+                  {stats.titles?.[0] && (
+                    <div className="absolute top-0 right-0 flex flex-col items-end">
+                      <span className="text-[8px] font-bold text-muted-foreground uppercase tracking-widest mb-1">最近取得した称号</span>
+                      <div className="bg-primary/10 border border-primary/20 px-2 py-1 rounded flex items-center gap-1">
+                        <Medal className="w-3 h-3 text-primary" />
+                        <span className="text-[10px] font-black text-primary truncate max-w-[80px]">{stats.titles[0].name}</span>
+                      </div>
+                    </div>
+                  )}
                 </div>
 
                 {/* Progress */}
@@ -334,16 +595,16 @@ export default function TemplePage() {
                   <div className="bg-secondary/30 rounded-md p-4 space-y-4">
                     <div className="grid grid-cols-2 gap-4 pb-4 border-b border-border/50">
                       <div>
-                        <div className="text-[9px] font-bold text-muted-foreground uppercase">保守累計</div>
+                        <div className="text-[9px] font-bold text-muted-foreground uppercase">保守累計獲得額</div>
                         <div className="text-sm font-black">¥{stats.maintenanceTotal.toLocaleString()}</div>
+                      </div>
+                      <div>
+                        <div className="text-[9px] font-bold text-muted-foreground uppercase">当月保守料</div>
+                        <div className="text-sm font-black text-emerald-500">¥{stats.currentMonthMaint.toLocaleString()}</div>
                       </div>
                       <div>
                         <div className="text-[9px] font-bold text-muted-foreground uppercase">制作・スポット累計</div>
                         <div className="text-sm font-black">¥{stats.spotTotal.toLocaleString()}</div>
-                      </div>
-                      <div>
-                        <div className="text-[9px] font-bold text-muted-foreground uppercase">総合計</div>
-                        <div className="text-sm font-black text-primary">¥{stats.revenue.toLocaleString()}</div>
                       </div>
                       <div>
                         <div className="text-[9px] font-bold text-muted-foreground uppercase">次の転職まで</div>
