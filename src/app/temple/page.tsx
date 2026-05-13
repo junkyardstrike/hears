@@ -666,25 +666,40 @@ export default function TemplePage() {
                 {/* Title History */}
                 {stats.titles && stats.titles.length > 0 && (
                   <div className="pt-4 border-t border-border">
-                    <div className="flex items-center gap-2 mb-4">
-                      <History className="w-3.5 h-3.5 text-muted-foreground" />
-                      <span className="text-[9px] font-bold text-muted-foreground uppercase tracking-widest">ACQUIRED TITLES (取得済み称号)</span>
+                    <div className="flex items-center justify-between mb-4">
+                      <div className="flex items-center gap-2">
+                        <History className="w-3.5 h-3.5 text-muted-foreground" />
+                        <span className="text-[9px] font-bold text-muted-foreground uppercase tracking-widest">ACQUIRED TITLES</span>
+                      </div>
+                      <div className={cn("text-[10px] font-black px-2 py-0.5 rounded border", info.bgClass.replace('bg-', 'bg-') + "/10", info.borderClass)}>
+                        取得済み: {stats.titles.length} <span className="opacity-40 ml-1">/ {type === 'mage' ? MAGE_TITLE_DEFS.length : '??'}</span>
+                      </div>
                     </div>
-                    <div className="max-h-[200px] overflow-y-auto space-y-2 pr-2 custom-scrollbar">
-                      {stats.titles.map((title: any, idx: number) => (
-                        <div key={idx} className="bg-secondary/20 p-3 rounded border border-border/50 flex flex-col gap-1 relative overflow-hidden">
-                          {idx === 0 && <div className="absolute top-0 right-0 bg-primary/20 text-[7px] font-black px-2 py-0.5 rounded-bl uppercase">New</div>}
-                          <div className="flex justify-between items-start">
-                            <span className="text-[11px] font-black text-foreground">{title.name}</span>
-                            <span className="text-[8px] font-bold text-muted-foreground bg-background px-1.5 py-0.5 rounded border border-border/50">
-                              {title.acquiredAt}
-                            </span>
+                    <div className="max-h-[240px] overflow-y-auto pr-1 custom-scrollbar">
+                      <div className="grid grid-cols-2 gap-2">
+                        {stats.titles.map((title: any, idx: number) => (
+                          <div key={idx} className={cn(
+                            "group p-2 rounded border transition-all hover:brightness-110 relative overflow-hidden",
+                            idx === 0 ? "bg-primary/5 border-primary/30" : "bg-secondary/20 border-border/50"
+                          )}>
+                            {idx === 0 && (
+                              <div className="absolute top-0 right-0 bg-primary/20 text-[6px] font-black px-1.5 py-0.5 rounded-bl uppercase animate-pulse">New</div>
+                            )}
+                            <div className="flex flex-col gap-0.5">
+                              <div className="flex items-center gap-1">
+                                <Medal className={cn("w-2.5 h-2.5", idx === 0 ? "text-primary" : "text-muted-foreground/60")} />
+                                <span className="text-[10px] font-black text-foreground truncate">{title.name}</span>
+                              </div>
+                              <div className="text-[8px] font-bold text-muted-foreground leading-tight line-clamp-2 opacity-80 group-hover:opacity-100">
+                                {title.description}
+                              </div>
+                              <div className="mt-1 text-[7px] font-black text-muted-foreground/40 uppercase tracking-tighter">
+                                {title.acquiredAt}
+                              </div>
+                            </div>
                           </div>
-                          <div className="text-[9px] font-medium text-muted-foreground leading-tight">
-                            {title.description}
-                          </div>
-                        </div>
-                      ))}
+                        ))}
+                      </div>
                     </div>
                   </div>
                 )}
