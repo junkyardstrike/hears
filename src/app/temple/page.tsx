@@ -6,10 +6,9 @@ import { useHearsStore, CaseData } from '@/store/useHearsStore';
 import { Card, CardContent } from '@/components/ui/card';
 import { Progress } from '@/components/ui/progress';
 import { BarChart, Bar, XAxis, Tooltip, ResponsiveContainer, Cell, LabelList } from 'recharts';
-import { parseISO, isAfter, startOfMonth, format, min, addMonths, differenceInMonths } from 'date-fns';
+import { parseISO, isAfter, startOfMonth, format, addMonths, differenceInMonths } from 'date-fns';
 import { cn } from '@/lib/utils';
-import { useState } from 'react';
-import { Crown, Sparkles, Sword, Coins, ArrowUpRight, Flame, Shield, Star, Wand2, Castle, ChevronDown } from 'lucide-react';
+import { Crown, Sparkles, Sword, Coins, ArrowUpRight, Flame, Shield, Star, Wand2, Castle } from 'lucide-react';
 
 const TIER_THRESHOLDS = [
   { tier: 1, level: 1, min: 0, title: "初期ジョブ", jobs: { mage: "魔法使い", merchant: "商人", hero: "勇者" }, image: "/assets/avatars/tier1.png" },
@@ -114,9 +113,12 @@ export default function TemplePage() {
     const casesInClass: Record<ClassType, CaseData[]> = { mage: [], merchant: [], hero: [] };
     const history: Record<ClassType, { month: string, revenue: number }[]> = { mage: [], merchant: [], hero: [] };
     
-    // For expanded stats
+    // For expanded stats & Rankings
     const maintenanceTotals = { mage: 0, merchant: 0, hero: 0 };
     const spotTotals = { mage: 0, merchant: 0, hero: 0 };
+    const clientRevenueMap: Record<ClassType, Record<string, { name: string, count: number, revenue: number }>> = {
+      mage: {}, merchant: {}, hero: {}
+    };
 
     cases.forEach(c => {
       const g = c.genre || '';
@@ -124,7 +126,6 @@ export default function TemplePage() {
       
       if (!c.finance || !c.finance.revenueStartMonth) return;
       counts[t]++;
-      casesInClass[t].push(c);
       
       const startStr = c.finance.revenueStartMonth;
       const startD = parseISO(`${startStr}-01`);
@@ -170,6 +171,14 @@ export default function TemplePage() {
       totals[t] += caseTotal;
       maintenanceTotals[t] += caseMaintenance;
       spotTotals[t] += caseSpot;
+
+      // Aggregate by Client
+      const cName = c.clientName || '不明な取引先';
+      if (!clientRevenueMap[t][cName]) {
+        clientRevenueMap[t][cName] = { name: cName, count: 0, revenue: 0 };
+      }
+      clientRevenueMap[t][cName].count += 1;
+      clientRevenueMap[t][cName].revenue += caseTotal;
       
       // Merge into class history
       caseHistory.forEach(h => {
@@ -194,24 +203,11 @@ export default function TemplePage() {
        const toNext = nextLevel ? nextLevel - level : 0;
        const progress = nextThreshold ? Math.min(100, (rev - TIER_THRESHOLDS[tier-1].min) / (nextThreshold.min - TIER_THRESHOLDS[tier-1].min) * 100) : 100;
        
-       // Top Clients
-       const clientMap: Record<string, { name: string, count: number, revenue: number }> = {};
-       casesInClass[t].forEach(c => {
-         if (!clientMap[c.clientName]) clientMap[c.clientName] = { name: c.clientName, count: 0, revenue: 0 };
-         clientMap[c.clientName].count++;
-         // This is a rough estimation of client revenue within class
-         const cRev = (c.finance.oneTimeFee || 0) + (c.finance.spotFee || 0);
-         clientMap[c.clientName].revenue += cRev;
-         // Add maintenance if applicable
-         if (c.genre === 'HP制作' || c.genre === 'SNS運用') {
-            const startD = parseISO(`${c.finance.revenueStartMonth}-01`);
-            if (!isAfter(startD, nowD)) {
-               const months = differenceInMonths(nowD, startD) + 1;
-               clientMap[c.clientName].revenue += (c.finance.maintenanceFee || 0) * months;
-            }
-         }
-       });
-       const topClients = Object.values(clientMap).sort((a,b) => b.revenue - a.revenue).slice(0, 3);
+       // Top Clients Ranking
+       const topClients = Object.values(clientRevenueMap[t])
+         .sort((a, b) => b.revenue - a.revenue)
+         .slice(0, 3);
+         
        const revenueToNextLevel = nextThreshold ? Math.max(0, nextThreshold.min - rev) : 0;
 
        // Calculate achieve month
@@ -255,8 +251,6 @@ export default function TemplePage() {
 
     return result;
   }, [cases]);
-
-  const [expandedClass, setExpandedClass] = useState<ClassType | null>(null);
 
   return (
     <div className="space-y-8 animate-in fade-in duration-500 font-sans pb-20 max-w-[1600px] mx-auto">
@@ -302,16 +296,10 @@ export default function TemplePage() {
                   <Progress value={stats.progress} className={cn("h-2 bg-secondary", `[&>div]:${info.bgClass}`)} />
                 </div>
 
-                {/* Stats List */}
+                {/* Stats List (Always Visible) */}
                 <div className="space-y-4 pt-4 border-t border-border">
-                  <div 
-                    className="flex justify-between items-center cursor-pointer hover:opacity-80 transition-opacity" 
-                    onClick={() => setExpandedClass(expandedClass === type ? null : type)}
-                  >
-                    <div className="flex items-center gap-1 text-[10px] font-bold text-muted-foreground uppercase tracking-widest">
-                       詳細ステータス & 討伐記録
-                       <ChevronDown className={cn("w-3 h-3 transition-transform", expandedClass === type && "rotate-180")} />
-                    </div>
+                  <div className="flex items-center gap-1 text-[10px] font-bold text-muted-foreground uppercase tracking-widest">
+                     詳細ステータス & 討伐記録
                   </div>
                   
                   <div className="flex justify-between items-end">
@@ -319,46 +307,47 @@ export default function TemplePage() {
                     <div className="text-xl font-black tracking-tight">¥{stats.revenue.toLocaleString()}</div>
                   </div>
 
-                  {expandedClass === type && (
-                    <div className="mt-2 bg-secondary/30 rounded-md p-4 space-y-4 animate-in slide-in-from-top-2">
-                      <div className="grid grid-cols-2 gap-4 pb-4 border-b border-border/50">
-                        <div>
-                          <div className="text-[9px] font-bold text-muted-foreground uppercase">保守累計</div>
-                          <div className="text-sm font-black">¥{stats.maintenanceTotal.toLocaleString()}</div>
-                        </div>
-                        <div>
-                          <div className="text-[9px] font-bold text-muted-foreground uppercase">制作・スポット累計</div>
-                          <div className="text-sm font-black">¥{stats.spotTotal.toLocaleString()}</div>
-                        </div>
-                        <div>
-                          <div className="text-[9px] font-bold text-muted-foreground uppercase">総合計</div>
-                          <div className="text-sm font-black text-primary">¥{stats.revenue.toLocaleString()}</div>
-                        </div>
-                        <div>
-                          <div className="text-[9px] font-bold text-muted-foreground uppercase">次ランクまで</div>
-                          <div className="text-sm font-black text-amber-500">¥{stats.revenueToNextLevel.toLocaleString()}</div>
-                        </div>
-                      </div>
-
+                  <div className="bg-secondary/30 rounded-md p-4 space-y-4">
+                    <div className="grid grid-cols-2 gap-4 pb-4 border-b border-border/50">
                       <div>
-                        <div className="text-[9px] font-bold text-muted-foreground uppercase mb-2 tracking-widest">討伐記録 (収益TOP3取引先)</div>
-                        <div className="space-y-2">
-                          {stats.topClients.map((client: any, i: number) => (
-                            <div key={i} className="flex justify-between items-center bg-background/50 p-2 rounded border border-border/30">
-                              <div className="flex items-center gap-2">
-                                <span className="text-[10px] font-black text-primary">#{i+1}</span>
-                                <span className="text-xs font-bold truncate max-w-[100px]">{client.name}</span>
-                              </div>
-                              <div className="text-right">
-                                <div className="text-[10px] font-black">¥{client.revenue.toLocaleString()}</div>
-                                <div className="text-[8px] font-bold text-muted-foreground">{client.count} 案件</div>
-                              </div>
-                            </div>
-                          ))}
-                        </div>
+                        <div className="text-[9px] font-bold text-muted-foreground uppercase">保守累計</div>
+                        <div className="text-sm font-black">¥{stats.maintenanceTotal.toLocaleString()}</div>
+                      </div>
+                      <div>
+                        <div className="text-[9px] font-bold text-muted-foreground uppercase">制作・スポット累計</div>
+                        <div className="text-sm font-black">¥{stats.spotTotal.toLocaleString()}</div>
+                      </div>
+                      <div>
+                        <div className="text-[9px] font-bold text-muted-foreground uppercase">総合計</div>
+                        <div className="text-sm font-black text-primary">¥{stats.revenue.toLocaleString()}</div>
+                      </div>
+                      <div>
+                        <div className="text-[9px] font-bold text-muted-foreground uppercase">次ランクまで</div>
+                        <div className="text-sm font-black text-amber-500">¥{stats.revenueToNextLevel.toLocaleString()}</div>
                       </div>
                     </div>
-                  )}
+
+                    <div>
+                      <div className="text-[9px] font-bold text-muted-foreground uppercase mb-2 tracking-widest">討伐記録 (収益TOP3取引先)</div>
+                      <div className="space-y-2">
+                        {stats.topClients.map((client: any, i: number) => (
+                          <div key={i} className="flex justify-between items-center bg-background/50 p-2 rounded border border-border/30">
+                            <div className="flex items-center gap-2">
+                              <span className="text-[10px] font-black text-primary">#{i+1}</span>
+                              <span className="text-xs font-bold truncate max-w-[120px]">{client.name}</span>
+                            </div>
+                            <div className="text-right">
+                              <div className="text-[10px] font-black">¥{client.revenue.toLocaleString()}</div>
+                              <div className="text-[8px] font-bold text-muted-foreground">{client.count} 案件</div>
+                            </div>
+                          </div>
+                        ))}
+                        {stats.topClients.length === 0 && (
+                          <div className="text-[10px] opacity-30 text-center py-2">記録なし</div>
+                        )}
+                      </div>
+                    </div>
+                  </div>
 
                   <div className="flex justify-between items-center pt-2">
                     <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">前回昇格年月</span>
