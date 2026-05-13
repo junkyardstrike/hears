@@ -1000,15 +1000,15 @@ export default function TemplePage() {
                 {/* Avatar & Level */}
                 <div className="flex gap-6 items-center relative">
                   <AvatarNode classType={type} tier={stats.tier} />
-                  <div className="flex-1 min-w-0">
-                    <div className={cn("inline-block px-3 py-1 rounded-full border text-[11px] font-black uppercase tracking-[0.2em] mb-3 shadow-sm", info.bgClass.replace('bg-', 'bg-opacity-10 '), info.borderClass, info.colorClass)}>
+                                    <div className="flex-1 min-w-0">
+                    <div className={cn("inline-block px-4 py-1.5 rounded-full border text-xs font-black uppercase tracking-[0.3em] mb-4 shadow-sm", info.bgClass.replace('bg-', 'bg-opacity-10 '), info.borderClass, info.colorClass)}>
                       {info.subTitle}
                     </div>
-                    <h2 className="text-3xl font-black tracking-tight text-foreground leading-tight truncate mb-1.5">{stats.jobName}</h2>
-                    <div className="text-xs font-bold text-muted-foreground opacity-60 mb-3 tracking-wide">&quot;{stats.currentTitle}&quot;</div>
-                    <div className="flex items-end gap-2.5">
-                      <span className="text-4xl font-black font-[family-name:var(--font-outfit)] leading-none text-foreground">Lv.{stats.level}</span>
-                      <span className="text-[11px] font-black text-muted-foreground mb-1.5 opacity-40 uppercase tracking-widest">({stats.tier}次職)</span>
+                    <h2 className="text-4xl font-black tracking-tight text-foreground leading-tight truncate mb-1.5">{stats.jobName}</h2>
+                    <div className="text-xs font-bold text-muted-foreground opacity-60 mb-4 tracking-wide">"{stats.currentTitle}"</div>
+                    <div className="flex items-end gap-3">
+                      <span className="text-5xl font-black font-[family-name:var(--font-outfit)] leading-none text-foreground">Lv.{stats.level}</span>
+                      <span className="text-xs font-black text-muted-foreground mb-1.5 opacity-40 uppercase tracking-widest">({stats.tier}次職)</span>
                     </div>
                   </div>
                   {/* Latest Title */}
@@ -1116,22 +1116,26 @@ export default function TemplePage() {
                             </linearGradient>
                           </defs>
                           <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#ffffff05" />
-                          <XAxis 
+                                                    <XAxis 
                             dataKey="month" 
                             axisLine={false} 
                             tickLine={false} 
-                            tick={({ x, y, payload }) => (
-                              <g transform={`translate(${x},${y})`}>
-                                <text x={0} y={0} dy={16} textAnchor="middle" fill="#94a3b8" fontSize="7" fontWeight="bold">
-                                  {payload.value.split('-')[1]}月
-                                </text>
-                                {payload.value.split('-')[1] === '01' && (
-                                  <text x={0} y={0} dy={28} textAnchor="middle" fill={info.fillColor} fontSize="6" fontWeight="black">
-                                    {payload.value.split('-')[0]}
+                            tick={({ x, y, payload }) => {
+                              const val = payload?.value || "";
+                              const parts = val.split('-');
+                              return (
+                                <g transform={`translate(${x},${y})`}>
+                                  <text x={0} y={0} dy={16} textAnchor="middle" fill="#94a3b8" fontSize="7" fontWeight="bold">
+                                    {parts[1] ? `${parts[1]}月` : val}
                                   </text>
-                                )}
-                              </g>
-                            )}
+                                  {parts[1] === '01' && (
+                                    <text x={0} y={0} dy={28} textAnchor="middle" fill={info.fillColor} fontSize="6" fontWeight="black">
+                                      {parts[0]}
+                                    </text>
+                                  )}
+                                </g>
+                              );
+                            }}
                             interval={0}
                           />
                           <Tooltip cursor={{stroke: info.fillColor, strokeWidth: 1}} contentStyle={{ borderRadius: '8px', border: '1px solid var(--border)', background: 'var(--card)', color: 'var(--foreground)', fontSize: '10px', fontWeight: 'bold' }} formatter={(v: any) => `¥${v.toLocaleString()}`} />
@@ -1247,6 +1251,7 @@ export default function TemplePage() {
                            <Image src={th.image} alt={th.title} width={32} height={32} className="object-contain" style={{ imageRendering: 'pixelated' }} />
                         </div>
                       </div>
+                      
                    </div>
                    <div>
                      <div className="text-[10px] font-black text-primary uppercase">Lv.{th.level}</div>
