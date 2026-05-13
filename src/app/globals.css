@@ -63,6 +63,55 @@
     0%, 100% { opacity: 0.3; transform: scale(1); }
     50% { opacity: 0.7; transform: scale(1.15); }
   }
+
+  --animate-hero-attack: hero-attack 6s infinite;
+  --animate-slash-effect: slash-effect 6s infinite;
+  --animate-mage-cast: mage-cast 6s infinite;
+  --animate-magic-burst: magic-burst 6s infinite;
+  --animate-merchant-jump: merchant-jump 6s infinite;
+  --animate-coin-rain: coin-rain 6s infinite;
+
+  @keyframes hero-attack {
+    0%, 75% { transform: translateX(0); }
+    77% { transform: translateX(-10px); }
+    80% { transform: translateX(30px) scale(1.1); }
+    82% { transform: translateX(30px) scale(1.1); }
+    85% { transform: translateX(0) scale(1); }
+    100% { transform: translateX(0); }
+  }
+  @keyframes slash-effect {
+    0%, 79% { opacity: 0; transform: scale(0.5) translate(-40px, -40px) rotate(-45deg); filter: brightness(1); }
+    80% { opacity: 1; transform: scale(1.5) translate(20px, 20px) rotate(-45deg); filter: brightness(2); }
+    83% { opacity: 0; transform: scale(2) translate(40px, 40px) rotate(-45deg); filter: brightness(1); }
+    100% { opacity: 0; }
+  }
+  @keyframes mage-cast {
+    0%, 75% { transform: translateY(0) scale(1); }
+    76%, 78%, 80% { transform: translateY(-2px) scale(1.05) rotate(-2deg); }
+    77%, 79% { transform: translateY(2px) scale(1.05) rotate(2deg); }
+    82% { transform: translateY(-15px) scale(1.1); }
+    85% { transform: translateY(0) scale(1); }
+    100% { transform: translateY(0); }
+  }
+  @keyframes magic-burst {
+    0%, 80% { opacity: 0; transform: scale(0) rotate(0deg); }
+    81% { opacity: 1; transform: scale(1.5) rotate(90deg); filter: brightness(1.5); }
+    85% { opacity: 0; transform: scale(3) rotate(180deg); filter: brightness(1); }
+    100% { opacity: 0; }
+  }
+  @keyframes merchant-jump {
+    0%, 75% { transform: translateY(0); }
+    78% { transform: translateY(5px) scaleY(0.9); }
+    80% { transform: translateY(-20px) scaleY(1.1); }
+    83% { transform: translateY(0) scaleY(1); }
+    100% { transform: translateY(0); }
+  }
+  @keyframes coin-rain {
+    0%, 80% { opacity: 0; transform: translateY(-50px) scale(0.5); }
+    82% { opacity: 1; transform: translateY(0px) scale(1.2); }
+    86% { opacity: 0; transform: translateY(50px) scale(1); }
+    100% { opacity: 0; }
+  }
 }
 
 :root {

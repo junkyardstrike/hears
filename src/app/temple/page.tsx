@@ -109,21 +109,64 @@ const AvatarNode = ({ classType, tier }: { classType: ClassType, tier: number })
         <div className="absolute -bottom-4 w-[150%] h-12 bg-blue-500/30 blur-xl animate-aura-pulse rounded-full" />
       )}
 
-      {/* Character Image */}
+      {/* Action Animation Wrapper */}
       <div className={cn(
-        "relative w-20 h-20 transition-transform duration-700 animate-idle-bob mix-blend-screen",
-        tier >= 2 && "scale-110",
-        tier >= 4 && "scale-125",
-        tier >= 5 && "drop-shadow-[0_0_15px_rgba(255,255,255,0.5)]"
+        "absolute inset-0 flex items-center justify-center",
+        classType === 'hero' && "animate-hero-attack",
+        classType === 'mage' && "animate-mage-cast",
+        classType === 'merchant' && "animate-merchant-jump"
       )}>
-        <Image 
-          src={info.imageSrc} 
-          alt={`${info.title} Avatar`}
-          fill
-          className="object-contain"
-          style={{ imageRendering: 'pixelated' }}
-        />
+        {/* Character Image */}
+        <div className={cn(
+          "relative w-20 h-20 transition-transform duration-700 animate-idle-bob mix-blend-screen",
+          tier >= 2 && "scale-110",
+          tier >= 4 && "scale-125",
+          tier >= 5 && "drop-shadow-[0_0_15px_rgba(255,255,255,0.5)]"
+        )}>
+          <Image 
+            src={info.imageSrc} 
+            alt={`${info.title} Avatar`}
+            fill
+            className="object-contain"
+            style={{ imageRendering: 'pixelated' }}
+          />
+        </div>
       </div>
+
+      {/* Hero Slash Effect */}
+      {classType === 'hero' && (
+        <div className="absolute inset-0 flex items-center justify-center pointer-events-none z-20 mix-blend-screen overflow-visible">
+          <div className="w-32 h-32 opacity-0 animate-slash-effect absolute">
+            <svg viewBox="0 0 100 100" className="w-full h-full text-white drop-shadow-[0_0_10px_rgba(255,255,255,1)]">
+              <path d="M 10,90 Q 50,50 90,10 L 100,0 L 90,10 Q 50,40 10,90 Z" fill="currentColor" />
+            </svg>
+          </div>
+        </div>
+      )}
+
+      {/* Mage Magic Burst */}
+      {classType === 'mage' && (
+        <div className="absolute inset-0 flex items-center justify-center pointer-events-none z-20 mix-blend-screen">
+          <div className="w-24 h-24 opacity-0 animate-magic-burst">
+            <svg viewBox="0 0 100 100" className="w-full h-full text-emerald-300 drop-shadow-[0_0_8px_rgba(16,185,129,1)]">
+              <circle cx="50" cy="50" r="40" fill="none" stroke="currentColor" strokeWidth="2" strokeDasharray="10 5" />
+              <polygon points="50,10 90,90 10,90" fill="none" stroke="currentColor" strokeWidth="1" />
+              <polygon points="50,90 90,10 10,10" fill="none" stroke="currentColor" strokeWidth="1" />
+            </svg>
+          </div>
+        </div>
+      )}
+
+      {/* Merchant Coin Rain */}
+      {classType === 'merchant' && (
+        <div className="absolute inset-0 flex items-center justify-center pointer-events-none z-20">
+          <div className="w-full h-full opacity-0 animate-coin-rain flex justify-around">
+            <div className="w-3 h-3 bg-yellow-400 rounded-full shadow-[0_0_10px_rgba(250,204,21,1)]" />
+            <div className="w-4 h-4 bg-yellow-500 rounded-full shadow-[0_0_10px_rgba(250,204,21,1)] mt-4" />
+            <div className="w-3 h-3 bg-yellow-300 rounded-full shadow-[0_0_10px_rgba(250,204,21,1)] mt-2" />
+          </div>
+        </div>
+      )}
 
       <div className="absolute bottom-1 right-1 text-[10px] font-black opacity-40 z-10">T{tier}</div>
     </div>
