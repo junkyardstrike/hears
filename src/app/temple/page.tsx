@@ -396,9 +396,72 @@ const HERO_TITLE_DEFS: TitleCondition[] = [
   { id: 'hero_zenith', name: '一億の神話', description: '勇者系統累計売上 1 億円達成', category: '勇者の矜持' },
 ];
 
-// Evolution Avatar Component (Uses ALCHEMIST CSS Pixel Art)
+// High-Res Evolution Avatar (Uses high-res PNGs and adds progression effects)
 const EvolutionAvatar = ({ type, tier, size = 64, className }: { type: ClassType, tier: number, size?: number, className?: string }) => {
-  return <CSSPixelArt type={type} tier={tier} size={size} className={className} />;
+  const images = {
+    mage: '/assets/avatars/mage_new.png',
+    merchant: '/assets/avatars/merchant_new.png',
+    hero: '/assets/avatars/hero_new.png'
+  };
+
+  const glowColors = {
+    mage: 'bg-emerald-500',
+    merchant: 'bg-amber-500',
+    hero: 'bg-blue-500'
+  };
+
+  const particleColors = {
+    mage: 'bg-cyan-400',
+    merchant: 'bg-yellow-400',
+    hero: 'bg-blue-300'
+  };
+
+  return (
+    <div className={cn("relative shrink-0 flex items-center justify-center", className)} style={{ width: size, height: size }}>
+      {/* Dynamic Glow Effect scales with Tier */}
+      <div 
+        className={cn(
+          "absolute inset-0 rounded-full blur-xl transition-all duration-700 opacity-0",
+          tier >= 2 && "opacity-10",
+          tier >= 3 && "opacity-25",
+          tier >= 4 && "opacity-40 scale-125",
+          tier >= 5 && "opacity-60 scale-150 blur-2xl",
+          glowColors[type]
+        )} 
+      />
+      
+      <div className="relative w-full h-full overflow-hidden">
+         <img 
+           src={images[type]} 
+           alt={type} 
+           className={cn(
+             "w-full h-full object-contain transition-all duration-700",
+             tier >= 3 && "scale-110",
+             tier >= 5 && "scale-125 drop-shadow-[0_0_15px_rgba(255,255,255,0.3)]"
+           )}
+           style={{ imageRendering: 'pixelated', mixBlendMode: 'screen' }} 
+         />
+      </div>
+
+      {/* VFX: Particles for High Ranks (Tier 4+) */}
+      {tier >= 4 && (
+        <div className="absolute inset-0 pointer-events-none">
+          <div className="absolute inset-0 animate-pulse">
+             <div className={cn("w-1 h-1 rounded-full absolute top-0 left-1/4 animate-bounce", particleColors[type])} />
+             <div className={cn("w-1 h-1 rounded-full absolute top-1/4 left-3/4 animate-ping", particleColors[type])} />
+             <div className={cn("w-1.5 h-1.5 rounded-full absolute bottom-1/4 left-1/2 animate-pulse", particleColors[type])} />
+          </div>
+        </div>
+      )}
+
+      {/* VFX: Epic Tier 5 Specifics */}
+      {tier === 5 && (
+        <div className="absolute inset-0 pointer-events-none flex items-center justify-center">
+           <div className={cn("w-[150%] h-[150%] border rounded-full animate-spin-slow opacity-20", type === 'mage' ? 'border-emerald-500' : type === 'hero' ? 'border-blue-500' : 'border-amber-500')} />
+        </div>
+      )}
+    </div>
+  );
 };
 const AvatarNode = ({ classType, tier }: { classType: ClassType, tier: number }) => {
   const info = CLASS_INFO[classType];
