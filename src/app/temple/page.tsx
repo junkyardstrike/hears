@@ -73,15 +73,24 @@ const AvatarNode = ({ classType, tier }: { classType: ClassType, tier: number })
   
   return (
     <div className="relative w-24 h-24 flex items-center justify-center shrink-0">
-      {/* Ambient Glow / Platform Base */}
-      <div className={cn("absolute inset-0 opacity-30 rounded-full blur-md", info.bgClass)} />
+      {/* Rotating Magic Circle */}
+      <div className="absolute inset-0 opacity-40 pointer-events-none" style={{ animation: 'spin 12s linear infinite' }}>
+        <svg viewBox="0 0 100 100" className={cn("w-full h-full", info.colorClass)} fill="none" stroke="currentColor">
+          <circle cx="50" cy="50" r="48" strokeWidth="0.5" strokeDasharray="4 2" />
+          <circle cx="50" cy="50" r="40" strokeWidth="1" strokeDasharray="10 5" />
+          <path d="M50 5 L55 45 L95 50 L55 55 L50 95 L45 55 L5 50 L45 45 Z" strokeWidth="0.5" />
+          <path d="M15 15 L85 85 M85 15 L15 85" strokeWidth="0.5" strokeDasharray="2 2" />
+        </svg>
+      </div>
+
+      {/* Ambient Glow */}
+      <div className={cn("absolute inset-0 opacity-20 rounded-full blur-xl", info.bgClass)} />
       
-      {/* Action Animation Wrapper (Animations Removed) */}
       <div className="absolute inset-0 flex items-center justify-center">
         {/* Ground Shadow */}
         <div className="absolute bottom-2 w-12 h-3 bg-black/40 blur-[2px] rounded-[100%]" />
 
-        {/* Character Image (Transparent PNG, No Bobbing Animation) */}
+        {/* Character Image */}
         <div className={cn(
           "relative w-24 h-24 transition-transform duration-700",
           tier >= 2 && "scale-110",
@@ -262,11 +271,15 @@ export default function TemplePage() {
   return (
     <div className="space-y-8 animate-in fade-in duration-500 font-sans pb-20 max-w-[1600px] mx-auto">
       {/* Header */}
-      <div className="bg-card p-8 rounded-lg border border-border flex flex-col items-center justify-center relative overflow-hidden">
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-primary/10 via-background to-background" />
-        <Castle className="w-16 h-16 text-primary mb-4 relative z-10" />
-        <h1 className="text-3xl font-black tracking-widest text-foreground uppercase relative z-10 font-[family-name:var(--font-outfit)]">TEMPLE STATUS</h1>
-        <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-[0.3em] opacity-60 mt-2 relative z-10">稼ぎをチカラに。神殿ステータス</p>
+      <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-8 bg-card p-6 lg:p-8 rounded-lg border border-border">
+        <div className="min-w-0 flex-1">
+          <div className="flex items-center gap-4 mb-2">
+            <h2 className="text-2xl font-bold italic tracking-tighter text-foreground flex items-center gap-4 uppercase font-[family-name:var(--font-outfit)]">
+              <Castle className="w-8 h-8 text-primary" /> TEMPLE STATUS
+            </h2>
+          </div>
+          <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-[0.2em] opacity-40 ml-12">稼ぎをチカラに。神殿ステータス</p>
+        </div>
       </div>
 
       {/* 3 Columns */}

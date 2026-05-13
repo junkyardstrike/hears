@@ -27,7 +27,9 @@ export function GlobalToolbar() {
   const [isTaskModalOpen, setIsTaskModalOpen] = useState(false);
   
   const getPageTitle = (path: string) => {
-    if (path === '/') return 'ダッシュボード';
+    if (path === '/temple') return 'ステータス・神殿';
+    if (path === '/clients') return '取引先・案件管理';
+    if (path === '/') return 'ステータス・神殿'; // Home is now temple
     if (path.startsWith('/hearing')) return 'ヒアリング管理';
     if (path.startsWith('/cases')) return '案件マネジメント';
     if (path.startsWith('/finance')) return '収益アナリティクス';
