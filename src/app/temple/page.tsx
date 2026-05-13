@@ -5,6 +5,7 @@ import { useMemo } from 'react';
 import { useHearsStore, CaseData } from '@/store/useHearsStore';
 import { Card, CardContent } from '@/components/ui/card';
 import { Progress } from '@/components/ui/progress';
+import { CSSPixelArt } from '@/components/ui/css-pixel-art';
 import { BarChart, Bar, XAxis, Tooltip, ResponsiveContainer, Cell, LabelList, AreaChart, Area } from 'recharts';
 import { Crown, Sparkles, Sword, Coins, ArrowUpRight, Flame, Shield, Star, Wand2, Castle, Medal, Trophy, Clock, History } from 'lucide-react';
 import { parseISO, isAfter, startOfMonth, format, addMonths, differenceInMonths, getHours, isWeekend, isSameMonth, subMonths } from 'date-fns';
@@ -395,26 +396,9 @@ const HERO_TITLE_DEFS: TitleCondition[] = [
   { id: 'hero_zenith', name: '一億の神話', description: '勇者系統累計売上 1 億円達成', category: '勇者の矜持' },
 ];
 
-// Evolution Avatar Component (Crops from black-background spritesheet)
+// Evolution Avatar Component (Uses ALCHEMIST CSS Pixel Art)
 const EvolutionAvatar = ({ type, tier, size = 64, className }: { type: ClassType, tier: number, size?: number, className?: string }) => {
-  const images = {
-    mage: '/assets/avatars/mage_evo_b.png',
-    merchant: '/assets/avatars/merchant_evo_b.png',
-    hero: '/assets/avatars/hero_evo_b.png'
-  };
-  
-  return (
-    <div className={cn("relative overflow-hidden shrink-0", className)} style={{ width: size, height: size }}>
-      <div className="w-[500%] h-full relative" style={{ left: `-${(tier-1)*100}%`, mixBlendMode: 'screen' }}>
-        <img 
-          src={images[type]} 
-          alt={`${type} tier ${tier}`}
-          className="absolute inset-0 w-full h-full object-contain"
-          style={{ imageRendering: 'pixelated' }}
-        />
-      </div>
-    </div>
-  );
+  return <CSSPixelArt type={type} tier={tier} size={size} className={className} />;
 };
 const AvatarNode = ({ classType, tier }: { classType: ClassType, tier: number }) => {
   const info = CLASS_INFO[classType];
@@ -439,18 +423,7 @@ const AvatarNode = ({ classType, tier }: { classType: ClassType, tier: number })
         <div className="absolute bottom-2 w-12 h-3 bg-black/40 blur-[2px] rounded-[100%]" />
 
         {/* Character Image */}
-        <div className={cn(
-          "relative w-24 h-24 transition-transform duration-700",
-          tier >= 2 && "scale-110",
-          tier >= 4 && "scale-125"
-        )}>
-          <EvolutionAvatar 
-            type={classType} 
-            tier={tier} 
-            size={96}
-            className="transition-transform duration-700"
-          />
-        </div>
+        <CSSPixelArt type={classType} tier={tier} size={80} className="relative z-10" />
       </div>
 
       <div className="absolute bottom-1 right-1 text-[10px] font-black opacity-40 z-10">T{tier}</div>
@@ -1037,13 +1010,15 @@ export default function TemplePage() {
                   </div>
                 </div>
 
-                <div className="pt-4 border-t border-border">
                   <div className="flex items-center justify-between mb-4">
                     <span className="text-[9px] font-bold text-muted-foreground uppercase tracking-widest block">REVENUE TREND (全期間収益推移)</span>
-                    <span className="text-[8px] font-black text-primary uppercase bg-primary/10 px-2 py-0.5 rounded border border-primary/20">All Periods</span>
+                    <div className="flex items-center gap-2">
+                       <span className="text-[8px] font-black text-primary uppercase bg-primary/10 px-2 py-0.5 rounded border border-primary/20">All Periods</span>
+                       <span className="text-[8px] font-black text-muted-foreground uppercase">{stats.chartData[0]?.month.split('-')[0]} - {stats.chartData[stats.chartData.length-1]?.month.split('-')[0]}</span>
+                    </div>
                   </div>
-                  <div className="h-[140px] w-full overflow-x-auto custom-scrollbar">
-                    <div style={{ width: Math.max(100, stats.chartData.length * 8) + '%' }}>
+                  <div className="h-[140px] w-full overflow-x-auto custom-scrollbar bg-secondary/5 rounded p-2">
+                    <div style={{ width: Math.max(100, stats.chartData.length * 15) + 'px', minWidth: '100%' }}>
                       <ResponsiveContainer width="100%" height="100%">
                         <AreaChart data={stats.chartData} margin={{ top: 20, right: 10, left: 0, bottom: 0 }}>
                           <defs>
@@ -1052,22 +1027,33 @@ export default function TemplePage() {
                               <stop offset="95%" stopColor={info.fillColor} stopOpacity={0}/>
                             </linearGradient>
                           </defs>
+                          <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#ffffff05" />
                           <XAxis 
                             dataKey="month" 
                             axisLine={false} 
                             tickLine={false} 
-                            tick={{fontSize: 7, fontWeight: 'bold', fill: '#94a3b8'}} 
-                            interval={stats.chartData.length > 24 ? 2 : 0}
+                            tick={({ x, y, payload }) => (
+                              <g transform={`translate(${x},${y})`}>
+                                <text x={0} y={0} dy={16} textAnchor="middle" fill="#94a3b8" fontSize="7" fontWeight="bold">
+                                  {payload.value.split('-')[1]}月
+                                </text>
+                                {payload.value.split('-')[1] === '01' && (
+                                  <text x={0} y={0} dy={28} textAnchor="middle" fill={info.fillColor} fontSize="6" fontWeight="black">
+                                    {payload.value.split('-')[0]}
+                                  </text>
+                                )}
+                              </g>
+                            )}
+                            interval={0}
                           />
                           <Tooltip cursor={{stroke: info.fillColor, strokeWidth: 1}} contentStyle={{ borderRadius: '8px', border: '1px solid var(--border)', background: 'var(--card)', color: 'var(--foreground)', fontSize: '10px', fontWeight: 'bold' }} formatter={(v: any) => `¥${v.toLocaleString()}`} />
                           <Area type="monotone" dataKey="value" stroke={info.fillColor} strokeWidth={2} fillOpacity={1} fill={`url(#gradient-${type})`}>
-                            <LabelList dataKey="value" position="top" formatter={(v: any) => v > 50000 ? `¥${(v/10000).toFixed(0)}万` : ''} style={{ fontSize: '7px', fontWeight: 'bold', fill: '#94a3b8' }} />
+                            <LabelList dataKey="value" position="top" formatter={(v: any) => v > 100000 ? `¥${(v/10000).toFixed(0)}万` : ''} style={{ fontSize: '7px', fontWeight: 'bold', fill: '#94a3b8' }} />
                           </Area>
                         </AreaChart>
                       </ResponsiveContainer>
                     </div>
                   </div>
-                </div>
 
                 {/* Title History */}
                 <div className="pt-4 border-t border-border">
@@ -1167,15 +1153,18 @@ export default function TemplePage() {
               <div key={th.tier} className="bg-secondary/20 rounded-md p-4 border border-border relative overflow-hidden group">
                 <div className="absolute top-2 right-2 text-3xl font-black opacity-5 group-hover:opacity-10 transition-opacity">T{th.tier}</div>
                 <div className="flex flex-col gap-3 relative z-10">
-                   <div className="flex items-center gap-4 relative z-10">
-                      <div className="w-12 h-12 bg-background rounded-md flex items-center justify-center border border-border shadow-sm shrink-0">
-                         <Image src={th.image} alt={th.title} width={32} height={32} className="object-contain" style={{ imageRendering: 'pixelated' }} />
+                   <div className="flex items-center justify-between relative z-10 w-full pr-8">
+                      <div className="flex items-center gap-3">
+                        <div className="w-12 h-12 bg-background rounded-md flex items-center justify-center border border-border shadow-sm shrink-0">
+                           <Image src={th.image} alt={th.title} width={32} height={32} className="object-contain" style={{ imageRendering: 'pixelated' }} />
+                        </div>
+                        <div className="flex gap-2 items-center">
+                           <EvolutionAvatar type="mage" tier={th.tier} size={36} className="hover:scale-110 transition-transform" />
+                           <EvolutionAvatar type="merchant" tier={th.tier} size={36} className="hover:scale-110 transition-transform" />
+                           <EvolutionAvatar type="hero" tier={th.tier} size={36} className="hover:scale-110 transition-transform" />
+                        </div>
                       </div>
-                      <div className="flex gap-0.5 items-center">
-                         <EvolutionAvatar type="mage" tier={th.tier} size={32} className="hover:scale-110 transition-transform" />
-                         <EvolutionAvatar type="merchant" tier={th.tier} size={32} className="hover:scale-110 transition-transform" />
-                         <EvolutionAvatar type="hero" tier={th.tier} size={32} className="hover:scale-110 transition-transform" />
-                      </div>
+                      <div className="text-[10px] font-black text-primary bg-primary/5 px-2 py-0.5 rounded border border-primary/10">TIER {th.tier}</div>
                    </div>
                    <div>
                      <div className="text-[10px] font-black text-primary uppercase">Lv.{th.level}</div>
