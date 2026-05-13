@@ -1236,15 +1236,10 @@ export default function TemplePage() {
               <div key={th.tier} className="bg-secondary/20 rounded-md p-4 border border-border relative overflow-hidden group">
                 <div className="absolute top-2 right-2 text-3xl font-black opacity-5 group-hover:opacity-10 transition-opacity">T{th.tier}</div>
                 <div className="flex flex-col gap-3 relative z-10">
-                   <div className="flex items-center justify-between relative z-10 w-full pr-8">
+                    <div className="flex items-center justify-between relative z-10 w-full pr-8">
                       <div className="flex items-center gap-3">
                         <div className="w-12 h-12 bg-background rounded-md flex items-center justify-center border border-border shadow-sm shrink-0">
                            <Image src={th.image} alt={th.title} width={32} height={32} className="object-contain" style={{ imageRendering: 'pixelated' }} />
-                        </div>
-                        <div className="flex gap-2 items-center">
-                           <EvolutionAvatar type="mage" tier={th.tier} size={36} className="hover:scale-110 transition-transform" />
-                           <EvolutionAvatar type="merchant" tier={th.tier} size={36} className="hover:scale-110 transition-transform" />
-                           <EvolutionAvatar type="hero" tier={th.tier} size={36} className="hover:scale-110 transition-transform" />
                         </div>
                       </div>
                       <div className="text-[10px] font-black text-primary bg-primary/5 px-2 py-0.5 rounded border border-primary/10">TIER {th.tier}</div>
