@@ -277,8 +277,122 @@ const MERCHANT_TITLE_DEFS: TitleCondition[] = [
   { id: 'merchant_roadmap_4', name: '商いのロードマップ', description: '商人系統の4次職に到達', category: '複合・時間' },
   { id: 'merchant_roadmap_5', name: '盤上の支配', description: '商人系統の5次職に到達', category: '複合・時間' },
   { id: 'merchant_out_of_pref', name: '全商人の憧れ', description: '累計取引先が県外（または特定フラグ）に到達', category: '複合・時間' },
-  { id: 'merchant_hall_of_fame', name: '商いの殿堂入り', description: '商人系統の称号50%獲得', category: '複合・時間' },
-  { id: 'merchant_zenith', name: '無限の資本', description: '商人系統累計売上1億円達成', category: '複合・時間' },
+  { id: 'merchant_hall_of_fame', name: '商いの殿堂入り', description: '商人系統の称号 50% 獲得', category: '複合・時間' },
+  { id: 'merchant_zenith', name: '無限の資本', description: '商人系統累計売上 1 億円達成', category: '複合・時間' },
+];
+
+const HERO_TITLE_DEFS: TitleCondition[] = [
+  // 累計収益 (50)
+  { id: 'hero_rev_1', name: 'はじまりの旅人', description: '勇者系統で最初の 1 円を記録', category: '累計収益' },
+  { id: 'hero_rev_10k', name: 'スライム狩り', description: '累計売上 1 万円突破', category: '累計収益' },
+  { id: 'hero_rev_20k', name: '村の用心棒', description: '累計売上 2 万円突破', category: '累計収益' },
+  { id: 'hero_rev_30k', name: '小さな名声', description: '累計売上 3 万円突破', category: '累計収益' },
+  { id: 'hero_rev_40k', name: '銅の剣の輝き', description: '累計売上 4 万円突破', category: '累計収益' },
+  { id: 'hero_rev_50k', name: '若き志願兵', description: '累計売上 5 万円突破', category: '累計収益' },
+  { id: 'hero_rev_60k', name: '街道の守り手', description: '累計売上 6 万円突破', category: '累計収益' },
+  { id: 'hero_rev_70k', name: '鉄の意志', description: '累計売上 7 万円突破', category: '累計収益' },
+  { id: 'hero_rev_80k', name: '武功の兆し', description: '累計売上 8 万円突破', category: '累計収益' },
+  { id: 'hero_rev_90k', name: '村の救世主', description: '累計売上 9 万円突破', category: '累計収益' },
+  { id: 'hero_rev_100k', name: '街の守護者', description: '累計売上 10 万円突破', category: '累計収益' },
+  { id: 'hero_rev_200k', name: '鋼の肉体', description: '累計売上 20 万円突破', category: '累計収益' },
+  { id: 'hero_rev_300k', name: '王国騎士団の末席', description: '累計売上 30 万円突破', category: '累計収益' },
+  { id: 'hero_rev_400k', name: '竜の鱗', description: '累計売上 40 万円突破', category: '累計収益' },
+  { id: 'hero_rev_500k', name: '不屈の闘志', description: '累計売上 50 万円突破', category: '累計収益' },
+  { id: 'hero_rev_600k', name: '名高き騎士', description: '累計売上 60 万円突破', category: '累計収益' },
+  { id: 'hero_rev_700k', name: '百戦錬磨の序章', description: '累計売上 70 万円突破', category: '累計収益' },
+  { id: 'hero_rev_800k', name: '王国の盾', description: '累計売上 80 万円突破', category: '累計収益' },
+  { id: 'hero_rev_900k', name: '英雄の資質', description: '累計売上 90 万円突破', category: '累計収益' },
+  { id: 'hero_rev_1m', name: '覇王の歩み', description: '累計売上 100 万円突破', category: '累計収益' },
+  { id: 'hero_rev_1.1m', name: '銀の鎧', description: '累計売上 110 万円突破', category: '累計収益' },
+  { id: 'hero_rev_1.2m', name: '不浄を払う刃', description: '累計売上 120 万円突破', category: '累計収益' },
+  { id: 'hero_rev_1.3m', name: '戦場の旋風', description: '累計売上 130 万円突破', category: '累計収益' },
+  { id: 'hero_rev_1.4m', name: '勇者の凱旋', description: '累計売上 140 万円突破', category: '累計収益' },
+  { id: 'hero_rev_1.5m', name: '聖剣の継承者', description: '累計売上 150 万円突破', category: '累計収益' },
+  { id: 'hero_rev_1.6m', name: '死線を越えし者', description: '累計売上 160 万円突破', category: '累計収益' },
+  { id: 'hero_rev_1.7m', name: '伝説の序章', description: '累計売上 170 万円突破', category: '累計収益' },
+  { id: 'hero_rev_1.8m', name: '不滅の魂', description: '累計売上 180 万円突破', category: '累計収益' },
+  { id: 'hero_rev_1.9m', name: '神話の体現', description: '累計売上 190 万円突破', category: '累計収益' },
+  { id: 'hero_rev_3m', name: '万能の開拓者', description: '累計売上 300 万円突破', category: '累計収益' },
+  { id: 'hero_rev_3.5m', name: '巨像を倒せし者', description: '累計売上 350 万円突破', category: '累計収益' },
+  { id: 'hero_rev_4m', name: '魔王の宿敵', description: '累計売上 400 万円突破', category: '累計収益' },
+  { id: 'hero_rev_4.5m', name: '世界の壁', description: '累計売上 450 万円突破', category: '累計収益' },
+  { id: 'hero_rev_5m', name: '不落の将軍', description: '累計売上 500 万円突破', category: '累計収益' },
+  { id: 'hero_rev_5.5m', name: '星を砕く力', description: '累計売上 550 万円突破', category: '累計収益' },
+  { id: 'hero_rev_6m', name: '天界の戦士', description: '累計売上 600 万円突破', category: '累計収益' },
+  { id: 'hero_rev_6.5m', name: '時空の守護者', description: '累計売上 650 万円突破', category: '累計収益' },
+  { id: 'hero_rev_7m', name: '次元を斬る者', description: '累計売上 700 万円突破', category: '累計収益' },
+  { id: 'hero_rev_7.5m', name: '虚空の覇者', description: '累計売上 750 万円突破', category: '累計収益' },
+  { id: 'hero_rev_8m', name: '絶対正義', description: '累計売上 800 万円突破', category: '累計収益' },
+  { id: 'hero_rev_8.5m', name: '至高の領域', description: '累計売上 850 万円突破', category: '累計収益' },
+  { id: 'hero_rev_9m', name: '古の神の代行者', description: '累計売上 900 万円突破', category: '累計収益' },
+  { id: 'hero_rev_9.5m', name: '終焉の予兆', description: '累計売上 950 万円突破', category: '累計収益' },
+  { id: 'hero_rev_10m', name: '神話の終わり', description: '累計売上 1,000 万円突破', category: '累計収益' },
+  { id: 'hero_rev_12m', name: '超越者の眼差し', description: '累計売上 1,200 万円突破', category: '累計収益' },
+  { id: 'hero_rev_15m', name: '永遠なる武勲', description: '累計売上 1,500 万円突破', category: '累計収益' },
+  { id: 'hero_rev_18m', name: '輪廻を断つ者', description: '累計売上 1,800 万円突破', category: '累計収益' },
+  { id: 'hero_rev_20m', name: '宇宙の特異点', description: '累計売上 2,000 万円突破', category: '累計収益' },
+  { id: 'hero_rev_30m', name: '概念の守護神', description: '累計売上 3,000 万円突破', category: '累計収益' },
+  { id: 'hero_rev_50m', name: '終焉を断つ刃', description: '累計売上 5,000 万円達成', category: '累計収益' },
+
+  // 保守・継続 (連続記録等)
+  { id: 'hero_stream_3m', name: '止まらぬ進撃', description: '勇者系統で 3 ヶ月連続売上', category: '保守・継続' },
+  { id: 'hero_stream_6m', name: '不落の要塞', description: '勇者系統で 6 ヶ月連続売上', category: '保守・継続' },
+  { id: 'hero_stream_12m', name: '戦場の支配者', description: '勇者系統で 12 ヶ月連続売上', category: '保守・継続' },
+  { id: 'hero_stream_24m', name: '歴史の証言者', description: '勇者系統で 24 ヶ月連続売上', category: '保守・継続' },
+  { id: 'hero_stream_36m', name: '不滅の行軍', description: '勇者系統で 36 ヶ月連続売上', category: '保守・継続' },
+  { id: 'hero_total_1', name: '初陣完了', description: '累計完了数 1 件', category: '保守・継続' },
+  { id: 'hero_total_10', name: '十人長', description: '累計完了数 10 件', category: '保守・継続' },
+  { id: 'hero_total_50', name: '五十人長', description: '累計完了数 50 件', category: '保守・継続' },
+  { id: 'hero_total_100', name: '百戦錬磨', description: '累計完了数 100 件', category: '保守・継続' },
+  { id: 'hero_total_500', name: '五百人斬り', description: '累計完了数 500 件', category: '保守・継続' },
+  { id: 'hero_total_1000', name: '千戦錬磨', description: '累計完了数 1,000 件', category: '保守・継続' },
+
+  // 月間アクション
+  { id: 'hero_awake', name: '覚醒の勇者', description: '月間収益が過去 12 ヶ月の平均を 2 倍以上上回る', category: '月間アクション' },
+  { id: 'hero_monthly_1m', name: '覇者の進撃', description: '勇者系統の月間売上が 100 万円突破', category: '月間アクション' },
+  { id: 'hero_cast_5', name: '連戦連勝', description: '同一月に 5 件以上の案件を完了', category: '月間アクション' },
+  { id: 'hero_cast_10', name: '神速の十連撃', description: '同一月に 10 件以上の案件を完了', category: '月間アクション' },
+  { id: 'hero_cast_20', name: '不眠不休の行軍', description: '同一月に 20 件以上の案件を完了', category: '月間アクション' },
+  { id: 'hero_cast_30', name: '戦場の鬼', description: '同一月に 30 件以上の案件を完了', category: '月間アクション' },
+  { id: 'hero_double_accel', name: 'ダブル・アクセル', description: '1 日に 2 件の案件を完了', category: '月間アクション' },
+  { id: 'hero_triple_buster', name: 'トリプル・バスター', description: '1 日に 3 件の案件を完了', category: '月間アクション' },
+  { id: 'hero_thunder_work', name: '雷光の如き働き', description: '1 日に 5 件以上の案件を完了', category: '月間アクション' },
+
+  // 単価・瞬発力
+  { id: 'hero_critical_hit', name: '会心の一撃', description: '1 案件の単価が過去最高額を更新', category: '単価・瞬発力' },
+  { id: 'hero_one_shot_100k', name: '一撃必殺', description: '1 案件で単価 10 万円以上を記録', category: '単価・瞬発力' },
+  { id: 'hero_overkill_200k', name: 'オーバーキル', description: '1 案件で単価 20 万円以上を記録', category: '単価・瞬発力' },
+  { id: 'hero_god_slayer_500k', name: '神の一太刀', description: '1 案件で単価 50 万円以上を記録', category: '単価・瞬発力' },
+  { id: 'hero_quick_draw', name: 'クイック・ドロー', description: '案件作成から 24 時間以内に完了', category: '単価・瞬発力' },
+  { id: 'hero_preemptive', name: '不意打ち回避', description: '案件作成から 1 時間以内に着手・完了', category: '単価・瞬発力' },
+
+  // リピート・信頼 (地域含む)
+  { id: 'hero_local_10', name: '地元の名士', description: '静岡エリアでの累計完了 10 件', category: 'リピート・信頼' },
+  { id: 'hero_local_50', name: '静岡の守護神', description: '静岡エリアでの累計完了 50 件', category: 'リピート・信頼' },
+  { id: 'hero_local_100', name: '富士を背負う者', description: '静岡エリアでの累計完了 100 件', category: 'リピート・信頼' },
+  { id: 'hero_out_of_pref', name: '県境を越えし勇者', description: '静岡県外での案件を初完了', category: 'リピート・信頼' },
+  { id: 'hero_wide_area', name: '広域の探索者', description: '異なる市町村で累計 10 箇所完了', category: 'リピート・信頼' },
+  { id: 'hero_repeat_5', name: '不屈のリピーター', description: '同一顧客からの勇者案件リピート 5 回', category: 'リピート・信頼' },
+
+  // 複合・時間
+  { id: 'hero_jack_of_all_3', name: '器用貧乏', description: '異なるカテゴリ名を 3 種類経験', category: '複合・時間' },
+  { id: 'hero_jack_of_all_5', name: '多才なる剣士', description: '異なるカテゴリ名を 5 種類経験', category: '複合・時間' },
+  { id: 'hero_jack_of_all_10', name: '万能の達人', description: '異なるカテゴリ名を 10 種類経験', category: '複合・時間' },
+  { id: 'hero_jack_of_all_20', name: '歩く職種図鑑', description: '異なるカテゴリ名を 20 種類経験', category: '複合・時間' },
+  { id: 'hero_time_weekend', name: '安息日の開拓者', description: '土日祝日に案件を完了', category: '複合・時間' },
+  { id: 'hero_time_xmas', name: '祝祭の支配者', description: '12 月 24 日または 25 日に案件を完了', category: '複合・時間' },
+  { id: 'hero_time_midnight', name: '夜明けの勇者', description: '深夜（24 時〜5 時）に案件を完了', category: '複合・時間' },
+  { id: 'hero_time_night', name: '月光の騎士', description: '22 時〜24 時の間に案件を完了', category: '複合・時間' },
+  { id: 'hero_growth_year', name: '黄金の 1 年', description: '年間の勇者系統総売上が前年超え', category: '複合・時間' },
+  { id: 'hero_bubble_year', name: '奇跡の世代', description: '年間の勇者系統総売上が前年比 2 倍', category: '複合・時間' },
+  { id: 'hero_dragon_slayer', name: 'ドラゴンスレイヤー', description: '勇者系統内で最高難易度（特定タグ）を完了', category: '複合・時間' },
+  { id: 'hero_nameless_10', name: '名無しの英雄', description: 'クライアント名のない案件（単発現金等）を 10 件記録', category: '複合・時間' },
+  { id: 'hero_guild_top', name: 'ギルドの稼ぎ頭', description: '全系統の中で勇者系統が売上 1 位の月', category: '複合・時間' },
+  { id: 'hero_specialist', name: '伝説の協力者', description: 'パートナー（B）の資格に関連するカテゴリを完了', category: '複合・時間' },
+  { id: 'hero_roadmap_4', name: '勇者のロードマップ', description: '勇者系統の 4 次職に到達', category: '複合・時間' },
+  { id: 'hero_roadmap_5', name: '終焉の断絶', description: '勇者系統の 5 次職に到達', category: '複合・時間' },
+  { id: 'hero_hall_of_fame', name: '武勲の殿堂入り', description: '勇者系統の称号 50% 獲得', category: '複合・時間' },
+  { id: 'hero_zenith', name: '一億の神話', description: '勇者系統累計売上 1 億円達成', category: '複合・時間' },
 ];
 
 // Avatar Component
@@ -494,16 +608,19 @@ export default function TemplePage() {
   function calculateTitles(type: ClassType, allCases: CaseData[], typeHistory: any[], allTotals: Record<ClassType, number>) {
     const isMage = type === 'mage';
     const isMerchant = type === 'merchant';
-    if (!isMage && !isMerchant) return [];
+    const isHero = type === 'hero';
+    if (!isMage && !isMerchant && !isHero) return [];
     
     const acquired: any[] = [];
     const classCases = allCases.filter(c => {
-      if (isMage) return c.genre === 'HP制作' || c.genre === 'SNS運用';
-      if (isMerchant) return c.genre === 'SiGMARK';
+      const g = c.genre || '';
+      if (isMage) return g === 'HP制作' || g === 'SNS運用';
+      if (isMerchant) return g === 'SiGMARK';
+      if (isHero) return g !== 'HP制作' && g !== 'SNS運用' && g !== 'SiGMARK';
       return false;
     });
     
-    const titleDefs = isMage ? MAGE_TITLE_DEFS : MERCHANT_TITLE_DEFS;
+    const titleDefs = isMage ? MAGE_TITLE_DEFS : (isMerchant ? MERCHANT_TITLE_DEFS : HERO_TITLE_DEFS);
     
     // Revenue Based
     const thresholds = [
@@ -548,31 +665,47 @@ export default function TemplePage() {
       if (h.revenue > 0) consecutiveRevenue++; else consecutiveRevenue = 0;
       if (i > 0 && h.revenue > sortedHistory[i-1].revenue) consecutiveGrowth++; else consecutiveGrowth = 0;
 
-      const prefix = isMage ? 'mage_stream' : 'merchant_maint';
+      const prefix = isMage ? 'mage_stream' : (isMerchant ? 'merchant_maint' : 'hero_stream');
       if (consecutiveRevenue >= 3 && !acquired.some(a => a.id === `${prefix}_3m`)) acquired.push({ ...titleDefs.find(d => d.id === `${prefix}_3m`), acquiredAt: h.month });
       if (consecutiveRevenue >= 6 && !acquired.some(a => a.id === `${prefix}_6m`)) acquired.push({ ...titleDefs.find(d => d.id === `${prefix}_6m`), acquiredAt: h.month });
       if (consecutiveRevenue >= 12 && !acquired.some(a => a.id === `${prefix}_12m`)) acquired.push({ ...titleDefs.find(d => d.id === `${prefix}_12m`), acquiredAt: h.month });
       if (consecutiveRevenue >= 24 && !acquired.some(a => a.id === `${prefix}_24m`)) acquired.push({ ...titleDefs.find(d => d.id === `${prefix}_24m`), acquiredAt: h.month });
       if (consecutiveRevenue >= 36 && !acquired.some(a => a.id === `${prefix}_36m`)) acquired.push({ ...titleDefs.find(d => d.id === `${prefix}_36m`), acquiredAt: h.month });
 
-      if (isMerchant) {
-        if (consecutiveGrowth >= 3 && !acquired.some(a => a.id === 'merchant_up_3m')) acquired.push({ ...titleDefs.find(d => d.id === 'merchant_up_3m'), acquiredAt: h.month });
-        if (consecutiveGrowth >= 6 && !acquired.some(a => a.id === 'merchant_up_6m')) acquired.push({ ...titleDefs.find(d => d.id === 'merchant_up_6m'), acquiredAt: h.month });
-        if (consecutiveGrowth >= 12 && !acquired.some(a => a.id === 'merchant_up_12m')) acquired.push({ ...titleDefs.find(d => d.id === 'merchant_up_12m'), acquiredAt: h.month });
+      // Awake check (12mo avg x2)
+      if (isHero && i >= 12) {
+        const last12 = sortedHistory.slice(i-12, i);
+        const avg = last12.reduce((acc, x) => acc + x.revenue, 0) / 12;
+        if (h.revenue >= avg * 2 && avg > 0 && !acquired.some(a => a.id === 'hero_awake')) {
+          acquired.push({ ...titleDefs.find(d => d.id === 'hero_awake'), acquiredAt: h.month });
+        }
+      }
 
-        // Gold Month
+      if (isMerchant || isHero) {
+        const growthPrefix = isMerchant ? 'merchant_up' : ''; // Hero doesn't have specific continuity growth titles in the provided list
+        if (growthPrefix) {
+          if (consecutiveGrowth >= 3 && !acquired.some(a => a.id === `${growthPrefix}_3m`)) acquired.push({ ...titleDefs.find(d => d.id === `${growthPrefix}_3m`), acquiredAt: h.month });
+          if (consecutiveGrowth >= 6 && !acquired.some(a => a.id === `${growthPrefix}_6m`)) acquired.push({ ...titleDefs.find(d => d.id === `${growthPrefix}_6m`), acquiredAt: h.month });
+          if (consecutiveGrowth >= 12 && !acquired.some(a => a.id === `${growthPrefix}_12m`)) acquired.push({ ...titleDefs.find(d => d.id === `${growthPrefix}_12m`), acquiredAt: h.month });
+        }
+
+        // Gold Month / Hero Monthly
         if (h.revenue > maxMonthRev && maxMonthRev > 0) {
-           if (!acquired.some(a => a.id === 'merchant_gold_month')) acquired.push({ ...titleDefs.find(d => d.id === 'merchant_gold_month'), acquiredAt: h.month });
+           const gmId = isMerchant ? 'merchant_gold_month' : '';
+           if (gmId && !acquired.some(a => a.id === gmId)) acquired.push({ ...titleDefs.find(d => d.id === gmId), acquiredAt: h.month });
+        }
+        if (isHero && h.revenue >= 1000000 && !acquired.some(a => a.id === 'hero_monthly_1m')) {
+           acquired.push({ ...titleDefs.find(d => d.id === 'hero_monthly_1m'), acquiredAt: h.month });
         }
         if (h.revenue > maxMonthRev) maxMonthRev = h.revenue;
 
         // Growth 50%
-        if (i > 0 && sortedHistory[i-1].revenue > 0 && h.revenue > sortedHistory[i-1].revenue * 1.5) {
+        if (isMerchant && i > 0 && sortedHistory[i-1].revenue > 0 && h.revenue > sortedHistory[i-1].revenue * 1.5) {
            if (!acquired.some(a => a.id === 'merchant_growth_50')) acquired.push({ ...titleDefs.find(d => d.id === 'merchant_growth_50'), acquiredAt: h.month });
         }
 
         // Gold Quarter
-        if (i >= 2) {
+        if (isMerchant && i >= 2) {
           const qTotal = h.revenue + sortedHistory[i-1].revenue + sortedHistory[i-2].revenue;
           if (qTotal > maxQTotal && maxQTotal > 0) {
              if (!acquired.some(a => a.id === 'merchant_gold_quarter')) acquired.push({ ...titleDefs.find(d => d.id === 'merchant_gold_quarter'), acquiredAt: h.month });
@@ -583,26 +716,35 @@ export default function TemplePage() {
     });
 
     // Year-on-year
-    if (isMerchant) {
-      const years: Record<string, number> = {};
-      sortedHistory.forEach(h => {
-        const y = h.month.split('-')[0];
-        years[y] = (years[y] || 0) + h.revenue;
-      });
-      const yearList = Object.keys(years).sort();
-      yearList.forEach((y, i) => {
-        if (i > 0) {
-          const prevYear = years[yearList[i-1]];
-          const currYear = years[y];
-          if (currYear > prevYear && !acquired.some(a => a.id === 'merchant_growth_year')) acquired.push({ ...titleDefs.find(d => d.id === 'merchant_growth_year'), acquiredAt: y });
-          if (currYear > prevYear * 2 && !acquired.some(a => a.id === 'merchant_bubble_year')) acquired.push({ ...titleDefs.find(d => d.id === 'merchant_bubble_year'), acquiredAt: y });
+    const years: Record<string, number> = {};
+    sortedHistory.forEach(h => {
+      const y = h.month.split('-')[0];
+      years[y] = (years[y] || 0) + h.revenue;
+    });
+    const yearList = Object.keys(years).sort();
+    yearList.forEach((y, i) => {
+      if (i > 0) {
+        const prevYear = years[yearList[i-1]];
+        const currYear = years[y];
+        const growthId = `${type}_growth_year`;
+        const bubbleId = `${type}_bubble_year`;
+        if (currYear > prevYear && !acquired.some(a => a.id === growthId)) {
+          const d = titleDefs.find(x => x.id === growthId);
+          if (d) acquired.push({ ...d, acquiredAt: y });
         }
-      });
-    }
+        if (currYear > prevYear * 2 && !acquired.some(a => a.id === bubbleId)) {
+          const d = titleDefs.find(x => x.id === bubbleId);
+          if (d) acquired.push({ ...d, acquiredAt: y });
+        }
+      }
+    });
 
     // Case Specific
     let maxSingleFee = 0;
     const clientStats: Record<string, { count: number, revenue: number }> = {};
+    const citySet = new Set<string>();
+    const genreSet = new Set<string>();
+    const casesByDate: Record<string, number> = {};
 
     classCases.forEach(c => {
       const finishDate = new Date(c.updatedAt);
@@ -614,7 +756,7 @@ export default function TemplePage() {
       
       const fee = (c.finance?.oneTimeFee || 0) + (c.finance?.spotFee || 0);
       if (fee > maxSingleFee) {
-        const limitId = isMage ? 'mage_limit_break' : 'merchant_limit_break';
+        const limitId = isMage ? 'mage_limit_break' : (isMerchant ? 'merchant_limit_break' : 'hero_critical_hit');
         if (maxSingleFee > 0 && !acquired.some(a => a.id === limitId)) acquired.push({ ...titleDefs.find(d => d.id === limitId), acquiredAt: finishFullDateStr });
         maxSingleFee = fee;
       }
@@ -624,6 +766,13 @@ export default function TemplePage() {
       if (!clientStats[cName]) clientStats[cName] = { count: 0, revenue: 0 };
       clientStats[cName].count++;
       clientStats[cName].revenue += (c.finance?.oneTimeFee || 0) + (c.finance?.spotFee || 0) + (c.finance?.maintenanceFee || 0);
+
+      // Hero specific trackers
+      if (isHero) {
+        if (c.city) citySet.add(c.city);
+        if (c.genre) genreSet.add(c.genre);
+        casesByDate[finishFullDateStr] = (casesByDate[finishFullDateStr] || 0) + 1;
+      }
 
       if (isMage) {
         if (diffDays <= 7 && !acquired.some(a => a.id === 'mage_speed_7d')) acquired.push({ ...titleDefs.find(d => d.id === 'mage_speed_7d'), acquiredAt: finishFullDateStr });
@@ -641,40 +790,84 @@ export default function TemplePage() {
         if (diffHrs <= 24 && !acquired.some(a => a.id === 'merchant_speed_24h')) acquired.push({ ...titleDefs.find(d => d.id === 'merchant_speed_24h'), acquiredAt: finishFullDateStr });
         if (hour >= 0 && hour < 5 && !acquired.some(a => a.id === 'merchant_time_midnight')) acquired.push({ ...titleDefs.find(d => d.id === 'merchant_time_midnight'), acquiredAt: finishFullDateStr });
         if (isWeekend(finishDate) && !acquired.some(a => a.id === 'merchant_time_weekend')) acquired.push({ ...titleDefs.find(d => d.id === 'merchant_time_weekend'), acquiredAt: finishFullDateStr });
-
-        // Branding Start
         if (!acquired.some(a => a.id === 'merchant_branding_start')) acquired.push({ ...titleDefs.find(d => d.id === 'merchant_branding_start'), acquiredAt: finishFullDateStr });
-
-        // High Margin (Simple: fee > 100k)
         if (fee >= 100000 && !acquired.some(a => a.id === 'merchant_high_margin')) acquired.push({ ...titleDefs.find(d => d.id === 'merchant_high_margin'), acquiredAt: finishFullDateStr });
-
-        // SNS & Regional
         if (c.isSnsLead && !acquired.some(a => a.id === 'merchant_sns_lead')) acquired.push({ ...titleDefs.find(d => d.id === 'merchant_sns_lead'), acquiredAt: finishFullDateStr });
         if (c.isOutOfPref && !acquired.some(a => a.id === 'merchant_out_of_pref')) acquired.push({ ...titleDefs.find(d => d.id === 'merchant_out_of_pref'), acquiredAt: finishFullDateStr });
       }
+
+      if (isHero) {
+        if (fee >= 100000 && !acquired.some(a => a.id === 'hero_one_shot_100k')) acquired.push({ ...titleDefs.find(d => d.id === 'hero_one_shot_100k'), acquiredAt: finishFullDateStr });
+        if (fee >= 200000 && !acquired.some(a => a.id === 'hero_overkill_200k')) acquired.push({ ...titleDefs.find(d => d.id === 'hero_overkill_200k'), acquiredAt: finishFullDateStr });
+        if (fee >= 500000 && !acquired.some(a => a.id === 'hero_god_slayer_500k')) acquired.push({ ...titleDefs.find(d => d.id === 'hero_god_slayer_500k'), acquiredAt: finishFullDateStr });
+        if (diffHrs <= 24 && !acquired.some(a => a.id === 'hero_quick_draw')) acquired.push({ ...titleDefs.find(d => d.id === 'hero_quick_draw'), acquiredAt: finishFullDateStr });
+        if (diffHrs <= 1 && !acquired.some(a => a.id === 'hero_preemptive')) acquired.push({ ...titleDefs.find(d => d.id === 'hero_preemptive'), acquiredAt: finishFullDateStr });
+        if (isWeekend(finishDate) && !acquired.some(a => a.id === 'hero_time_weekend')) acquired.push({ ...titleDefs.find(d => d.id === 'hero_time_weekend'), acquiredAt: finishFullDateStr });
+        if (hour >= 0 && hour < 5 && !acquired.some(a => a.id === 'hero_time_midnight')) acquired.push({ ...titleDefs.find(d => d.id === 'hero_time_midnight'), acquiredAt: finishFullDateStr });
+        if (hour >= 22 && hour < 24 && !acquired.some(a => a.id === 'hero_time_night')) acquired.push({ ...titleDefs.find(d => d.id === 'hero_time_night'), acquiredAt: finishFullDateStr });
+        const month = finishDate.getMonth() + 1;
+        const date = finishDate.getDate();
+        if (month === 12 && (date === 24 || date === 25) && !acquired.some(a => a.id === 'hero_time_xmas')) acquired.push({ ...titleDefs.find(d => d.id === 'hero_time_xmas'), acquiredAt: finishFullDateStr });
+        if (c.isOutOfPref && !acquired.some(a => a.id === 'hero_out_of_pref')) acquired.push({ ...titleDefs.find(d => d.id === 'hero_out_of_pref'), acquiredAt: finishFullDateStr });
+        if (c.tags?.includes('最高難易度') && !acquired.some(a => a.id === 'hero_dragon_slayer')) acquired.push({ ...titleDefs.find(d => d.id === 'hero_dragon_slayer'), acquiredAt: finishFullDateStr });
+        if (c.genre?.includes('電気工事') && !acquired.some(a => a.id === 'hero_specialist')) acquired.push({ ...titleDefs.find(d => d.id === 'hero_specialist'), acquiredAt: finishFullDateStr });
+      }
     });
 
-    // Client based titles
-    if (isMerchant) {
-      Object.entries(clientStats).forEach(([name, stats]) => {
+    // Post-case aggregations
+    if (isHero) {
+      if (citySet.size >= 10 && !acquired.some(a => a.id === 'hero_wide_area')) acquired.push({ ...titleDefs.find(d => d.id === 'hero_wide_area'), acquiredAt: 'ACHIEVED' });
+      const shizuokaCount = classCases.filter(c => c.city?.includes('静岡')).length;
+      if (shizuokaCount >= 10 && !acquired.some(a => a.id === 'hero_local_10')) acquired.push({ ...titleDefs.find(d => d.id === 'hero_local_10'), acquiredAt: 'ACHIEVED' });
+      if (shizuokaCount >= 50 && !acquired.some(a => a.id === 'hero_local_50')) acquired.push({ ...titleDefs.find(d => d.id === 'hero_local_50'), acquiredAt: 'ACHIEVED' });
+      if (shizuokaCount >= 100 && !acquired.some(a => a.id === 'hero_local_100')) acquired.push({ ...titleDefs.find(d => d.id === 'hero_local_100'), acquiredAt: 'ACHIEVED' });
+      
+      const multiActionByDate = Object.entries(casesByDate);
+      if (multiActionByDate.some(([d, count]) => count >= 2) && !acquired.some(a => a.id === 'hero_double_accel')) acquired.push({ ...titleDefs.find(d => d.id === 'hero_double_accel'), acquiredAt: 'ACHIEVED' });
+      if (multiActionByDate.some(([d, count]) => count >= 3) && !acquired.some(a => a.id === 'hero_triple_buster')) acquired.push({ ...titleDefs.find(d => d.id === 'hero_triple_buster'), acquiredAt: 'ACHIEVED' });
+      if (multiActionByDate.some(([d, count]) => count >= 5) && !acquired.some(a => a.id === 'hero_thunder_work')) acquired.push({ ...titleDefs.find(d => d.id === 'hero_thunder_work'), acquiredAt: 'ACHIEVED' });
+
+      if (genreSet.size >= 3 && !acquired.some(a => a.id === 'hero_jack_of_all_3')) acquired.push({ ...titleDefs.find(d => d.id === 'hero_jack_of_all_3'), acquiredAt: 'ACHIEVED' });
+      if (genreSet.size >= 5 && !acquired.some(a => a.id === 'hero_jack_of_all_5')) acquired.push({ ...titleDefs.find(d => d.id === 'hero_jack_of_all_5'), acquiredAt: 'ACHIEVED' });
+      if (genreSet.size >= 10 && !acquired.some(a => a.id === 'hero_jack_of_all_10')) acquired.push({ ...titleDefs.find(d => d.id === 'hero_jack_of_all_10'), acquiredAt: 'ACHIEVED' });
+      if (genreSet.size >= 20 && !acquired.some(a => a.id === 'hero_jack_of_all_20')) acquired.push({ ...titleDefs.find(d => d.id === 'hero_jack_of_all_20'), acquiredAt: 'ACHIEVED' });
+
+      const namelessCount = classCases.filter(c => !c.clientName || c.clientName === 'Unknown').length;
+      if (namelessCount >= 10 && !acquired.some(a => a.id === 'hero_nameless_10')) acquired.push({ ...titleDefs.find(d => d.id === 'hero_nameless_10'), acquiredAt: 'ACHIEVED' });
+
+      if (classCases.length >= 1 && !acquired.some(a => a.id === 'hero_total_1')) acquired.push({ ...titleDefs.find(d => d.id === 'hero_total_1'), acquiredAt: 'ACHIEVED' });
+      if (classCases.length >= 10 && !acquired.some(a => a.id === 'hero_total_10')) acquired.push({ ...titleDefs.find(d => d.id === 'hero_total_10'), acquiredAt: 'ACHIEVED' });
+      if (classCases.length >= 50 && !acquired.some(a => a.id === 'hero_total_50')) acquired.push({ ...titleDefs.find(d => d.id === 'hero_total_50'), acquiredAt: 'ACHIEVED' });
+      if (classCases.length >= 100 && !acquired.some(a => a.id === 'hero_total_100')) acquired.push({ ...titleDefs.find(d => d.id === 'hero_total_100'), acquiredAt: 'ACHIEVED' });
+      if (classCases.length >= 500 && !acquired.some(a => a.id === 'hero_total_500')) acquired.push({ ...titleDefs.find(d => d.id === 'hero_total_500'), acquiredAt: 'ACHIEVED' });
+      if (classCases.length >= 1000 && !acquired.some(a => a.id === 'hero_total_1000')) acquired.push({ ...titleDefs.find(d => d.id === 'hero_total_1000'), acquiredAt: 'ACHIEVED' });
+    }
+
+    // Client based
+    Object.entries(clientStats).forEach(([name, stats]) => {
+      if (isMerchant) {
         if (stats.count >= 2 && !acquired.some(a => a.id === 'merchant_repeat_2')) acquired.push({ ...titleDefs.find(d => d.id === 'merchant_repeat_2'), acquiredAt: 'ACHIEVED' });
         if (stats.count >= 5 && !acquired.some(a => a.id === 'merchant_repeat_5')) acquired.push({ ...titleDefs.find(d => d.id === 'merchant_repeat_5'), acquiredAt: 'ACHIEVED' });
         if (stats.count >= 10 && !acquired.some(a => a.id === 'merchant_repeat_10')) acquired.push({ ...titleDefs.find(d => d.id === 'merchant_repeat_10'), acquiredAt: 'ACHIEVED' });
         if (stats.revenue >= 1000000 && !acquired.some(a => a.id === 'merchant_trust_1m')) acquired.push({ ...titleDefs.find(d => d.id === 'merchant_trust_1m'), acquiredAt: 'ACHIEVED' });
         if (stats.revenue >= 5000000 && !acquired.some(a => a.id === 'merchant_trust_5m')) acquired.push({ ...titleDefs.find(d => d.id === 'merchant_trust_5m'), acquiredAt: 'ACHIEVED' });
-      });
-      
-      // Dominate
-      const othersMax = Math.max(allTotals.mage, allTotals.hero);
-      if (allTotals.merchant > othersMax && othersMax > 0) {
-         if (!acquired.some(a => a.id === 'merchant_dominate')) acquired.push({ ...titleDefs.find(d => d.id === 'merchant_dominate'), acquiredAt: 'ACHIEVED' });
       }
-      
-      // Roadmap
-      const tier = getTierFromRevenue(allTotals.merchant);
-      if (tier >= 4 && !acquired.some(a => a.id === 'merchant_roadmap_4')) acquired.push({ ...titleDefs.find(d => d.id === 'merchant_roadmap_4'), acquiredAt: 'ACHIEVED' });
-      if (tier >= 5 && !acquired.some(a => a.id === 'merchant_roadmap_5')) acquired.push({ ...titleDefs.find(d => d.id === 'merchant_roadmap_5'), acquiredAt: 'ACHIEVED' });
+      if (isHero) {
+        if (stats.count >= 5 && !acquired.some(a => a.id === 'hero_repeat_5')) acquired.push({ ...titleDefs.find(d => d.id === 'hero_repeat_5'), acquiredAt: 'ACHIEVED' });
+      }
+    });
+
+    // Dominate / Guild Top
+    const othersMax = isHero ? Math.max(allTotals.mage, allTotals.merchant) : (isMerchant ? Math.max(allTotals.mage, allTotals.hero) : Math.max(allTotals.merchant, allTotals.hero));
+    if (allTotals[type] > othersMax && othersMax > 0) {
+       const domId = isMerchant ? 'merchant_dominate' : (isHero ? 'hero_guild_top' : '');
+       if (domId && !acquired.some(a => a.id === domId)) acquired.push({ ...titleDefs.find(d => d.id === domId), acquiredAt: 'ACHIEVED' });
     }
+
+    // Roadmap
+    const tier = getTierFromRevenue(allTotals[type]);
+    if (tier >= 4 && !acquired.some(a => a.id === `${type}_roadmap_4`)) acquired.push({ ...titleDefs.find(d => d.id === `${type}_roadmap_4`), acquiredAt: 'ACHIEVED' });
+    if (tier >= 5 && !acquired.some(a => a.id === `${type}_roadmap_5`)) acquired.push({ ...titleDefs.find(d => d.id === `${type}_roadmap_5`), acquiredAt: 'ACHIEVED' });
 
     // Multi-cast / Action
     const casesByMonth: Record<string, CaseData[]> = {};
@@ -684,13 +877,13 @@ export default function TemplePage() {
       casesByMonth[m].push(c);
     });
     Object.entries(casesByMonth).forEach(([m, monthCases]) => {
+      const c = monthCases.length;
       if (isMage) {
         const genres = new Set(monthCases.map(c => c.genre));
         if (genres.has('HP制作') && genres.has('SNS運用') && !acquired.some(a => a.id === 'mage_cast_double')) acquired.push({ ...titleDefs.find(d => d.id === 'mage_cast_double'), acquiredAt: m });
-        if (monthCases.length >= 4 && !acquired.some(a => a.id === 'mage_cast_quad')) acquired.push({ ...titleDefs.find(d => d.id === 'mage_cast_quad'), acquiredAt: m });
+        if (c >= 4 && !acquired.some(a => a.id === 'mage_cast_quad')) acquired.push({ ...titleDefs.find(d => d.id === 'mage_cast_quad'), acquiredAt: m });
       }
       if (isMerchant) {
-        const c = monthCases.length;
         if (c >= 2 && !acquired.some(a => a.id === 'merchant_cast_2')) acquired.push({ ...titleDefs.find(d => d.id === 'merchant_cast_2'), acquiredAt: m });
         if (c >= 3 && !acquired.some(a => a.id === 'merchant_cast_3')) acquired.push({ ...titleDefs.find(d => d.id === 'merchant_cast_3'), acquiredAt: m });
         if (c >= 5 && !acquired.some(a => a.id === 'merchant_cast_5')) acquired.push({ ...titleDefs.find(d => d.id === 'merchant_cast_5'), acquiredAt: m });
@@ -698,34 +891,17 @@ export default function TemplePage() {
         if (c >= 20 && !acquired.some(a => a.id === 'merchant_cast_20')) acquired.push({ ...titleDefs.find(d => d.id === 'merchant_cast_20'), acquiredAt: m });
         if (c >= 30 && !acquired.some(a => a.id === 'merchant_cast_30')) acquired.push({ ...titleDefs.find(d => d.id === 'merchant_cast_30'), acquiredAt: m });
       }
+      if (isHero) {
+        if (c >= 5 && !acquired.some(a => a.id === 'hero_cast_5')) acquired.push({ ...titleDefs.find(d => d.id === 'hero_cast_5'), acquiredAt: m });
+        if (c >= 10 && !acquired.some(a => a.id === 'hero_cast_10')) acquired.push({ ...titleDefs.find(d => d.id === 'hero_cast_10'), acquiredAt: m });
+        if (c >= 20 && !acquired.some(a => a.id === 'hero_cast_20')) acquired.push({ ...titleDefs.find(d => d.id === 'hero_cast_20'), acquiredAt: m });
+        if (c >= 30 && !acquired.some(a => a.id === 'hero_cast_30')) acquired.push({ ...titleDefs.find(d => d.id === 'hero_cast_30'), acquiredAt: m });
+      }
     });
 
-    // Network / Hybrid
-    const uniqueClients = new Set(classCases.map(c => c.contractEntity || c.clientName).filter(Boolean));
-    if (isMage) {
-      if (uniqueClients.size >= 10) acquired.push({ ...titleDefs.find(d => d.id === 'mage_network_10'), acquiredAt: 'ACHIEVED' });
-    }
-    if (isMerchant) {
-      if (uniqueClients.size >= 5) acquired.push({ ...titleDefs.find(d => d.id === 'merchant_network_5'), acquiredAt: 'ACHIEVED' });
-      if (uniqueClients.size >= 10) acquired.push({ ...titleDefs.find(d => d.id === 'merchant_network_10'), acquiredAt: 'ACHIEVED' });
-      if (uniqueClients.size >= 20) acquired.push({ ...titleDefs.find(d => d.id === 'merchant_network_20'), acquiredAt: 'ACHIEVED' });
-      if (uniqueClients.size >= 50) acquired.push({ ...titleDefs.find(d => d.id === 'merchant_network_50'), acquiredAt: 'ACHIEVED' });
-      if (uniqueClients.size >= 100) acquired.push({ ...titleDefs.find(d => d.id === 'merchant_network_100'), acquiredAt: 'ACHIEVED' });
-      if (classCases.length >= 10 && !acquired.some(a => a.id === 'merchant_total_10')) acquired.push({ ...titleDefs.find(d => d.id === 'merchant_total_10'), acquiredAt: 'ACHIEVED' });
-      if (classCases.length >= 50 && !acquired.some(a => a.id === 'merchant_total_50')) acquired.push({ ...titleDefs.find(d => d.id === 'merchant_total_50'), acquiredAt: 'ACHIEVED' });
-      if (classCases.length >= 100 && !acquired.some(a => a.id === 'merchant_total_100')) acquired.push({ ...titleDefs.find(d => d.id === 'merchant_total_100'), acquiredAt: 'ACHIEVED' });
-    }
-
-    // Special
-    if (isMerchant) {
-      const sigRev = classCases.reduce((acc, c) => acc + (c.finance?.oneTimeFee || 0) + (c.finance?.spotFee || 0) + (c.finance?.maintenanceFee || 0), 0);
-      if (sigRev >= 100000 && !acquired.some(a => a.id === 'merchant_sig_100k')) acquired.push({ ...titleDefs.find(d => d.id === 'merchant_sig_100k'), acquiredAt: 'ACHIEVED' });
-      if (sigRev >= 1000000 && !acquired.some(a => a.id === 'merchant_sig_1m')) acquired.push({ ...titleDefs.find(d => d.id === 'merchant_sig_1m'), acquiredAt: 'ACHIEVED' });
-      if (sigRev >= 5000000 && !acquired.some(a => a.id === 'merchant_sig_5m')) acquired.push({ ...titleDefs.find(d => d.id === 'merchant_sig_5m'), acquiredAt: 'ACHIEVED' });
-    }
-
+    // Hall of Fame
     if (acquired.length >= titleDefs.length * 0.5) {
-      const hallId = isMage ? 'mage_hall_of_fame' : 'merchant_hall_of_fame';
+      const hallId = `${type}_hall_of_fame`;
       if (!acquired.some(a => a.id === hallId)) acquired.push({ ...titleDefs.find(d => d.id === hallId), acquiredAt: 'ACHIEVED' });
     }
 
@@ -872,7 +1048,7 @@ export default function TemplePage() {
                       <span className="text-[9px] font-bold text-muted-foreground uppercase tracking-widest">ACQUIRED TITLES (取得済み称号)</span>
                     </div>
                     <div className={cn("text-[10px] font-black px-2 py-0.5 rounded border backdrop-blur-sm", info.bgClass.replace('bg-', 'bg-') + "/10", info.borderClass)}>
-                      取得済み: {stats.titles?.length || 0} <span className="opacity-40 ml-1">/ {type === 'mage' ? MAGE_TITLE_DEFS.length : MERCHANT_TITLE_DEFS.length}</span>
+                      取得済み: {stats.titles?.length || 0} <span className="opacity-40 ml-1">/ {type === 'mage' ? MAGE_TITLE_DEFS.length : (type === 'merchant' ? MERCHANT_TITLE_DEFS.length : HERO_TITLE_DEFS.length)}</span>
                     </div>
                   </div>
                   
@@ -1056,19 +1232,37 @@ export default function TemplePage() {
                 </div>
               </div>
 
-              {/* Hero Titles (Placeholder) */}
-              <div className="space-y-8 opacity-40">
+              {/* Hero Titles */}
+              <div className="space-y-8">
                 <div className="flex items-center gap-3">
                   <div className="w-8 h-8 rounded bg-blue-500/10 border border-blue-500/30 flex items-center justify-center">
                     <Sword className="w-4 h-4 text-blue-500" />
                   </div>
                   <div>
                     <h4 className="text-xs font-black text-blue-500 uppercase">HERO TITLES</h4>
-                    <p className="text-[9px] font-bold text-muted-foreground uppercase">勇者系統 称号リスト (準備中)</p>
+                    <p className="text-[9px] font-bold text-muted-foreground uppercase">勇者系統 称号リスト</p>
                   </div>
                 </div>
-                <div className="h-64 flex items-center justify-center border border-dashed border-border rounded-lg">
-                  <span className="text-[10px] font-black uppercase tracking-widest">COMING SOON</span>
+                
+                <div className="space-y-8 max-h-[1200px] overflow-y-auto pr-4 custom-scrollbar">
+                  {['累計収益', '保守・継続', '月間アクション', '単価・瞬発力', 'リピート・信頼', '複合・時間'].map(cat => (
+                    <div key={cat} className="space-y-3">
+                      <div className="flex items-center gap-2 mb-4">
+                        <div className="px-3 py-1 rounded-full border border-blue-500/30 bg-blue-500/10 backdrop-blur-sm">
+                          <span className="text-[10px] font-black uppercase tracking-widest text-blue-500">{cat}</span>
+                        </div>
+                        <div className="flex-1 h-[1px] bg-border opacity-30" />
+                      </div>
+                      <div className="grid grid-cols-1 gap-2">
+                        {HERO_TITLE_DEFS.filter(d => d.category === cat).map(def => (
+                          <div key={def.id} className="group p-2 rounded bg-secondary/10 border border-border/30 hover:border-blue-500/30 transition-all">
+                            <div className="text-[10px] font-black text-foreground group-hover:text-blue-500 transition-colors">{def.name}</div>
+                            <div className="text-[8px] font-bold text-muted-foreground leading-tight mt-0.5">{def.description}</div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  ))}
                 </div>
               </div>
             </div>
