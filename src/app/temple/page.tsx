@@ -1001,12 +1001,14 @@ export default function TemplePage() {
                 <div className="flex gap-6 items-center relative">
                   <AvatarNode classType={type} tier={stats.tier} />
                   <div className="flex-1 min-w-0">
-                    <span className={cn("text-xs font-black uppercase tracking-widest mb-1 block", info.colorClass)}>{info.subTitle}</span>
-                    <h2 className="text-2xl font-black tracking-tight text-foreground leading-tight truncate mb-1">{stats.jobName}</h2>
-                    <div className="text-[9px] font-bold text-muted-foreground opacity-80 mb-2">&quot;{stats.currentTitle}&quot;</div>
-                    <div className="flex items-end gap-2">
-                      <span className="text-3xl font-black font-[family-name:var(--font-outfit)] leading-none">Lv.{stats.level}</span>
-                      <span className="text-[10px] font-bold text-muted-foreground mb-1">({stats.tier}次職)</span>
+                    <div className={cn("inline-block px-3 py-1 rounded-full border text-[11px] font-black uppercase tracking-[0.2em] mb-3 shadow-sm", info.bgClass.replace('bg-', 'bg-opacity-10 '), info.borderClass, info.colorClass)}>
+                      {info.subTitle}
+                    </div>
+                    <h2 className="text-3xl font-black tracking-tight text-foreground leading-tight truncate mb-1.5">{stats.jobName}</h2>
+                    <div className="text-xs font-bold text-muted-foreground opacity-60 mb-3 tracking-wide">&quot;{stats.currentTitle}&quot;</div>
+                    <div className="flex items-end gap-2.5">
+                      <span className="text-4xl font-black font-[family-name:var(--font-outfit)] leading-none text-foreground">Lv.{stats.level}</span>
+                      <span className="text-[11px] font-black text-muted-foreground mb-1.5 opacity-40 uppercase tracking-widest">({stats.tier}次職)</span>
                     </div>
                   </div>
                   {/* Latest Title */}
@@ -1246,43 +1248,31 @@ export default function TemplePage() {
                         </div>
                       </div>
                    </div>
-                   <div className="space-y-1 mt-1">
-                     <div className="text-[10px] font-black text-muted-foreground uppercase tracking-tighter opacity-50">Lv.{th.level}</div>
-                     <div className="text-sm font-black leading-tight text-foreground">{th.title}</div>
-                     <div className="text-[10px] font-bold text-muted-foreground">(第 {th.tier} 階層)</div>
+                   <div>
+                     <div className="text-[10px] font-black text-primary uppercase">Lv.{th.level}</div>
+                     <div className="text-xs font-black truncate">{th.title}</div>
+                     <div className="text-[9px] font-bold text-muted-foreground mt-1">
+                       累計 ¥{(th.min/10000).toFixed(0)}万
+                     </div>
                    </div>
-                                                           <div className="space-y-5 pt-4 border-t border-border/30">
-                      <div className="space-y-2">
-                        <div className="inline-block px-3 py-1 rounded bg-emerald-500/10 border border-emerald-500/20 text-xs font-black text-emerald-500 uppercase tracking-widest">Web / SNS 開発</div>
-                        <div className="pl-1">
-                          <div className="text-sm font-black text-foreground">{th.jobs.mage}</div>
-                          <div className="text-[9px] font-bold text-muted-foreground opacity-50">({th.tier}次職)</div>
-                        </div>
-                      </div>
-                      <div className="space-y-2">
-                        <div className="inline-block px-3 py-1 rounded bg-amber-500/10 border border-amber-500/20 text-xs font-black text-amber-500 uppercase tracking-widest">SiGMARK</div>
-                        <div className="pl-1">
-                          <div className="text-sm font-black text-foreground">{th.jobs.merchant}</div>
-                          <div className="text-[9px] font-bold text-muted-foreground opacity-50">({th.tier}次職)</div>
-                        </div>
-                      </div>
-                      <div className="space-y-2">
-                        <div className="inline-block px-3 py-1 rounded bg-blue-500/10 border border-blue-500/20 text-xs font-black text-blue-500 uppercase tracking-wider">OTHER GENRES</div>
-                        <div className="pl-1">
-                          <div className="text-sm font-black text-foreground">{th.jobs.hero}</div>
-                          <div className="text-[9px] font-bold text-muted-foreground opacity-50">({th.tier}次職)</div>
-                        </div>
-                      </div>
-                    </div>
-                    <div className="pt-2">
-                      <div className="text-[10px] font-black text-primary bg-primary/5 px-2 py-1 rounded inline-block">
-                        累計 ¥{(th.min/10000).toFixed(0)}万
-                      </div>
-                    </div>
-                  </div>
+                   <div className="space-y-1">
+                     <div className="flex justify-between text-[8px] font-bold">
+                       <span className="text-emerald-500 font-black">MAGE:</span>
+                       <span className="text-foreground">{th.jobs.mage}</span>
+                     </div>
+                     <div className="flex justify-between text-[8px] font-bold">
+                       <span className="text-amber-500 font-black">MERCHANT:</span>
+                       <span className="text-foreground">{th.jobs.merchant}</span>
+                     </div>
+                     <div className="flex justify-between text-[8px] font-bold">
+                       <span className="text-blue-500 font-black">HERO:</span>
+                       <span className="text-foreground">{th.jobs.hero}</span>
+                     </div>
+                   </div>
                 </div>
-              ))}
-            </div>
+              </div>
+            ))}
+          </div>
 
           {/* 3-Column Title List Section */}
           <div className="pt-10 border-t border-border">
