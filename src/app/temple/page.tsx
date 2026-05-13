@@ -669,36 +669,49 @@ export default function TemplePage() {
                     <div className="flex items-center justify-between mb-4">
                       <div className="flex items-center gap-2">
                         <History className="w-3.5 h-3.5 text-muted-foreground" />
-                        <span className="text-[9px] font-bold text-muted-foreground uppercase tracking-widest">ACQUIRED TITLES</span>
+                        <span className="text-[9px] font-bold text-muted-foreground uppercase tracking-widest">ACQUIRED TITLES (取得済み称号)</span>
                       </div>
-                      <div className={cn("text-[10px] font-black px-2 py-0.5 rounded border", info.bgClass.replace('bg-', 'bg-') + "/10", info.borderClass)}>
+                      <div className={cn("text-[10px] font-black px-2 py-0.5 rounded border backdrop-blur-sm", info.bgClass.replace('bg-', 'bg-') + "/10", info.borderClass)}>
                         取得済み: {stats.titles.length} <span className="opacity-40 ml-1">/ {type === 'mage' ? MAGE_TITLE_DEFS.length : '??'}</span>
                       </div>
                     </div>
-                    <div className="max-h-[240px] overflow-y-auto pr-1 custom-scrollbar">
+                    <div className="max-h-[280px] overflow-y-auto pr-1 custom-scrollbar">
                       <div className="grid grid-cols-2 gap-2">
-                        {stats.titles.map((title: any, idx: number) => (
-                          <div key={idx} className={cn(
-                            "group p-2 rounded border transition-all hover:brightness-110 relative overflow-hidden",
-                            idx === 0 ? "bg-primary/5 border-primary/30" : "bg-secondary/20 border-border/50"
-                          )}>
-                            {idx === 0 && (
-                              <div className="absolute top-0 right-0 bg-primary/20 text-[6px] font-black px-1.5 py-0.5 rounded-bl uppercase animate-pulse">New</div>
-                            )}
-                            <div className="flex flex-col gap-0.5">
-                              <div className="flex items-center gap-1">
-                                <Medal className={cn("w-2.5 h-2.5", idx === 0 ? "text-primary" : "text-muted-foreground/60")} />
-                                <span className="text-[10px] font-black text-foreground truncate">{title.name}</span>
-                              </div>
-                              <div className="text-[8px] font-bold text-muted-foreground leading-tight line-clamp-2 opacity-80 group-hover:opacity-100">
-                                {title.description}
-                              </div>
-                              <div className="mt-1 text-[7px] font-black text-muted-foreground/40 uppercase tracking-tighter">
-                                {title.acquiredAt}
+                        {stats.titles.map((title: any, idx: number) => {
+                          const catStyles: Record<string, string> = {
+                            '累計収益': 'bg-violet-500/10 border-violet-500/30 text-violet-200',
+                            '保守・継続': 'bg-emerald-500/10 border-emerald-500/30 text-emerald-200',
+                            '月間アクション': 'bg-amber-500/10 border-amber-500/30 text-amber-200',
+                            '単価・瞬発力': 'bg-rose-500/10 border-rose-500/30 text-rose-200',
+                            'リピート・信頼': 'bg-blue-500/10 border-blue-500/30 text-blue-200',
+                            '複合・時間': 'bg-slate-500/10 border-slate-500/30 text-slate-200'
+                          };
+                          const style = catStyles[title.category] || 'bg-secondary/20 border-border/50 text-foreground';
+                          
+                          return (
+                            <div key={idx} className={cn(
+                              "group p-2 rounded border backdrop-blur-md transition-all hover:brightness-125 relative overflow-hidden",
+                              style,
+                              idx === 0 && "ring-1 ring-primary/50 shadow-[0_0_10px_rgba(16,185,129,0.2)]"
+                            )}>
+                              {idx === 0 && (
+                                <div className="absolute top-0 right-0 bg-primary/40 text-[6px] font-black px-1.5 py-0.5 rounded-bl uppercase animate-pulse">New</div>
+                              )}
+                              <div className="flex flex-col gap-0.5">
+                                <div className="flex items-center gap-1">
+                                  <Medal className={cn("w-2.5 h-2.5", idx === 0 ? "text-primary" : "opacity-40")} />
+                                  <span className="text-[10px] font-black truncate">{title.name}</span>
+                                </div>
+                                <div className="text-[8px] font-bold leading-tight line-clamp-2 opacity-70 group-hover:opacity-100">
+                                  {title.description}
+                                </div>
+                                <div className="mt-1 text-[7px] font-black opacity-30 uppercase tracking-tighter">
+                                  {title.acquiredAt}
+                                </div>
                               </div>
                             </div>
-                          </div>
-                        ))}
+                          );
+                        })}
                       </div>
                     </div>
                   </div>
@@ -712,15 +725,15 @@ export default function TemplePage() {
       {/* Class Roadmap & Titles */}
       <Card className="bg-card border-border">
         <div className="p-8">
-          <div className="flex items-center gap-3 mb-8">
+          <div className="flex items-center gap-3 mb-10">
             <Star className="w-5 h-5 text-amber-500" />
             <div>
-              <h3 className="text-base font-black tracking-tight uppercase">CLASS ROADMAP (クラスと転職)</h3>
-              <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">転職の必要レベルと条件</p>
+              <h3 className="text-base font-black tracking-tight uppercase">CLASS ROADMAP & TITLES (クラスと称号)</h3>
+              <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">転職条件と全称号取得条件の一覧</p>
             </div>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-5 gap-4 mb-12">
+          <div className="grid grid-cols-1 md:grid-cols-5 gap-4 mb-16">
             {TIER_THRESHOLDS.map((th) => (
               <div key={th.tier} className="bg-secondary/20 rounded-md p-4 border border-border relative overflow-hidden group">
                 <div className="absolute top-2 right-2 text-3xl font-black opacity-5 group-hover:opacity-10 transition-opacity">T{th.tier}</div>
@@ -737,15 +750,15 @@ export default function TemplePage() {
                    </div>
                    <div className="space-y-1">
                      <div className="flex justify-between text-[8px] font-bold">
-                       <span className="text-emerald-500">MAGE:</span>
+                       <span className="text-emerald-500 font-black">MAGE:</span>
                        <span className="text-foreground">{th.jobs.mage}</span>
                      </div>
                      <div className="flex justify-between text-[8px] font-bold">
-                       <span className="text-amber-500">MERCHANT:</span>
+                       <span className="text-amber-500 font-black">MERCHANT:</span>
                        <span className="text-foreground">{th.jobs.merchant}</span>
                      </div>
                      <div className="flex justify-between text-[8px] font-bold">
-                       <span className="text-blue-500">HERO:</span>
+                       <span className="text-blue-500 font-black">HERO:</span>
                        <span className="text-foreground">{th.jobs.hero}</span>
                      </div>
                    </div>
@@ -754,32 +767,71 @@ export default function TemplePage() {
             ))}
           </div>
 
-          {/* Title List Section */}
-          <div className="pt-8 border-t border-border">
-            <div className="flex items-center gap-3 mb-8">
-              <Trophy className="w-5 h-5 text-primary" />
-              <div>
-                <h3 className="text-base font-black tracking-tight uppercase">TITLE CONDITIONS (称号取得条件一覧)</h3>
-                <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">🧙 魔法使い系統（Web / SNS開発）称号リスト</p>
-              </div>
-            </div>
-
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-x-8 gap-y-12">
-              {['累計収益', '保守・継続', '月間アクション', '単価・瞬発力', 'リピート・信頼', '複合・時間'].map(cat => (
-                <div key={cat} className="space-y-4">
-                  <div className="flex items-center gap-2 border-b border-primary/20 pb-2">
-                    <span className="bg-primary/10 text-primary border border-primary/20 text-[9px] font-black px-2 py-0.5 rounded uppercase">{cat}</span>
+          {/* 3-Column Title List Section */}
+          <div className="pt-10 border-t border-border">
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">
+              {/* Mage Titles */}
+              <div className="space-y-8">
+                <div className="flex items-center gap-3">
+                  <div className="w-8 h-8 rounded bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center">
+                    <Wand2 className="w-4 h-4 text-emerald-500" />
                   </div>
-                  <div className="space-y-3">
-                    {MAGE_TITLE_DEFS.filter(d => d.category === cat).map(def => (
-                      <div key={def.id} className="group">
-                        <div className="text-[11px] font-black text-foreground group-hover:text-primary transition-colors">{def.name}</div>
-                        <div className="text-[9px] font-bold text-muted-foreground leading-tight mt-0.5">{def.description}</div>
-                      </div>
-                    ))}
+                  <div>
+                    <h4 className="text-xs font-black text-emerald-500 uppercase">MAGE TITLES</h4>
+                    <p className="text-[9px] font-bold text-muted-foreground uppercase">魔法使い系統 称号リスト</p>
                   </div>
                 </div>
-              ))}
+                
+                <div className="space-y-8 max-h-[1200px] overflow-y-auto pr-4 custom-scrollbar">
+                  {['累計収益', '保守・継続', '月間アクション', '単価・瞬発力', 'リピート・信頼', '複合・時間'].map(cat => (
+                    <div key={cat} className="space-y-3">
+                      <div className="flex items-center gap-2 border-b border-border pb-1">
+                        <span className="text-[9px] font-black text-muted-foreground uppercase tracking-widest">{cat}</span>
+                      </div>
+                      <div className="grid grid-cols-1 gap-2">
+                        {MAGE_TITLE_DEFS.filter(d => d.category === cat).map(def => (
+                          <div key={def.id} className="group p-2 rounded bg-secondary/10 border border-border/30 hover:border-emerald-500/30 transition-all">
+                            <div className="text-[10px] font-black text-foreground group-hover:text-emerald-500 transition-colors">{def.name}</div>
+                            <div className="text-[8px] font-bold text-muted-foreground leading-tight mt-0.5">{def.description}</div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* Merchant Titles (Placeholder) */}
+              <div className="space-y-8 opacity-40">
+                <div className="flex items-center gap-3">
+                  <div className="w-8 h-8 rounded bg-amber-500/10 border border-amber-500/30 flex items-center justify-center">
+                    <Coins className="w-4 h-4 text-amber-500" />
+                  </div>
+                  <div>
+                    <h4 className="text-xs font-black text-amber-500 uppercase">MERCHANT TITLES</h4>
+                    <p className="text-[9px] font-bold text-muted-foreground uppercase">商人系統 称号リスト (準備中)</p>
+                  </div>
+                </div>
+                <div className="h-64 flex items-center justify-center border border-dashed border-border rounded-lg">
+                  <span className="text-[10px] font-black uppercase tracking-widest">COMING SOON</span>
+                </div>
+              </div>
+
+              {/* Hero Titles (Placeholder) */}
+              <div className="space-y-8 opacity-40">
+                <div className="flex items-center gap-3">
+                  <div className="w-8 h-8 rounded bg-blue-500/10 border border-blue-500/30 flex items-center justify-center">
+                    <Sword className="w-4 h-4 text-blue-500" />
+                  </div>
+                  <div>
+                    <h4 className="text-xs font-black text-blue-500 uppercase">HERO TITLES</h4>
+                    <p className="text-[9px] font-bold text-muted-foreground uppercase">勇者系統 称号リスト (準備中)</p>
+                  </div>
+                </div>
+                <div className="h-64 flex items-center justify-center border border-dashed border-border rounded-lg">
+                  <span className="text-[10px] font-black uppercase tracking-widest">COMING SOON</span>
+                </div>
+              </div>
             </div>
           </div>
         </div>
