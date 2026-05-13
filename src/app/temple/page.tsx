@@ -662,14 +662,40 @@ export default function TemplePage() {
                     </ResponsiveContainer>
                   </div>
                 </div>
+
+                {/* Title History */}
+                {stats.titles && stats.titles.length > 0 && (
+                  <div className="pt-4 border-t border-border">
+                    <div className="flex items-center gap-2 mb-4">
+                      <History className="w-3.5 h-3.5 text-muted-foreground" />
+                      <span className="text-[9px] font-bold text-muted-foreground uppercase tracking-widest">ACQUIRED TITLES (取得済み称号)</span>
+                    </div>
+                    <div className="max-h-[200px] overflow-y-auto space-y-2 pr-2 custom-scrollbar">
+                      {stats.titles.map((title: any, idx: number) => (
+                        <div key={idx} className="bg-secondary/20 p-3 rounded border border-border/50 flex flex-col gap-1 relative overflow-hidden">
+                          {idx === 0 && <div className="absolute top-0 right-0 bg-primary/20 text-[7px] font-black px-2 py-0.5 rounded-bl uppercase">New</div>}
+                          <div className="flex justify-between items-start">
+                            <span className="text-[11px] font-black text-foreground">{title.name}</span>
+                            <span className="text-[8px] font-bold text-muted-foreground bg-background px-1.5 py-0.5 rounded border border-border/50">
+                              {title.acquiredAt}
+                            </span>
+                          </div>
+                          <div className="text-[9px] font-medium text-muted-foreground leading-tight">
+                            {title.description}
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
               </CardContent>
             </Card>
           );
         })}
       </div>
 
-      {/* Roadmap */}
-      <Card className="bg-card border-border mt-12">
+      {/* Class Roadmap & Titles */}
+      <Card className="bg-card border-border">
         <div className="p-8">
           <div className="flex items-center gap-3 mb-8">
             <Star className="w-5 h-5 text-amber-500" />
@@ -679,30 +705,67 @@ export default function TemplePage() {
             </div>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
-            {TIER_THRESHOLDS.map((t, idx) => (
-              <div key={t.tier} className={cn("p-4 rounded-lg border flex flex-col h-full relative overflow-hidden", idx === 0 ? "border-muted bg-secondary/50" : "border-border bg-card")}>
-                <div className="absolute top-2 right-2 w-10 h-10 opacity-60">
-                   <Image src={t.image} alt={`Tier ${t.tier} Badge`} width={40} height={40} style={{ imageRendering: 'pixelated' }} />
-                </div>
-                <div className="text-[9px] font-black text-primary uppercase tracking-widest mb-1">TIER {t.tier}</div>
-                <div className="text-lg font-black font-[family-name:var(--font-outfit)] leading-none mb-2">Lv.{t.level} ~</div>
-                <div className="text-[10px] font-bold text-muted-foreground mb-3">累計 ¥{(t.min/10000).toLocaleString()}万</div>
-                
-                <div className="space-y-1 mt-auto pt-3 border-t border-border/50">
-                  <div className="flex justify-between items-center text-[8px] font-bold">
-                    <span className="text-emerald-500">魔法: {t.jobs.mage}</span>
-                  </div>
-                  <div className="flex justify-between items-center text-[8px] font-bold">
-                    <span className="text-amber-500">商人: {t.jobs.merchant}</span>
-                  </div>
-                  <div className="flex justify-between items-center text-[8px] font-bold">
-                    <span className="text-blue-500">勇者: {t.jobs.hero}</span>
-                  </div>
-                  <div className="text-[7px] font-bold text-muted-foreground mt-1 opacity-60 italic">{t.title}</div>
+          <div className="grid grid-cols-1 md:grid-cols-5 gap-4 mb-12">
+            {TIER_THRESHOLDS.map((th) => (
+              <div key={th.tier} className="bg-secondary/20 rounded-md p-4 border border-border relative overflow-hidden group">
+                <div className="absolute top-2 right-2 text-3xl font-black opacity-5 group-hover:opacity-10 transition-opacity">T{th.tier}</div>
+                <div className="flex flex-col gap-3 relative z-10">
+                   <div className="w-12 h-12 bg-background rounded-md flex items-center justify-center border border-border shadow-sm">
+                      <Image src={th.image} alt={th.title} width={32} height={32} className="object-contain" style={{ imageRendering: 'pixelated' }} />
+                   </div>
+                   <div>
+                     <div className="text-[10px] font-black text-primary uppercase">Lv.{th.level}</div>
+                     <div className="text-xs font-black truncate">{th.title}</div>
+                     <div className="text-[9px] font-bold text-muted-foreground mt-1">
+                       累計 ¥{(th.min/10000).toFixed(0)}万
+                     </div>
+                   </div>
+                   <div className="space-y-1">
+                     <div className="flex justify-between text-[8px] font-bold">
+                       <span className="text-emerald-500">MAGE:</span>
+                       <span className="text-foreground">{th.jobs.mage}</span>
+                     </div>
+                     <div className="flex justify-between text-[8px] font-bold">
+                       <span className="text-amber-500">MERCHANT:</span>
+                       <span className="text-foreground">{th.jobs.merchant}</span>
+                     </div>
+                     <div className="flex justify-between text-[8px] font-bold">
+                       <span className="text-blue-500">HERO:</span>
+                       <span className="text-foreground">{th.jobs.hero}</span>
+                     </div>
+                   </div>
                 </div>
               </div>
             ))}
+          </div>
+
+          {/* Title List Section */}
+          <div className="pt-8 border-t border-border">
+            <div className="flex items-center gap-3 mb-8">
+              <Trophy className="w-5 h-5 text-primary" />
+              <div>
+                <h3 className="text-base font-black tracking-tight uppercase">TITLE CONDITIONS (称号取得条件一覧)</h3>
+                <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">🧙 魔法使い系統（Web / SNS開発）称号リスト</p>
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-x-8 gap-y-12">
+              {['累計収益', '保守・継続', '月間アクション', '単価・瞬発力', 'リピート・信頼', '複合・時間'].map(cat => (
+                <div key={cat} className="space-y-4">
+                  <div className="flex items-center gap-2 border-b border-primary/20 pb-2">
+                    <span className="bg-primary/10 text-primary border border-primary/20 text-[9px] font-black px-2 py-0.5 rounded uppercase">{cat}</span>
+                  </div>
+                  <div className="space-y-3">
+                    {MAGE_TITLE_DEFS.filter(d => d.category === cat).map(def => (
+                      <div key={def.id} className="group">
+                        <div className="text-[11px] font-black text-foreground group-hover:text-primary transition-colors">{def.name}</div>
+                        <div className="text-[9px] font-bold text-muted-foreground leading-tight mt-0.5">{def.description}</div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              ))}
+            </div>
           </div>
         </div>
       </Card>
