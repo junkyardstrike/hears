@@ -6,7 +6,7 @@ import { useHearsStore, CaseData } from '@/store/useHearsStore';
 import { Card, CardContent } from '@/components/ui/card';
 import { Progress } from '@/components/ui/progress';
 import { CSSPixelArt } from '@/components/ui/css-pixel-art';
-import { BarChart, Bar, XAxis, Tooltip, ResponsiveContainer, Cell, LabelList, AreaChart, Area } from 'recharts';
+import { BarChart, Bar, XAxis, Tooltip, ResponsiveContainer, Cell, LabelList, AreaChart, Area, CartesianGrid } from 'recharts';
 import { Crown, Sparkles, Sword, Coins, ArrowUpRight, Flame, Shield, Star, Wand2, Castle, Medal, Trophy, Clock, History } from 'lucide-react';
 import { parseISO, isAfter, startOfMonth, format, addMonths, differenceInMonths, getHours, isWeekend, isSameMonth, subMonths } from 'date-fns';
 import { cn } from '@/lib/utils';
