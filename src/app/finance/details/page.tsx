@@ -10,7 +10,7 @@ import { Input } from '@/components/ui/input';
 import { 
   ChevronLeft, Wallet, ArrowUpRight, TrendingUp, Calendar, 
   Landmark, Activity, Briefcase, FileText, LayoutGrid, List,
-  ChevronRight, CalendarDays, Percent, Settings2
+  ChevronRight, CalendarDays, Percent, Settings2, Check
 } from 'lucide-react';
 import { format, parseISO, isAfter, startOfMonth, getYear, getMonth, addMonths, subMonths } from 'date-fns';
 import { cn } from '@/lib/utils';
