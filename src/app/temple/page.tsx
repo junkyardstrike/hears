@@ -1192,12 +1192,23 @@ export default function TemplePage() {
                         <div className="flex-1 h-[1px] bg-border opacity-30" />
                       </div>
                       <div className="grid grid-cols-1 gap-2">
-                        {MAGE_TITLE_DEFS.filter(d => d.category === cat).map(def => (
-                          <div key={def.id} className="group p-2 rounded bg-secondary/10 border border-border/30 hover:border-emerald-500/30 transition-all">
-                            <div className="text-[10px] font-black text-foreground group-hover:text-emerald-500 transition-colors">{def.name}</div>
-                            <div className="text-[8px] font-bold text-muted-foreground leading-tight mt-0.5">{def.description}</div>
-                          </div>
-                        ))}
+                        {MAGE_TITLE_DEFS.filter(d => d.category === cat).map(def => {
+                          const isAcquired = data.mage.titles?.some((t: any) => t.id === def.id);
+                          return (
+                            <div key={def.id} className={cn(
+                              "group p-2 rounded bg-secondary/10 border border-border/30 hover:border-emerald-500/30 transition-all relative overflow-hidden",
+                              isAcquired && "opacity-60 grayscale-[0.5]"
+                            )}>
+                              {isAcquired && (
+                                <div className="absolute inset-0 bg-emerald-500/10 backdrop-blur-[1px] flex items-center justify-center pointer-events-none z-10">
+                                  <span className="text-[10px] font-black text-emerald-500 uppercase tracking-tighter rotate-[-12deg] border border-emerald-500 px-1 py-0.5 bg-background/90 shadow-sm">COMPLETE</span>
+                                </div>
+                              )}
+                              <div className="text-[10px] font-black text-foreground group-hover:text-emerald-500 transition-colors">{def.name}</div>
+                              <div className="text-[8px] font-bold text-muted-foreground leading-tight mt-0.5">{def.description}</div>
+                            </div>
+                          );
+                        })}
                       </div>
                     </div>
                   ))}
@@ -1226,12 +1237,23 @@ export default function TemplePage() {
                         <div className="flex-1 h-[1px] bg-border opacity-30" />
                       </div>
                       <div className="grid grid-cols-1 gap-2">
-                        {MERCHANT_TITLE_DEFS.filter(d => d.category === cat).map(def => (
-                          <div key={def.id} className="group p-2 rounded bg-secondary/10 border border-border/30 hover:border-amber-500/30 transition-all">
-                            <div className="text-[10px] font-black text-foreground group-hover:text-amber-500 transition-colors">{def.name}</div>
-                            <div className="text-[8px] font-bold text-muted-foreground leading-tight mt-0.5">{def.description}</div>
-                          </div>
-                        ))}
+                        {MERCHANT_TITLE_DEFS.filter(d => d.category === cat).map(def => {
+                          const isAcquired = data.merchant.titles?.some((t: any) => t.id === def.id);
+                          return (
+                            <div key={def.id} className={cn(
+                              "group p-2 rounded bg-secondary/10 border border-border/30 hover:border-amber-500/30 transition-all relative overflow-hidden",
+                              isAcquired && "opacity-60 grayscale-[0.5]"
+                            )}>
+                              {isAcquired && (
+                                <div className="absolute inset-0 bg-amber-500/10 backdrop-blur-[1px] flex items-center justify-center pointer-events-none z-10">
+                                  <span className="text-[10px] font-black text-amber-500 uppercase tracking-tighter rotate-[-12deg] border border-amber-500 px-1 py-0.5 bg-background/90 shadow-sm">COMPLETE</span>
+                                </div>
+                              )}
+                              <div className="text-[10px] font-black text-foreground group-hover:text-amber-500 transition-colors">{def.name}</div>
+                              <div className="text-[8px] font-bold text-muted-foreground leading-tight mt-0.5">{def.description}</div>
+                            </div>
+                          );
+                        })}
                       </div>
                     </div>
                   ))}
@@ -1260,12 +1282,23 @@ export default function TemplePage() {
                         <div className="flex-1 h-[1px] bg-border opacity-30" />
                       </div>
                       <div className="grid grid-cols-1 gap-2">
-                        {HERO_TITLE_DEFS.filter(d => d.category === cat).map(def => (
-                          <div key={def.id} className="group p-2 rounded bg-secondary/10 border border-border/30 hover:border-blue-500/30 transition-all">
-                            <div className="text-[10px] font-black text-foreground group-hover:text-blue-500 transition-colors">{def.name}</div>
-                            <div className="text-[8px] font-bold text-muted-foreground leading-tight mt-0.5">{def.description}</div>
-                          </div>
-                        ))}
+                        {HERO_TITLE_DEFS.filter(d => d.category === cat).map(def => {
+                          const isAcquired = data.hero.titles?.some((t: any) => t.id === def.id);
+                          return (
+                            <div key={def.id} className={cn(
+                              "group p-2 rounded bg-secondary/10 border border-border/30 hover:border-blue-500/30 transition-all relative overflow-hidden",
+                              isAcquired && "opacity-60 grayscale-[0.5]"
+                            )}>
+                              {isAcquired && (
+                                <div className="absolute inset-0 bg-blue-500/10 backdrop-blur-[1px] flex items-center justify-center pointer-events-none z-10">
+                                  <span className="text-[10px] font-black text-blue-500 uppercase tracking-tighter rotate-[-12deg] border border-blue-500 px-1 py-0.5 bg-background/90 shadow-sm">COMPLETE</span>
+                                </div>
+                              )}
+                              <div className="text-[10px] font-black text-foreground group-hover:text-blue-500 transition-colors">{def.name}</div>
+                              <div className="text-[8px] font-bold text-muted-foreground leading-tight mt-0.5">{def.description}</div>
+                            </div>
+                          );
+                        })}
                       </div>
                     </div>
                   ))}

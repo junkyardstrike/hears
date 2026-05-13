@@ -92,6 +92,9 @@ export interface CaseData {
     revenueStartMonth: string;
   };
   todos: TodoItem[];
+  city?: string;
+  categoryName?: string;
+  tags?: string[];
   isSnsLead?: boolean;
   isOutOfPref?: boolean;
   updatedAt: number;
