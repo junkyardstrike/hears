@@ -292,7 +292,7 @@ export default function FinancePage() {
           unit="社" 
           icon={<Users className="w-5 h-5" />} 
           color="amber" 
-          onClick={() => router.push('/clients')} 
+          onClick={() => router.push('/')} 
         />
       </div>
 

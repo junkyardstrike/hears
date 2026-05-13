@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useRef, useEffect } from 'react';
 import { useHearsStore, ClientData, CaseData } from '@/store/useHearsStore';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -64,6 +64,17 @@ export default function ClientsDashboard() {
   const [editingId, setEditingId] = useState<string | null>(null);
   const [editForm, setEditForm] = useState<Partial<ClientData>>({});
   const [expandedClientId, setExpandedClientId] = useState<string | null>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const handleClickOutside = (e: MouseEvent) => {
+      if (containerRef.current && !containerRef.current.contains(e.target as Node)) {
+        setExpandedClientId(null);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
 
   const clientsWithStats = useMemo(() => {
     const filtered = clients.filter(c => 
@@ -183,7 +194,7 @@ export default function ClientsDashboard() {
       </div>
 
       {/* 一覧 */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+      <div ref={containerRef} className="grid grid-cols-1 lg:grid-cols-2 gap-4">
         {clientsWithStats.length === 0 ? (
           <div className="py-24 text-center bg-card border border-dashed border-border rounded-lg animate-in fade-in duration-700 col-span-1 lg:col-span-2">
              <Building2 className="w-16 h-16 text-muted-foreground mx-auto opacity-10 mb-6" />
@@ -223,30 +234,37 @@ export default function ClientsDashboard() {
                    ) : (
                      <div className="flex-1 w-full min-w-0 flex flex-col lg:flex-row items-start lg:items-center gap-4 lg:gap-8">
                         <div className="flex-1 w-full lg:w-auto min-w-0 text-left">
-                           <h3 className="text-xl lg:text-2xl font-bold italic tracking-tighter text-foreground group-hover:text-primary transition-colors font-[family-name:var(--font-outfit)] leading-tight mb-1 truncate">
+                           <h3 className="text-lg lg:text-xl font-bold italic tracking-tighter text-foreground group-hover:text-primary transition-colors font-[family-name:var(--font-outfit)] leading-tight mb-1 truncate">
                              {c.name}
                            </h3>
                            <p className="text-[9px] font-bold text-muted-foreground tracking-widest opacity-60">ID: {c.id.toUpperCase().substring(0, 8)}</p>
                         </div>
-                        <div className="flex flex-row items-center justify-between lg:justify-start gap-6 border-t lg:border-t-0 lg:border-x border-border/50 shrink-0 w-full lg:w-auto pt-4 lg:pt-0 lg:px-8">
+                        <div className="flex flex-row items-center justify-between lg:justify-start gap-4 lg:gap-6 border-t lg:border-t-0 lg:border-x border-border/50 shrink-0 w-full lg:w-auto pt-3 lg:pt-0 lg:px-6">
+                           <div className="flex flex-col text-left">
+                              <span className="text-[8px] font-bold text-muted-foreground uppercase tracking-widest opacity-40 mb-1">MANAGER / 担当者</span>
+                              <span className="text-sm font-bold text-foreground">
+                                {c.managerName || '-'}
+                              </span>
+                           </div>
+                           <div className="w-px h-8 bg-border/50" />
                            <div className="flex flex-col text-left">
                               <span className="text-[8px] font-bold text-muted-foreground uppercase tracking-widest opacity-40 mb-1">CASES / 案件数</span>
-                              <span className="text-lg font-bold italic tracking-tighter text-primary font-[family-name:var(--font-outfit)]">
+                              <span className="text-base font-bold italic tracking-tighter text-primary font-[family-name:var(--font-outfit)]">
                                 {c.clientCases.length}
                               </span>
                            </div>
                            <div className="w-px h-8 bg-border/50" />
                            <div className="flex flex-col text-right lg:text-left">
                               <span className="text-[8px] font-bold text-muted-foreground uppercase tracking-widest opacity-40 mb-1">MAINTENANCE / 保守累計</span>
-                              <span className="text-lg font-bold tracking-tight text-emerald-500">
+                              <span className="text-base font-bold tracking-tight text-emerald-500">
                                 ¥{c.clientTotalStock.toLocaleString()}
                               </span>
                            </div>
                            <div className="w-px h-8 bg-border/50" />
                            <div className="flex flex-col text-right lg:text-left">
-                              <span className="text-[8px] font-bold text-muted-foreground uppercase tracking-widest opacity-40 mb-1">TOTAL REVENUE (GROSS) / 累計総売上</span>
-                              <span className="text-lg font-bold tracking-tight text-foreground">
-                                ¥{c.clientTotalGross.toLocaleString()}
+                              <span className="text-[8px] font-bold text-muted-foreground uppercase tracking-widest opacity-40 mb-1">PRODUCTION・SPOT / 制作・SPOT</span>
+                              <span className="text-base font-bold tracking-tight text-blue-500">
+                                ¥{c.clientTotalShot.toLocaleString()}
                               </span>
                            </div>
                         </div>
