@@ -307,6 +307,7 @@ export default function ClientsDashboard() {
                           )}
                         </div>
                       </div>
+                    )}
                 </div>
 
                 {/* 展開時の詳細情報 */}
