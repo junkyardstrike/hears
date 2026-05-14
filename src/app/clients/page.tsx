@@ -412,6 +412,7 @@ export default function ClientsDashboard() {
             );
           })
         )}
+        </div>
       </div>
     </div>
   );
