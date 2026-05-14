@@ -253,19 +253,19 @@ export default function ClientsDashboard() {
                         {/* 右列: 案件数・収益計 */}
                         <div className="space-y-1 border-l border-border/30 pl-6 flex flex-col justify-center">
                           <div className="flex justify-between items-end">
-                            <span className="text-[8px] font-black text-muted-foreground uppercase tracking-widest opacity-40">CASES</span>
+                            <span className="text-[8px] font-black text-muted-foreground uppercase tracking-widest opacity-40">CASES / 案件数</span>
                             <span className="text-[13px] font-black italic tracking-tighter text-primary font-[family-name:var(--font-outfit)]">
                               {c.clientCases.length}
                             </span>
                           </div>
                           <div className="flex justify-between items-end">
-                            <span className="text-[8px] font-black text-muted-foreground uppercase tracking-widest opacity-40">MAINT.</span>
+                            <span className="text-[8px] font-black text-muted-foreground uppercase tracking-widest opacity-40">MAINT. / 保守累計</span>
                             <span className="text-[12px] font-black tracking-tight text-emerald-500">
                               ¥{c.clientTotalStock.toLocaleString()}
                             </span>
                           </div>
                           <div className="flex justify-between items-end">
-                            <span className="text-[8px] font-black text-muted-foreground uppercase tracking-widest opacity-40">SPOT</span>
+                            <span className="text-[8px] font-black text-muted-foreground uppercase tracking-widest opacity-40">SPOT / 制作・SPOT</span>
                             <span className="text-[12px] font-black tracking-tight text-blue-500">
                               ¥{c.clientTotalShot.toLocaleString()}
                             </span>
@@ -319,11 +319,11 @@ export default function ClientsDashboard() {
                       
                       <div className="bg-card border border-border p-5 rounded-md flex flex-col gap-4">
                         <div className="flex items-center justify-between">
-                          <span className="text-[9px] font-black text-muted-foreground uppercase tracking-widest">CUMULATIVE MAINTENANCE</span>
+                          <span className="text-[9px] font-black text-muted-foreground uppercase tracking-widest">CUMULATIVE MAINTENANCE / 保守累計獲得額</span>
                           <span className="text-base font-black tracking-tight text-emerald-500">¥{c.clientTotalStock.toLocaleString()}</span>
                         </div>
                         <div className="flex items-center justify-between">
-                          <span className="text-[9px] font-black text-muted-foreground uppercase tracking-widest">PRODUCTION・SPOT TOTAL</span>
+                          <span className="text-[9px] font-black text-muted-foreground uppercase tracking-widest">PRODUCTION・SPOT TOTAL / 制作・スポット累計</span>
                           <span className="text-base font-black tracking-tight text-blue-500">¥{c.clientTotalShot.toLocaleString()}</span>
                         </div>
                       </div>
