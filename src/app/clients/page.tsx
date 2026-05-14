@@ -194,7 +194,8 @@ export default function ClientsDashboard() {
       </div>
 
       {/* 一覧 */}
-      <div ref={containerRef} className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+      <div className="max-w-6xl mx-auto">
+        <div ref={containerRef} className="grid grid-cols-1 md:grid-cols-2 gap-6 justify-center">
         {clientsWithStats.length === 0 ? (
           <div className="py-24 text-center bg-card border border-dashed border-border rounded-lg animate-in fade-in duration-700 col-span-1 lg:col-span-2">
              <Building2 className="w-16 h-16 text-muted-foreground mx-auto opacity-10 mb-6" />
@@ -208,7 +209,7 @@ export default function ClientsDashboard() {
             return (
               <div key={c.id} className={cn(
                 "bg-card rounded-lg border overflow-hidden transition-all",
-                isExpanded ? "border-primary ring-1 ring-primary col-span-1 lg:col-span-2" : "border-border hover:border-primary/50"
+                isExpanded ? "border-primary ring-1 ring-primary shadow-lg scale-[1.02] z-20" : "border-border hover:border-primary/50"
               )}>
                 <div 
                   className="p-4 lg:p-6 flex flex-col lg:flex-row items-start lg:items-center gap-4 lg:gap-6 group relative cursor-pointer"
@@ -232,43 +233,45 @@ export default function ClientsDashboard() {
                         </div>
                      </div>
                    ) : (
-                     <div className="flex-1 w-full min-w-0 flex flex-col lg:flex-row items-start lg:items-center gap-4 lg:gap-8">
-                        <div className="flex-1 w-full lg:w-auto min-w-0 text-left">
-                           <h3 className="text-base lg:text-lg font-bold italic tracking-tighter text-foreground group-hover:text-primary transition-colors font-[family-name:var(--font-outfit)] leading-snug mb-1 break-words line-clamp-2">
-                             {c.name}
-                           </h3>
-                           <p className="text-[9px] font-bold text-muted-foreground tracking-widest opacity-60">ID: {c.id.toUpperCase().substring(0, 8)}</p>
+                      <div className="flex-1 w-full grid grid-cols-2 gap-6">
+                        {/* 左列: 取引先・担当者 */}
+                        <div className="space-y-4">
+                          <div className="flex flex-col text-left">
+                            <span className="text-[8px] font-black text-muted-foreground uppercase tracking-widest opacity-40 mb-1.5">ENTITY / 取引先</span>
+                            <h3 className="text-[13px] font-black italic tracking-tighter text-foreground group-hover:text-primary transition-colors font-[family-name:var(--font-outfit)] leading-tight line-clamp-2">
+                              {c.name}
+                            </h3>
+                          </div>
+                          <div className="flex flex-col text-left">
+                            <span className="text-[8px] font-black text-muted-foreground uppercase tracking-widest opacity-40 mb-1.5">MANAGER / 担当者</span>
+                            <span className="text-[11px] font-bold text-foreground truncate">
+                              {c.managerName || '-'}
+                            </span>
+                          </div>
                         </div>
-                        <div className="flex flex-row items-center justify-between lg:justify-start gap-4 lg:gap-6 border-t lg:border-t-0 lg:border-x border-border/50 shrink-0 w-full lg:w-auto pt-3 lg:pt-0 lg:px-6">
-                           <div className="flex flex-col text-left">
-                              <span className="text-[8px] font-bold text-muted-foreground uppercase tracking-widest opacity-40 mb-1">MANAGER / 担当者</span>
-                              <span className="text-sm font-bold text-foreground">
-                                {c.managerName || '-'}
-                              </span>
-                           </div>
-                           <div className="w-px h-8 bg-border/50" />
-                           <div className="flex flex-col text-left">
-                              <span className="text-[8px] font-bold text-muted-foreground uppercase tracking-widest opacity-40 mb-1">CASES / 案件数</span>
-                              <span className="text-base font-bold italic tracking-tighter text-primary font-[family-name:var(--font-outfit)]">
-                                {c.clientCases.length}
-                              </span>
-                           </div>
-                           <div className="w-px h-8 bg-border/50" />
-                           <div className="flex flex-col text-right lg:text-left">
-                              <span className="text-[8px] font-bold text-muted-foreground uppercase tracking-widest opacity-40 mb-1">MAINTENANCE / 保守累計</span>
-                              <span className="text-base font-bold tracking-tight text-emerald-500">
-                                ¥{c.clientTotalStock.toLocaleString()}
-                              </span>
-                           </div>
-                           <div className="w-px h-8 bg-border/50" />
-                           <div className="flex flex-col text-right lg:text-left">
-                              <span className="text-[8px] font-bold text-muted-foreground uppercase tracking-widest opacity-40 mb-1">PRODUCTION・SPOT / 制作・SPOT</span>
-                              <span className="text-base font-bold tracking-tight text-blue-500">
-                                ¥{c.clientTotalShot.toLocaleString()}
-                              </span>
-                           </div>
+
+                        {/* 右列: 案件数・収益計 */}
+                        <div className="space-y-2.5 border-l border-border/30 pl-6 flex flex-col justify-center">
+                          <div className="flex justify-between items-end">
+                            <span className="text-[8px] font-black text-muted-foreground uppercase tracking-widest opacity-40">CASES</span>
+                            <span className="text-[13px] font-black italic tracking-tighter text-primary font-[family-name:var(--font-outfit)]">
+                              {c.clientCases.length}
+                            </span>
+                          </div>
+                          <div className="flex justify-between items-end">
+                            <span className="text-[8px] font-black text-muted-foreground uppercase tracking-widest opacity-40">MAINT.</span>
+                            <span className="text-[12px] font-black tracking-tight text-emerald-500">
+                              ¥{c.clientTotalStock.toLocaleString()}
+                            </span>
+                          </div>
+                          <div className="flex justify-between items-end">
+                            <span className="text-[8px] font-black text-muted-foreground uppercase tracking-widest opacity-40">SPOT</span>
+                            <span className="text-[12px] font-black tracking-tight text-blue-500">
+                              ¥{c.clientTotalShot.toLocaleString()}
+                            </span>
+                          </div>
                         </div>
-                     </div>
+                      </div>
                    )}
 
                    <div className="flex items-center gap-1 lg:gap-3 shrink-0 absolute lg:relative right-2 top-2 lg:right-auto lg:top-auto z-10 bg-card/80 lg:bg-transparent p-1 lg:p-0 rounded-md backdrop-blur-md lg:backdrop-blur-none">
@@ -310,18 +313,18 @@ export default function ClientsDashboard() {
 
                 {/* 展開時の詳細情報 */}
                 {isExpanded && (
-                  <div className="border-t border-border/50 bg-secondary/10 p-4 lg:p-8 animate-in slide-in-from-top-4 duration-300 cursor-default" onClick={e => e.stopPropagation()}>
-                    <div className="flex flex-col lg:flex-row gap-4 mb-6">
+                  <div className="border-t border-border/50 bg-secondary/10 p-4 lg:p-6 animate-in slide-in-from-top-4 duration-300 cursor-default" onClick={e => e.stopPropagation()}>
+                    <div className="flex flex-col gap-4 mb-6">
                       <ClientDetailForm client={c} updateClient={updateClient} />
                       
-                      <div className="flex-1 bg-card border border-border p-5 rounded-md flex flex-col justify-center gap-4">
+                      <div className="bg-card border border-border p-5 rounded-md flex flex-col gap-4">
                         <div className="flex items-center justify-between">
-                          <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">CUMULATIVE MAINTENANCE / 保守累計</span>
-                          <span className="text-lg font-bold tracking-tight text-emerald-500">¥{c.clientTotalStock.toLocaleString()}</span>
+                          <span className="text-[9px] font-black text-muted-foreground uppercase tracking-widest">CUMULATIVE MAINTENANCE</span>
+                          <span className="text-base font-black tracking-tight text-emerald-500">¥{c.clientTotalStock.toLocaleString()}</span>
                         </div>
                         <div className="flex items-center justify-between">
-                          <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">PRODUCTION / SPOT TOTAL / 制作・スポット合計</span>
-                          <span className="text-lg font-bold tracking-tight text-blue-500">¥{c.clientTotalShot.toLocaleString()}</span>
+                          <span className="text-[9px] font-black text-muted-foreground uppercase tracking-widest">PRODUCTION・SPOT TOTAL</span>
+                          <span className="text-base font-black tracking-tight text-blue-500">¥{c.clientTotalShot.toLocaleString()}</span>
                         </div>
                       </div>
                     </div>
