@@ -212,7 +212,7 @@ export default function ClientsDashboard() {
                 isExpanded ? "border-primary ring-1 ring-primary shadow-lg scale-[1.02] z-20" : "border-border hover:border-primary/50"
               )}>
                 <div 
-                  className="p-4 lg:p-6 flex flex-col lg:flex-row items-start lg:items-center gap-4 lg:gap-6 group relative cursor-pointer"
+                  className="p-3 lg:p-4 flex flex-col lg:flex-row items-start lg:items-center gap-4 lg:gap-6 group relative cursor-pointer"
                   onClick={() => setExpandedClientId(isExpanded ? null : c.id)}
                 >
                    <div className="absolute left-0 top-0 bottom-0 w-2 bg-primary/20 group-hover:bg-primary transition-all" />
@@ -235,15 +235,15 @@ export default function ClientsDashboard() {
                    ) : (
                       <div className="flex-1 w-full grid grid-cols-2 gap-6">
                         {/* 左列: 取引先・担当者 */}
-                        <div className="space-y-4">
+                        <div className="space-y-2">
                           <div className="flex flex-col text-left">
-                            <span className="text-[8px] font-black text-muted-foreground uppercase tracking-widest opacity-40 mb-1.5">ENTITY / 取引先</span>
+                            <span className="text-[8px] font-black text-muted-foreground uppercase tracking-widest opacity-40 mb-1">ENTITY / 取引先</span>
                             <h3 className="text-[13px] font-black italic tracking-tighter text-foreground group-hover:text-primary transition-colors font-[family-name:var(--font-outfit)] leading-tight line-clamp-2">
                               {c.name}
                             </h3>
                           </div>
                           <div className="flex flex-col text-left">
-                            <span className="text-[8px] font-black text-muted-foreground uppercase tracking-widest opacity-40 mb-1.5">MANAGER / 担当者</span>
+                            <span className="text-[8px] font-black text-muted-foreground uppercase tracking-widest opacity-40 mb-1">MANAGER / 担当者</span>
                             <span className="text-[11px] font-bold text-foreground truncate">
                               {c.managerName || '-'}
                             </span>
@@ -251,7 +251,7 @@ export default function ClientsDashboard() {
                         </div>
 
                         {/* 右列: 案件数・収益計 */}
-                        <div className="space-y-2.5 border-l border-border/30 pl-6 flex flex-col justify-center">
+                        <div className="space-y-1 border-l border-border/30 pl-6 flex flex-col justify-center">
                           <div className="flex justify-between items-end">
                             <span className="text-[8px] font-black text-muted-foreground uppercase tracking-widest opacity-40">CASES</span>
                             <span className="text-[13px] font-black italic tracking-tighter text-primary font-[family-name:var(--font-outfit)]">
