@@ -990,7 +990,7 @@ export default function TemplePage() {
   }
 
   return (
-    <div className="space-y-8 animate-in fade-in duration-500 font-sans pb-20 max-w-[1600px] mx-auto pt-8">
+    <div className="space-y-8 animate-in fade-in duration-500 font-sans pb-20 max-w-[1600px] mx-auto pt-2">
 
       {/* 3 Columns */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">

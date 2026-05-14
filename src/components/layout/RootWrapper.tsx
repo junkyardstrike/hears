@@ -77,7 +77,7 @@ export function RootWrapper({ children }: { children: React.ReactNode }) {
 
         <main className={cn(
           "flex-1 w-full max-w-full overflow-y-auto overflow-x-hidden",
-          !isEditor ? "p-4 sm:p-10 lg:p-12" : ""
+          !isEditor ? "p-3 sm:p-6 lg:p-4" : ""
         )}>
           {children}
         </main>

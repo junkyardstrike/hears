@@ -161,7 +161,7 @@ export default function ClientsDashboard() {
   };
 
   return (
-    <div className="space-y-8 animate-in fade-in duration-500 pb-20 font-sans">
+    <div className="space-y-8 animate-in fade-in duration-500 font-sans pb-20 max-w-[1600px] mx-auto pt-2">
       {/* ヘッダー */}
       <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-8 bg-card p-6 lg:p-8 rounded-lg border border-border">
         <div className="min-w-0 flex-1">
@@ -233,12 +233,12 @@ export default function ClientsDashboard() {
                         </div>
                      </div>
                    ) : (
-                      <div className="flex-1 w-full grid grid-cols-2 gap-6">
+                      <div className="flex-1 w-full grid grid-cols-1 md:grid-cols-2 gap-x-10 gap-y-4">
                         {/* 左列: 取引先・担当者 */}
-                        <div className="space-y-2">
+                        <div className="space-y-2.5">
                           <div className="flex flex-col text-left">
                             <span className="text-[8px] font-black text-muted-foreground uppercase tracking-widest opacity-40 mb-1">ENTITY / 取引先</span>
-                            <h3 className="text-[13px] font-black italic tracking-tighter text-foreground group-hover:text-primary transition-colors font-[family-name:var(--font-outfit)] leading-tight line-clamp-2">
+                            <h3 className="text-[14px] font-black italic tracking-tighter text-foreground group-hover:text-primary transition-colors font-[family-name:var(--font-outfit)] leading-tight line-clamp-2">
                               {c.name}
                             </h3>
                           </div>
@@ -251,7 +251,7 @@ export default function ClientsDashboard() {
                         </div>
 
                         {/* 右列: 案件数・収益計 */}
-                        <div className="space-y-1 border-l border-border/30 pl-6 flex flex-col justify-center">
+                        <div className="space-y-1.5 border-l border-border/30 pl-8 flex flex-col justify-center">
                           <div className="flex justify-between items-end">
                             <span className="text-[8px] font-black text-muted-foreground uppercase tracking-widest opacity-40">CASES / 案件数</span>
                             <span className="text-[13px] font-black italic tracking-tighter text-primary font-[family-name:var(--font-outfit)]">
@@ -274,14 +274,14 @@ export default function ClientsDashboard() {
                       </div>
                    )}
 
-                   <div className="flex items-center gap-1 lg:gap-3 shrink-0 absolute lg:relative right-2 top-2 lg:right-auto lg:top-auto z-10 bg-card/80 lg:bg-transparent p-1 lg:p-0 rounded-md backdrop-blur-md lg:backdrop-blur-none">
+                   <div className="flex items-center gap-1 lg:gap-2 shrink-0 absolute right-2 top-2 z-10 bg-card/80 lg:bg-transparent p-1 lg:p-0 rounded-md backdrop-blur-md lg:backdrop-blur-none opacity-0 group-hover:opacity-100 transition-opacity duration-300">
                      {editingId === c.id ? (
                        <>
-                         <Button variant="ghost" size="icon" onClick={(e) => { e.stopPropagation(); setEditingId(null); }} className="h-6 w-6 lg:h-10 lg:w-10 rounded-md text-muted-foreground hover:bg-secondary">
-                           <X className="w-3 h-3 lg:w-5 lg:h-5" />
+                         <Button variant="ghost" size="icon" onClick={(e) => { e.stopPropagation(); setEditingId(null); }} className="h-6 w-6 lg:h-9 lg:w-9 rounded-md text-muted-foreground hover:bg-secondary">
+                           <X className="w-3 h-3 lg:w-4 lg:h-4" />
                          </Button>
-                         <Button onClick={saveEdit} className="h-6 px-2 lg:h-10 lg:px-4 bg-primary text-primary-foreground rounded-md font-bold flex items-center gap-1 lg:gap-2 hover:brightness-110 text-[10px] lg:text-sm">
-                           <Check className="w-3 h-3 lg:w-5 lg:h-5" /> <span className="hidden lg:inline">保存</span>
+                         <Button onClick={saveEdit} className="h-6 px-2 lg:h-9 lg:px-4 bg-primary text-primary-foreground rounded-md font-bold flex items-center gap-1 lg:gap-2 hover:brightness-110 text-[10px] lg:text-xs">
+                           <Check className="w-3 h-3 lg:w-4 lg:h-4" /> <span>保存</span>
                          </Button>
                        </>
                      ) : (
@@ -290,21 +290,17 @@ export default function ClientsDashboard() {
                            variant="ghost" 
                            size="icon" 
                            onClick={(e) => startEdit(c, e)}
-                           className="h-6 w-6 lg:h-10 lg:w-10 rounded-md text-muted-foreground hover:text-primary hover:bg-primary/10 transition-all"
+                           className="h-6 w-6 lg:h-9 lg:w-9 rounded-md text-muted-foreground hover:text-primary hover:bg-primary/10 transition-all"
                          >
-                           <Edit className="w-3 h-3 lg:w-5 lg:h-5" />
+                           <Edit className="w-3 h-3 lg:w-4 lg:h-4" />
                          </Button>
                          <Button 
                            variant="ghost" 
                            size="icon" 
                            onClick={(e) => { e.stopPropagation(); if(confirm('取引先を削除しますか？')) deleteClient(c.id); }}
-                           className="h-6 w-6 lg:h-10 lg:w-10 rounded-md text-muted-foreground hover:text-destructive hover:bg-destructive/10 transition-all"
+                           className="h-6 w-6 lg:h-9 lg:w-9 rounded-md text-muted-foreground hover:text-destructive hover:bg-destructive/10 transition-all"
                          >
-                           <Trash2 className="w-3 h-3 lg:w-5 lg:h-5" />
-                         </Button>
-                         <div className="w-px h-4 lg:h-6 bg-border mx-1 lg:mx-2" />
-                         <Button variant="ghost" size="icon" className="hidden lg:flex h-10 w-10 rounded-md text-muted-foreground hover:bg-secondary">
-                            {isExpanded ? <ChevronUp className="w-6 h-6" /> : <ChevronDown className="w-6 h-6" />}
+                           <Trash2 className="w-3 h-3 lg:w-4 lg:h-4" />
                          </Button>
                        </>
                      )}
