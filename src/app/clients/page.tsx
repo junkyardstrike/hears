@@ -233,78 +233,80 @@ export default function ClientsDashboard() {
                         </div>
                      </div>
                    ) : (
-                      <div className="flex-1 w-full grid grid-cols-1 md:grid-cols-2 gap-x-10 gap-y-4">
-                        {/* 左列: 取引先・担当者 */}
-                        <div className="space-y-2.5">
-                          <div className="flex flex-col text-left">
-                            <span className="text-[8px] font-black text-muted-foreground uppercase tracking-widest opacity-40 mb-1">ENTITY / 取引先</span>
-                            <h3 className="text-[14px] font-black italic tracking-tighter text-foreground group-hover:text-primary transition-colors font-[family-name:var(--font-outfit)] leading-tight line-clamp-2">
-                              {c.name}
-                            </h3>
+                      <div className="flex-1 flex items-center gap-6 min-w-0">
+                        <div className="flex-1 grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-4">
+                          {/* 左列: 取引先・担当者 */}
+                          <div className="space-y-2.5 min-w-0">
+                            <div className="flex flex-col text-left">
+                              <span className="text-[8px] font-black text-muted-foreground uppercase tracking-widest opacity-40 mb-1">ENTITY / 取引先</span>
+                              <h3 className="text-[13px] font-black italic tracking-tighter text-foreground group-hover:text-primary transition-colors font-[family-name:var(--font-outfit)] leading-tight line-clamp-2">
+                                {c.name}
+                              </h3>
+                            </div>
+                            <div className="flex flex-col text-left">
+                              <span className="text-[8px] font-black text-muted-foreground uppercase tracking-widest opacity-40 mb-1">MANAGER / 担当者</span>
+                              <span className="text-[11px] font-bold text-foreground truncate">
+                                {c.managerName || '-'}
+                              </span>
+                            </div>
                           </div>
-                          <div className="flex flex-col text-left">
-                            <span className="text-[8px] font-black text-muted-foreground uppercase tracking-widest opacity-40 mb-1">MANAGER / 担当者</span>
-                            <span className="text-[11px] font-bold text-foreground truncate">
-                              {c.managerName || '-'}
-                            </span>
+
+                          {/* 右列: 案件数・収益計 */}
+                          <div className="space-y-1.5 border-l border-border/30 pl-8 flex flex-col justify-center min-w-[140px]">
+                            <div className="flex justify-between items-end gap-4">
+                              <span className="text-[8px] font-black text-muted-foreground uppercase tracking-widest opacity-40">CASES / 案件数</span>
+                              <span className="text-[13px] font-black italic tracking-tighter text-primary font-[family-name:var(--font-outfit)]">
+                                {c.clientCases.length}
+                              </span>
+                            </div>
+                            <div className="flex justify-between items-end gap-4">
+                              <span className="text-[8px] font-black text-muted-foreground uppercase tracking-widest opacity-40">MAINT. / 保守</span>
+                              <span className="text-[12px] font-black tracking-tight text-emerald-500">
+                                ¥{c.clientTotalStock.toLocaleString()}
+                              </span>
+                            </div>
+                            <div className="flex justify-between items-end gap-4">
+                              <span className="text-[8px] font-black text-muted-foreground uppercase tracking-widest opacity-40">SPOT / 制作</span>
+                              <span className="text-[12px] font-black tracking-tight text-blue-500">
+                                ¥{c.clientTotalShot.toLocaleString()}
+                              </span>
+                            </div>
                           </div>
                         </div>
 
-                        {/* 右列: 案件数・収益計 */}
-                        <div className="space-y-1.5 border-l border-border/30 pl-8 flex flex-col justify-center">
-                          <div className="flex justify-between items-end">
-                            <span className="text-[8px] font-black text-muted-foreground uppercase tracking-widest opacity-40">CASES / 案件数</span>
-                            <span className="text-[13px] font-black italic tracking-tighter text-primary font-[family-name:var(--font-outfit)]">
-                              {c.clientCases.length}
-                            </span>
-                          </div>
-                          <div className="flex justify-between items-end">
-                            <span className="text-[8px] font-black text-muted-foreground uppercase tracking-widest opacity-40">MAINT. / 保守累計</span>
-                            <span className="text-[12px] font-black tracking-tight text-emerald-500">
-                              ¥{c.clientTotalStock.toLocaleString()}
-                            </span>
-                          </div>
-                          <div className="flex justify-between items-end">
-                            <span className="text-[8px] font-black text-muted-foreground uppercase tracking-widest opacity-40">SPOT / 制作・SPOT</span>
-                            <span className="text-[12px] font-black tracking-tight text-blue-500">
-                              ¥{c.clientTotalShot.toLocaleString()}
-                            </span>
-                          </div>
+                        {/* 操作ボタン列 (右端・縦並び) */}
+                        <div className="flex flex-col gap-1.5 shrink-0 border-l border-border/30 pl-4" onClick={e => e.stopPropagation()}>
+                          {editingId === c.id ? (
+                            <>
+                              <Button onClick={saveEdit} className="h-8 w-8 lg:h-9 lg:w-9 bg-primary text-primary-foreground rounded-md font-bold flex items-center justify-center hover:brightness-110 shadow-lg shadow-primary/20">
+                                <Check className="w-4 h-4" />
+                              </Button>
+                              <Button variant="ghost" size="icon" onClick={(e) => { e.stopPropagation(); setEditingId(null); }} className="h-8 w-8 lg:h-9 lg:w-9 rounded-md text-muted-foreground hover:bg-secondary">
+                                <X className="w-4 h-4" />
+                              </Button>
+                            </>
+                          ) : (
+                            <>
+                              <Button 
+                                variant="ghost" 
+                                size="icon" 
+                                onClick={(e) => startEdit(c, e)}
+                                className="h-8 w-8 lg:h-9 lg:w-9 rounded-md text-muted-foreground hover:text-primary hover:bg-primary/10 transition-all"
+                              >
+                                <Edit className="w-4 h-4" />
+                              </Button>
+                              <Button 
+                                variant="ghost" 
+                                size="icon" 
+                                onClick={(e) => { e.stopPropagation(); if(confirm('取引先を削除しますか？')) deleteClient(c.id); }}
+                                className="h-8 w-8 lg:h-9 lg:w-9 rounded-md text-muted-foreground hover:text-destructive hover:bg-destructive/10 transition-all"
+                              >
+                                <Trash2 className="w-4 h-4" />
+                              </Button>
+                            </>
+                          )}
                         </div>
                       </div>
-                   )}
-
-                   <div className="flex items-center gap-1 lg:gap-2 shrink-0 absolute right-2 top-2 z-10 bg-card/80 lg:bg-transparent p-1 lg:p-0 rounded-md backdrop-blur-md lg:backdrop-blur-none opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                     {editingId === c.id ? (
-                       <>
-                         <Button variant="ghost" size="icon" onClick={(e) => { e.stopPropagation(); setEditingId(null); }} className="h-6 w-6 lg:h-9 lg:w-9 rounded-md text-muted-foreground hover:bg-secondary">
-                           <X className="w-3 h-3 lg:w-4 lg:h-4" />
-                         </Button>
-                         <Button onClick={saveEdit} className="h-6 px-2 lg:h-9 lg:px-4 bg-primary text-primary-foreground rounded-md font-bold flex items-center gap-1 lg:gap-2 hover:brightness-110 text-[10px] lg:text-xs">
-                           <Check className="w-3 h-3 lg:w-4 lg:h-4" /> <span>保存</span>
-                         </Button>
-                       </>
-                     ) : (
-                       <>
-                         <Button 
-                           variant="ghost" 
-                           size="icon" 
-                           onClick={(e) => startEdit(c, e)}
-                           className="h-6 w-6 lg:h-9 lg:w-9 rounded-md text-muted-foreground hover:text-primary hover:bg-primary/10 transition-all"
-                         >
-                           <Edit className="w-3 h-3 lg:w-4 lg:h-4" />
-                         </Button>
-                         <Button 
-                           variant="ghost" 
-                           size="icon" 
-                           onClick={(e) => { e.stopPropagation(); if(confirm('取引先を削除しますか？')) deleteClient(c.id); }}
-                           className="h-6 w-6 lg:h-9 lg:w-9 rounded-md text-muted-foreground hover:text-destructive hover:bg-destructive/10 transition-all"
-                         >
-                           <Trash2 className="w-3 h-3 lg:w-4 lg:h-4" />
-                         </Button>
-                       </>
-                     )}
-                   </div>
                 </div>
 
                 {/* 展開時の詳細情報 */}
