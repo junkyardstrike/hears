@@ -19,12 +19,17 @@ import {
 import { useHearsStore } from '@/store/useHearsStore';
 import { GlobalTaskModal } from '@/components/GlobalTaskModal';
 import { useState } from 'react';
+import { supabase } from '@/lib/supabase';
 
 export function GlobalToolbar() {
   const pathname = usePathname();
   const router = useRouter();
   const { setMobileMenuOpen } = useHearsStore();
   const [isTaskModalOpen, setIsTaskModalOpen] = useState(false);
+  
+  const handleLogout = async () => {
+    await supabase.auth.signOut();
+  };
   
   const getPageTitle = (path: string) => {
     if (path === '/temple') return 'ステータス・神殿';
@@ -128,12 +133,12 @@ export function GlobalToolbar() {
             </div>
           </DropdownMenuTrigger>
           <DropdownMenuContent className="w-56 rounded-md p-2 border-border bg-popover" align="end">
-            <DropdownMenuItem onClick={() => router.push('/settings')} className="rounded-sm p-3 font-bold text-xs flex gap-3 cursor-pointer">
-              <Settings className="w-4 h-4" /> プロフィール設定
-            </DropdownMenuItem>
-            <DropdownMenuItem className="rounded-sm p-3 font-bold text-xs flex gap-3 text-destructive cursor-pointer">
-              <User className="w-4 h-4" /> ログアウト
-            </DropdownMenuItem>
+          <DropdownMenuItem onClick={() => router.push('/settings')} className="rounded-sm p-3 font-bold text-xs flex gap-3 cursor-pointer">
+            <Settings className="w-4 h-4" /> プロフィール設定
+          </DropdownMenuItem>
+          <DropdownMenuItem onClick={handleLogout} className="rounded-sm p-3 font-bold text-xs flex gap-3 text-destructive cursor-pointer">
+            <User className="w-4 h-4" /> ログアウト
+          </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
       </div>
