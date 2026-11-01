@@ -43,37 +43,37 @@ export function GeneralTab({ project }: Props) {
 
   if (categories.length === 0) {
     return (
-    <div className="text-center py-24 bg-card border border-dashed border-border rounded-lg animate-in fade-in duration-700 font-sans">
-        <div className="bg-secondary w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-6">
-          <FileText className="w-10 h-10 text-muted-foreground opacity-50" />
+    <div className="text-center py-12 bg-card border border-dashed border-border rounded-md animate-in fade-in duration-300 font-sans">
+        <div className="bg-secondary w-12 h-12 rounded-md flex items-center justify-center mx-auto mb-3">
+          <FileText className="w-6 h-6 text-muted-foreground opacity-70" />
         </div>
-        <h3 className="text-xl font-bold tracking-tight text-foreground mb-4 uppercase">No Requirements Yet</h3>
-        <Button onClick={() => addQuestion('要件定義・ヒアリング')} className="bg-primary hover:brightness-110 text-primary-foreground font-bold h-10 px-6 rounded-md shadow-none transition-all">
+        <h3 className="text-sm font-bold text-foreground mb-3 uppercase">No Requirements Yet</h3>
+        <Button onClick={() => addQuestion('要件定義・ヒアリング')} className="bg-primary hover:brightness-110 text-primary-foreground font-bold h-8 px-4 text-xs rounded-md shadow-none transition-all">
           <Plus className="w-4 h-4 mr-2" /> 最初の一歩をはじめる
         </Button>
       </div>
     );
   }
 
-  const sectionCardStyle = "bg-card border border-border shadow-none rounded-lg overflow-hidden mb-10 font-sans";
+  const sectionCardStyle = "bg-card border border-border shadow-none rounded-md overflow-hidden font-sans py-3 gap-0 scroll-mt-3";
 
   return (
-    <div className="w-full space-y-4 animate-in fade-in slide-in-from-bottom-4 duration-500 pb-20">
-      {categories.map((category) => {
+    <div className="w-full space-y-3 animate-in fade-in duration-300 pb-4">
+      {categories.map((category, idx) => {
         const categoryQuestions = questions.filter((q) => q.category === category);
         return (
-          <Card key={category} className={sectionCardStyle}>
-            <CardHeader className="p-8 pb-4 flex flex-row items-center justify-between flex-wrap gap-4">
-              <CardTitle className="text-xl font-bold tracking-tight text-foreground flex items-center gap-3 uppercase">
-                <Globe className="w-6 h-6 text-primary" /> {category}
+          <Card key={category} id={`sec-gen-${idx}`} className={sectionCardStyle}>
+            <CardHeader className="px-4 pb-1 flex flex-row items-center justify-between flex-wrap gap-2">
+              <CardTitle className="text-sm font-bold text-foreground flex items-center gap-2 uppercase">
+                <Globe className="w-4 h-4 text-primary" /> {category}
               </CardTitle>
-              <Button variant="ghost" size="sm" onClick={() => addQuestion(category)} className="text-primary hover:bg-secondary font-bold rounded-md border border-transparent hover:border-border h-10 px-4">
-                <Plus className="w-4 h-4 mr-2" /> 項目を追加
+              <Button variant="ghost" size="sm" onClick={() => addQuestion(category)} className="text-primary hover:bg-secondary font-bold text-xs rounded-md border border-transparent hover:border-border h-8 px-3">
+                <Plus className="w-3.5 h-3.5 mr-1.5" /> 項目を追加
               </Button>
             </CardHeader>
-            <CardContent className="p-8 pt-4 space-y-10">
+            <CardContent className="px-4 pt-2 space-y-4">
               <AnimatePresence mode="popLayout">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                   {categoryQuestions.map((q) => (
                     <motion.div
                       key={q.id}
@@ -81,7 +81,7 @@ export function GeneralTab({ project }: Props) {
                       initial={{ opacity: 0, scale: 0.95 }}
                       animate={{ opacity: 1, scale: 1 }}
                       exit={{ opacity: 0, scale: 0.9 }}
-                      className="flex flex-col gap-5 p-6 rounded-lg bg-secondary/50 border border-border hover:border-primary/50 transition-all group relative"
+                      className="flex flex-col gap-2 p-3 rounded-md bg-secondary/50 border border-border hover:border-primary/50 transition-all group relative"
                     >
                       <div className="flex items-center justify-between">
                         <div className="flex items-center gap-3 min-w-0">
@@ -89,7 +89,7 @@ export function GeneralTab({ project }: Props) {
                           <Input 
                             value={q.label} 
                             onChange={(e) => updateQuestion(q.id, 'label', e.target.value)}
-                            className="font-bold text-[10px] tracking-widest text-muted-foreground focus-visible:ring-1 focus-visible:ring-primary border-none bg-transparent px-2 h-auto py-1 uppercase rounded"
+                            className="font-bold text-[10px] tracking-wide text-muted-foreground focus-visible:ring-1 focus-visible:ring-primary border-none bg-transparent px-2 h-auto py-1 uppercase rounded"
                           />
                         </div>
                         <Button 
@@ -105,14 +105,14 @@ export function GeneralTab({ project }: Props) {
                         value={q.value}
                         onChange={(e) => updateQuestion(q.id, 'value', e.target.value)}
                         placeholder="詳細を入力してください..."
-                        className="resize-y min-h-[160px] bg-input border border-border focus-visible:ring-1 focus-visible:ring-primary text-foreground font-medium leading-relaxed rounded-md p-4"
+                        className="resize-y min-h-[100px] bg-input border border-border focus-visible:ring-1 focus-visible:ring-primary text-foreground font-medium leading-relaxed rounded-md p-3"
                       />
                     </motion.div>
                   ))}
                 </div>
               </AnimatePresence>
               
-              <div className="pt-10 border-t border-border/50">
+              <div>
                 <ImageUploader 
                   value={project.generalImages?.[category] || null} 
                   onChange={(val) => updateProject(project.id, p => {

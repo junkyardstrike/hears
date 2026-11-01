@@ -243,15 +243,15 @@ export function ExportPanel({ project, activeTab }: Props) {
   };
 
   return (
-    <div className="fixed bottom-10 right-10 z-[100] flex flex-col items-end gap-4 font-sans">
+    <div className="fixed bottom-4 right-4 z-[100] flex flex-col items-end gap-2 font-sans">
       
       <AnimatePresence>
         {isOpen && (
-          <div className="flex flex-col gap-4 animate-in slide-in-from-bottom-10 fade-in duration-500">
+          <div className="flex flex-col gap-2 animate-in slide-in-from-bottom-4 fade-in duration-200">
             
             <ExportButton 
               onClick={handleExportCSV}
-              icon={<Download className="w-5 h-5" />}
+              icon={<Download className="w-4 h-4" />}
               label="CSV 形式で出力"
               subLabel="Excelなどで管理"
               className="bg-card border border-border text-foreground hover:bg-secondary"
@@ -259,7 +259,7 @@ export function ExportPanel({ project, activeTab }: Props) {
 
             <ExportButton 
               onClick={handleCopyMd}
-              icon={copiedMd ? <Check className="w-5 h-5 text-emerald-500" /> : <FileText className="w-5 h-5" />}
+              icon={copiedMd ? <Check className="w-4 h-4 text-emerald-600" /> : <FileText className="w-4 h-4" />}
               label={copiedMd ? "コピー完了" : "Markdown 出力"}
               subLabel="ドキュメント等に貼り付け"
               className="bg-card border border-border text-foreground hover:bg-secondary"
@@ -267,10 +267,10 @@ export function ExportPanel({ project, activeTab }: Props) {
 
             <ExportButton 
               onClick={handleCopyPrompt}
-              icon={copiedPrompt ? <Check className="w-6 h-6 text-emerald-500" /> : <Bot className="w-6 h-6" />}
+              icon={copiedPrompt ? <Check className="w-4 h-4 text-emerald-600" /> : <Bot className="w-4 h-4" />}
               label={copiedPrompt ? "プロンプト生成完了" : "Readdy用指示書"}
               subLabel="AIでサイト構成案を生成"
-              className="bg-primary border border-transparent text-primary-foreground hover:brightness-110 shadow-md"
+              className="bg-primary border border-transparent text-primary-foreground hover:brightness-110"
             />
             
           </div>
@@ -280,11 +280,11 @@ export function ExportPanel({ project, activeTab }: Props) {
       <Button
         onClick={() => setIsOpen(!isOpen)}
         className={cn(
-          "h-14 w-14 rounded-full shadow-lg transition-all hover:scale-105 active:scale-95 flex items-center justify-center p-0 border border-transparent",
+          "h-10 w-10 rounded-full shadow-md transition-all active:scale-95 flex items-center justify-center p-0 border border-transparent",
           isOpen ? "bg-card text-foreground rotate-0 border-border hover:bg-secondary" : "bg-primary text-primary-foreground hover:brightness-110"
         )}
       >
-        {isOpen ? <X className="w-6 h-6" /> : <Share2 className="w-6 h-6" />}
+        {isOpen ? <X className="w-5 h-5" /> : <Share2 className="w-5 h-5" />}
       </Button>
     </div>
   );
@@ -295,16 +295,16 @@ function ExportButton({ onClick, icon, label, subLabel, className }: any) {
     <Button 
       onClick={onClick}
       className={cn(
-        "h-16 px-6 rounded-lg border border-border bg-card shadow-sm transition-all hover:scale-105 active:scale-95 flex items-center gap-4 min-w-[280px] justify-start group",
+        "h-auto py-1.5 px-3 rounded-md border border-border bg-card transition-all active:scale-95 flex items-center gap-3 min-w-[220px] justify-start group",
         className
       )}
     >
-      <div className="w-10 h-10 rounded-md bg-secondary flex items-center justify-center group-hover:scale-110 transition-transform">
+      <div className="w-8 h-8 rounded-md bg-secondary flex items-center justify-center text-foreground">
         {icon}
       </div>
       <div className="flex flex-col items-start gap-0.5">
-        <span className="text-sm font-bold tracking-tight">{label}</span>
-        <span className="text-[9px] font-bold uppercase tracking-widest opacity-40">{subLabel}</span>
+        <span className="text-xs font-bold">{label}</span>
+        <span className="text-[9px] font-bold opacity-70">{subLabel}</span>
       </div>
     </Button>
   );
