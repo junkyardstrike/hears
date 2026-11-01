@@ -31,22 +31,22 @@ export function LoginView() {
 
   return (
     <div className="min-h-screen bg-background flex items-center justify-center p-4 font-sans">
-      <Card className="w-full max-w-md bg-card border border-border shadow-none rounded-lg overflow-hidden animate-in fade-in slide-in-from-bottom-4 duration-500">
-        <div className="h-1 w-full bg-primary" />
-        <CardHeader className="p-8 pb-4 text-center">
-          <div className="mx-auto w-16 h-16 bg-primary/10 rounded-md flex items-center justify-center mb-6 border border-primary/20">
-            <ShieldCheck className="w-8 h-8 text-primary" />
+      <Card className="w-full max-w-sm bg-card border border-border shadow-none rounded-md overflow-hidden py-0 gap-0 ring-0 animate-in fade-in slide-in-from-bottom-4 duration-500">
+        <div className="h-[3px] w-full bg-primary" />
+        <CardHeader className="p-6 pb-3 text-center">
+          <div className="mx-auto w-12 h-12 bg-primary/10 rounded-md flex items-center justify-center mb-3 border border-primary/20">
+            <ShieldCheck className="w-6 h-6 text-primary" />
           </div>
-          <CardTitle className="text-2xl font-bold tracking-tight text-foreground uppercase">
+          <CardTitle className="text-xl font-bold text-foreground uppercase">
             ALCHEMIST SFA
           </CardTitle>
-          <CardDescription className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest mt-2">
+          <CardDescription className="text-[11px] text-muted-foreground mt-1">
             Secure Cloud Access
           </CardDescription>
         </CardHeader>
-        <CardContent className="p-8 pt-4 space-y-6">
+        <CardContent className="p-6 pt-3 space-y-4">
           {error && (
-            <div className="p-4 bg-destructive/10 border border-destructive/20 text-destructive text-sm font-bold rounded-md flex items-center gap-3">
+            <div className="p-3 bg-destructive/10 border border-destructive/30 text-destructive text-sm font-bold rounded-md flex items-center gap-3">
               <AlertCircle className="w-5 h-5 shrink-0" />
               <p>{error}</p>
             </div>
@@ -55,20 +55,20 @@ export function LoginView() {
           <Button 
             onClick={handleGoogleLogin} 
             disabled={loading}
-            className="w-full h-12 bg-primary hover:bg-primary/90 text-white font-bold rounded-md transition-all active:scale-95 flex items-center justify-center gap-3 shadow-none"
+            className="w-full h-11 bg-primary hover:bg-primary/90 text-primary-foreground font-bold rounded-md transition-all active:scale-95 flex items-center justify-center gap-2 shadow-none"
           >
             {loading ? (
-              <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
+              <div className="w-4 h-4 border-2 border-primary-foreground border-t-transparent rounded-full animate-spin" />
             ) : (
               <LogIn className="w-4 h-4" />
             )}
-            <span className="uppercase tracking-widest text-xs">
+            <span className="text-xs tracking-wider">
               {loading ? 'Redirecting...' : 'Sign in with Google'}
             </span>
           </Button>
           
           <div className="text-center">
-            <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest opacity-60">
+            <p className="text-[11px] text-muted-foreground">
               Only authorized personnel.
             </p>
           </div>
