@@ -1,7 +1,7 @@
 'use client';
 import Image from 'next/image';
 
-import { useMemo } from 'react';
+import { useMemo, useState } from 'react';
 import { useHearsStore, CaseData } from '@/store/useHearsStore';
 import { Card, CardContent } from '@/components/ui/card';
 import { Progress } from '@/components/ui/progress';
@@ -10,6 +10,7 @@ import { BarChart, Bar, XAxis, Tooltip, ResponsiveContainer, Cell, LabelList, Ar
 import { Crown, Sparkles, Sword, Coins, ArrowUpRight, Flame, Shield, Star, Wand2, Castle, Medal, Trophy, Clock, History } from 'lucide-react';
 import { parseISO, isAfter, startOfMonth, format, addMonths, differenceInMonths, getHours, isWeekend, isSameMonth, subMonths } from 'date-fns';
 import { cn } from '@/lib/utils';
+import { SideTree, TreeItem } from '@/components/layout/SideTree';
 
 const TIER_THRESHOLDS = [
   { tier: 1, level: 1, min: 0, title: "初期ジョブ", jobs: { mage: "魔法使い", merchant: "商人", hero: "勇者" }, image: "/assets/avatars/tier1.png" },
@@ -27,7 +28,7 @@ const CLASS_INFO = {
     subTitle: "Web / SNS 開発",
     imageSrc: "/assets/avatars/mage.png",
     jobs: ["魔法使い", "魔導師", "大賢者", "真魔導学者", "真理の探求者"],
-    colorClass: "text-emerald-500",
+    colorClass: "text-emerald-700",
     bgClass: "bg-emerald-500",
     borderClass: "border-emerald-500/30",
     glowClass: "shadow-emerald-500/50",
@@ -38,7 +39,7 @@ const CLASS_INFO = {
     subTitle: "SiGMARK",
     imageSrc: "/assets/avatars/merchant.png",
     jobs: ["商人", "豪商", "資本家", "大富豪", "盤上の支配者"],
-    colorClass: "text-amber-500",
+    colorClass: "text-amber-700",
     bgClass: "bg-amber-500",
     borderClass: "border-amber-500/30",
     glowClass: "shadow-amber-500/50",
@@ -49,7 +50,7 @@ const CLASS_INFO = {
     subTitle: "OTHER GENRES",
     imageSrc: "/assets/avatars/hero.png",
     jobs: ["勇者", "騎士", "聖騎士", "剣聖", "終焉を断つ者"],
-    colorClass: "text-blue-500",
+    colorClass: "text-blue-700",
     bgClass: "bg-blue-500",
     borderClass: "border-blue-500/30",
     glowClass: "shadow-blue-500/50",
@@ -441,7 +442,7 @@ const EvolutionAvatar = ({ type, tier, size = 64, className }: { type: ClassType
            )}
            style={{ 
              imageRendering: 'pixelated', 
-             mixBlendMode: 'screen',
+             mixBlendMode: 'normal',
              filter: 'url(#remove-black)' // Double safety chromakey
            }} 
          />
@@ -487,13 +488,13 @@ const AvatarNode = ({ classType, tier }: { classType: ClassType, tier: number })
       
       <div className="absolute inset-0 flex items-center justify-center">
         {/* Ground Shadow */}
-        <div className="absolute bottom-2 w-12 h-3 bg-black/40 blur-[2px] rounded-[100%]" />
+        <div className="absolute bottom-2 w-12 h-3 bg-foreground/20 blur-[2px] rounded-[100%]" />
 
         {/* Character Image */}
         <EvolutionAvatar type={classType} tier={tier} size={88} className="relative z-10" />
       </div>
 
-      <div className="absolute bottom-1 right-1 text-[10px] font-black opacity-40 z-10">T{tier}</div>
+      <div className="absolute bottom-1 right-1 text-[10px] font-bold opacity-40 z-10">T{tier}</div>
 
       {/* Global SVG Filters for Chromakey */}
       <svg className="absolute w-0 h-0 overflow-hidden" aria-hidden="true">
@@ -516,6 +517,13 @@ const AvatarNode = ({ classType, tier }: { classType: ClassType, tier: number })
 
 export default function TemplePage() {
   const { cases } = useHearsStore();
+
+  // 表示専用: ツリーで最後に選んだ項目（データには影響しない）
+  const [activeSection, setActiveSection] = useState<string>('temple-mage');
+  const goTo = (id: string) => {
+    setActiveSection(id);
+    document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' });
+  };
 
   const data = useMemo(() => {
     const nowD = startOfMonth(new Date());
@@ -990,114 +998,151 @@ export default function TemplePage() {
   }
 
   return (
-    <div className="space-y-8 animate-in fade-in duration-500 font-sans pb-20 max-w-[1600px] mx-auto pt-2">
+    <div className="space-y-4 animate-in fade-in duration-500 font-sans pb-6 max-w-[1600px] mx-auto">
+
+      {/* PC: 左のツリーから各セクションへ移動 */}
+      <SideTree title="神殿のなかみ">
+        <TreeItem glyph="▾" label="系統" onClick={() => goTo('temple-mage')} />
+        <TreeItem depth={1} label={`魔法使い ${CLASS_INFO.mage.subTitle}`} active={activeSection === 'temple-mage'} onClick={() => goTo('temple-mage')} />
+        <TreeItem depth={1} label={`商人 ${CLASS_INFO.merchant.subTitle}`} active={activeSection === 'temple-merchant'} onClick={() => goTo('temple-merchant')} />
+        <TreeItem depth={1} label={`勇者 ${CLASS_INFO.hero.subTitle}`} active={activeSection === 'temple-hero'} onClick={() => goTo('temple-hero')} />
+        <TreeItem glyph="▾" label="クラスと称号" onClick={() => goTo('roadmap-section')} />
+        <TreeItem depth={1} label="転職条件 T1〜T5" active={activeSection === 'roadmap-section'} onClick={() => goTo('roadmap-section')} />
+        <TreeItem depth={1} label="称号リスト" active={activeSection === 'temple-title-list'} onClick={() => goTo('temple-title-list')} />
+        <TreeItem glyph="▾" label="記録" onClick={() => goTo('temple-top5')} />
+        <TreeItem depth={1} label="討伐記録 TOP5" active={activeSection === 'temple-top5'} onClick={() => goTo('temple-top5')} />
+        <TreeItem depth={1} label="収益推移" active={activeSection === 'temple-trend'} onClick={() => goTo('temple-trend')} />
+        <TreeItem depth={1} label="取得済み称号" active={activeSection === 'temple-titles'} onClick={() => goTo('temple-titles')} />
+      </SideTree>
+
+      {/* スマホ: ツリーの代わりのジャンプ用チップ */}
+      <div className="lg:hidden flex gap-1.5 overflow-x-auto custom-scrollbar pb-1">
+        {([
+          ['temple-mage', '魔法使い'],
+          ['temple-merchant', '商人'],
+          ['temple-hero', '勇者'],
+          ['roadmap-section', 'クラスと称号'],
+        ] as const).map(([id, label]) => (
+          <button
+            key={id}
+            type="button"
+            onClick={() => goTo(id)}
+            className={cn(
+              "shrink-0 px-3 py-1 rounded-md border text-[11px] font-bold transition-colors",
+              activeSection === id ? "bg-primary text-primary-foreground border-primary" : "bg-card text-foreground border-border hover:bg-secondary"
+            )}
+          >
+            {label}
+          </button>
+        ))}
+      </div>
 
       {/* 3 Columns */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 xl:grid-cols-3 gap-3">
         {(['mage', 'merchant', 'hero'] as ClassType[]).map((type) => {
           const stats = data[type];
           const info = CLASS_INFO[type];
           
           return (
-            <Card key={type} className="bg-card border-border overflow-hidden relative group">
-              <div className={cn("absolute top-0 left-0 w-full h-1", info.bgClass)} />
+            <Card id={`temple-${type}`} key={type} className="bg-card border border-border ring-0 rounded-md gap-0 py-0 overflow-hidden relative group">
+              <div className={cn("absolute top-0 left-0 w-full h-0.5", info.bgClass)} />
               
-                            <CardContent className="p-8 space-y-8">
+                            <CardContent className="p-4 space-y-4">
                 {/* System Title (True Centering) */}
-                <div className="flex justify-center -mt-2 mb-2">
-                  <div className={cn("inline-block px-6 py-2 rounded-full border text-sm font-black uppercase tracking-[0.4em] shadow-[0_0_20px_rgba(0,0,0,0.1)]", info.bgClass.replace('bg-', 'bg-opacity-20 '), info.borderClass, info.colorClass)}>
+                <div className="flex justify-start">
+                  <div className={cn("inline-block px-3 py-1 rounded border text-xs font-bold uppercase tracking-wide", info.bgClass.replace('bg-', 'bg-opacity-20 '), info.borderClass, info.colorClass)}>
                     {info.subTitle}
                   </div>
                 </div>
 
                 {/* Avatar & Level */}
-                <div className="flex gap-6 items-center relative pt-2">
+                <div className="flex gap-4 items-center relative">
                   <AvatarNode classType={type} tier={stats.tier} />
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center justify-between gap-4 mb-1.5">
-                      <h2 className="text-2xl font-black tracking-tight text-foreground leading-tight truncate">{stats.jobName}</h2>
+                      <h2 className="text-lg font-bold text-foreground leading-tight truncate">{stats.jobName}</h2>
                       
                       {/* Latest Title */}
                       {stats.titles?.[0] && (
                         <div className="flex flex-col items-end shrink-0">
-                          <span className="text-[7px] font-bold text-muted-foreground uppercase tracking-widest mb-1">最近取得した称号</span>
-                          <div className="bg-primary/10 border border-primary/20 px-2 py-0.5 rounded flex items-center gap-1">
+                          <span className="text-[9px] font-bold text-muted-foreground mb-1">最近取得した称号</span>
+                          <div className="bg-primary/10 border border-primary/30 px-2 py-0.5 rounded flex items-center gap-1">
                             <Medal className="w-2.5 h-2.5 text-primary" />
-                            <span className="text-[9px] font-black text-primary truncate max-w-[100px]">{stats.titles[0].name}</span>
+                            <span className="text-[9px] font-bold text-primary truncate max-w-[100px]">{stats.titles[0].name}</span>
                           </div>
                         </div>
                       )}
                     </div>
 
-                    <div className="text-xs font-bold text-muted-foreground opacity-60 mb-4 tracking-wide">"{stats.currentTitle}"</div>
+                    <div className="text-xs font-bold text-muted-foreground mb-2">"{stats.currentTitle}"</div>
                     
                     <div className="flex items-end gap-3">
-                      <span className="text-3xl font-black font-[family-name:var(--font-outfit)] leading-none text-foreground">Lv.{stats.level}</span>
-                      <span className="text-[10px] font-black text-muted-foreground mb-1 opacity-40 uppercase tracking-widest">({stats.tier}次職)</span>
+                      <span className="text-2xl font-bold font-[family-name:var(--font-outfit)] leading-none text-foreground">Lv.{stats.level}</span>
+                      <span className="text-[10px] font-bold text-muted-foreground mb-1">({stats.tier}次職)</span>
                     </div>
                   </div>
                 </div>
 
                 {/* Progress */}
-                <div className="space-y-2">
+                <div className="space-y-1.5">
                   <div className="flex justify-between items-end">
-                    <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">NEXT JOB (次の目標)</span>
-                    <span className="text-xs font-black uppercase">{stats.toNext > 0 ? `あと ${stats.toNext} Lv で転職` : 'MAX TIER'}</span>
+                    <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-wide">NEXT JOB (次の目標)</span>
+                    <span className="text-xs font-bold uppercase">{stats.toNext > 0 ? `あと ${stats.toNext} Lv で転職` : 'MAX TIER'}</span>
                   </div>
                   <Progress value={stats.progress} className={cn("h-2 bg-secondary", `[&>div]:${info.bgClass}`)} />
-                  <div className="flex justify-between items-center text-[9px] font-bold text-muted-foreground uppercase tracking-tight">
+                  <div className="flex justify-between items-center text-[10px] font-bold text-muted-foreground uppercase tracking-tight">
                     <span>Lv.{stats.level}</span>
                     <span>次レベル(Lv.{stats.level+1})まで: <span className="text-foreground">¥{stats.revenueToNextExpLevel.toLocaleString()}</span></span>
                   </div>
                 </div>
 
                 {/* Stats List (Always Visible) */}
-                <div className="space-y-4 pt-4 border-t border-border">
-                  <div className="flex items-center gap-1 text-[10px] font-bold text-muted-foreground uppercase tracking-widest">
+                <div className="space-y-3 pt-3 border-t border-border">
+                  <div className="flex items-center gap-1 text-[10px] font-bold text-muted-foreground uppercase tracking-wide">
                      詳細ステータス & 討伐記録
                   </div>
                   
                   <div className="flex justify-between items-end">
                     <div className="text-base font-bold">{stats.count} <span className="text-[10px]">件</span></div>
                     <div className="flex flex-col items-end">
-                      <span className="text-[7px] font-black text-muted-foreground mb-0.5">(保守累計獲得額 + 制作・スポット累計)</span>
-                      <div className="text-xl font-black tracking-tight">¥{stats.revenue.toLocaleString()}</div>
+                      <span className="text-[9px] font-bold text-muted-foreground mb-0.5">(保守累計獲得額 + 制作・スポット累計)</span>
+                      <div className="text-lg font-bold">¥{stats.revenue.toLocaleString()}</div>
                     </div>
                   </div>
 
-                  <div className="bg-secondary/30 rounded-md p-4 space-y-4">
-                    <div className="grid grid-cols-2 gap-4 pb-4 border-b border-border/50">
+                  <div className="bg-secondary/30 border border-border rounded-md p-3 space-y-3">
+                    <div className="grid grid-cols-2 gap-3 pb-3 border-b border-border">
                       <div>
                         <div className="text-[9px] font-bold text-muted-foreground uppercase">保守累計獲得額</div>
-                        <div className="text-sm font-black">¥{stats.maintenanceTotal.toLocaleString()}</div>
+                        <div className="text-sm font-bold">¥{stats.maintenanceTotal.toLocaleString()}</div>
                       </div>
                       <div>
                         <div className="text-[9px] font-bold text-muted-foreground uppercase">当月保守料</div>
-                        <div className="text-sm font-black text-emerald-500">¥{stats.currentMonthMaint.toLocaleString()}</div>
+                        <div className="text-sm font-bold text-emerald-700">¥{stats.currentMonthMaint.toLocaleString()}</div>
                       </div>
                       <div>
                         <div className="text-[9px] font-bold text-muted-foreground uppercase">制作・スポット累計</div>
-                        <div className="text-sm font-black">¥{stats.spotTotal.toLocaleString()}</div>
+                        <div className="text-sm font-bold">¥{stats.spotTotal.toLocaleString()}</div>
                       </div>
                       <div>
                         <div className="text-[9px] font-bold text-muted-foreground uppercase">次の転職まで</div>
-                        <div className="text-sm font-black text-amber-500">¥{stats.revenueToNextLevel.toLocaleString()}</div>
+                        <div className="text-sm font-bold text-amber-700">¥{stats.revenueToNextLevel.toLocaleString()}</div>
                       </div>
                     </div>
 
-                    <div>
-                      <div className="text-[9px] font-bold text-muted-foreground uppercase mb-2 tracking-widest">討伐記録 (収益TOP5取引先)</div>
-                      <div className="space-y-2">
+                    <div id={type === 'mage' ? 'temple-top5' : undefined}>
+                      <div className="text-[9px] font-bold text-muted-foreground uppercase mb-2 tracking-wide">討伐記録 (収益TOP5取引先)</div>
+                      <div className="space-y-1">
                         {stats.topClients.map((client: any, i: number) => (
-                          <div key={i} className={cn("flex justify-between items-center bg-background/50 p-2 rounded border transition-all h-[40px]", client.isPlaceholder ? "border-dashed border-border/20 opacity-20" : "border-border/30 hover:bg-background/80")}>
+                          <div key={i} className={cn("flex justify-between items-center bg-card p-2 rounded-md border transition-colors h-[40px]", client.isPlaceholder ? "border-dashed border-border opacity-40" : "border-border hover:bg-secondary/50")}>
                             <div className="flex items-center gap-2">
-                              <span className="text-[10px] font-black text-primary">#{i+1}</span>
+                              <span className="text-[10px] font-bold text-primary">#{i+1}</span>
                               <span className="text-xs font-bold truncate max-w-[120px]">{client.name}</span>
                             </div>
                             {!client.isPlaceholder && (
                               <div className="text-right">
-                                <div className="text-[10px] font-black">¥{client.revenue.toLocaleString()}</div>
-                                <div className="text-[8px] font-bold text-muted-foreground">{client.count} 案件</div>
+                                <div className="text-[10px] font-bold">¥{client.revenue.toLocaleString()}</div>
+                                <div className="text-[9px] font-bold text-muted-foreground">{client.count} 案件</div>
                               </div>
                             )}
                           </div>
@@ -1107,21 +1152,20 @@ export default function TemplePage() {
                     </div>
                   </div>
 
-                  <div className="flex justify-between items-center pt-2">
-                    <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">前回昇格年月</span>
+                  <div className="flex justify-between items-center pt-1">
+                    <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-wide">前回昇格年月</span>
                     <span className="text-sm font-bold text-primary">{stats.achieveMonth}</span>
                   </div>
                 </div>
 
-                  <div className="flex items-center justify-between mb-4">
-                    <span className="text-[9px] font-bold text-muted-foreground uppercase tracking-widest block">REVENUE TREND (全期間収益推移)</span>
+                  <div id={type === 'mage' ? 'temple-trend' : undefined} className="flex items-center justify-between mb-2">
+                    <span className="text-[9px] font-bold text-muted-foreground uppercase tracking-wide block">REVENUE TREND (全期間収益推移)</span>
                     <div className="flex items-center gap-2">
-                       <span className="text-[8px] font-black text-primary uppercase bg-primary/10 px-2 py-0.5 rounded border border-primary/20">All Periods</span>
-                       <span className="text-[8px] font-black text-muted-foreground uppercase">{stats.chartData[0]?.month.split('-')[0]} - {stats.chartData[stats.chartData.length-1]?.month.split('-')[0]}</span>
+                       <span className="text-[9px] font-bold text-primary uppercase bg-primary/10 px-2 py-0.5 rounded border border-primary/30">All Periods</span>
+                       <span className="text-[9px] font-bold text-muted-foreground uppercase">{stats.chartData[0]?.month.split('-')[0]} - {stats.chartData[stats.chartData.length-1]?.month.split('-')[0]}</span>
                     </div>
                   </div>
-                                    <div className="h-[180px] w-full bg-secondary/10 rounded-xl border border-border/50 relative overflow-hidden">
-                    <div className="absolute inset-0 bg-gradient-to-b from-transparent to-background/50 pointer-events-none z-20" />
+                                    <div className="h-[180px] w-full bg-card rounded-md border border-border relative overflow-hidden">
                     <div className="h-full w-full overflow-x-auto custom-scrollbar p-4"><div style={{ width: Math.max(100, stats.chartData.length * 35) + 'px', minWidth: '100%', height: '100%' }}><ResponsiveContainer width="100%" height="100%">
                       <AreaChart data={stats.chartData} margin={{ top: 10, right: 10, left: 10, bottom: 0 }}>
                         <defs>
@@ -1140,7 +1184,7 @@ export default function TemplePage() {
                             const parts = val.split('-');
                             return (
                               <g transform={`translate(${x},${y})`}>
-                                <text x={0} y={0} dy={16} textAnchor="middle" fill="#94a3b8" fontSize="8" fontWeight="bold">
+                                <text x={0} y={0} dy={16} textAnchor="middle" fill="var(--muted-foreground)" fontSize="9" fontWeight="bold">
                                   {parts[1] ? `${parts[1]}月` : val}
                                 </text>
                               </g>
@@ -1150,14 +1194,14 @@ export default function TemplePage() {
                         />
                         <Tooltip 
                           cursor={{stroke: info.fillColor, strokeWidth: 2, strokeDasharray: '5 5'}} 
-                          contentStyle={{ borderRadius: '12px', border: '1px solid var(--border)', background: 'rgba(var(--card-rgb), 0.9)', backdropFilter: 'blur(8px)', color: 'var(--foreground)', fontSize: '11px', fontWeight: 'bold' }} 
+                          contentStyle={{ borderRadius: '6px', border: '1px solid var(--border)', background: 'var(--card)', color: 'var(--foreground)', fontSize: '11px', fontWeight: 'bold' }} 
                           formatter={(v: any) => [`¥${v.toLocaleString()}`, "収益"]}
                         />
                         <Area 
                           type="monotone" 
                           dataKey="value" 
                           stroke={info.fillColor} 
-                          strokeWidth={4} 
+                          strokeWidth={2} 
                           fillOpacity={1} 
                           fill={`url(#gradient-${type})`}
                           animationDuration={1500}
@@ -1167,13 +1211,13 @@ export default function TemplePage() {
                   </div>
 
                 {/* Title History */}
-                <div className="pt-4 border-t border-border">
-                  <div className="flex items-center justify-between mb-4">
+                <div id={type === 'mage' ? 'temple-titles' : undefined} className="pt-3 border-t border-border">
+                  <div className="flex items-center justify-between mb-2">
                     <div className="flex items-center gap-2">
                       <History className="w-3.5 h-3.5 text-muted-foreground" />
-                      <span className="text-[9px] font-bold text-muted-foreground uppercase tracking-widest">ACQUIRED TITLES (取得済み称号)</span>
+                      <span className="text-[9px] font-bold text-muted-foreground uppercase tracking-wide">ACQUIRED TITLES (取得済み称号)</span>
                     </div>
-                    <div className={cn("text-[10px] font-black px-2 py-0.5 rounded border backdrop-blur-sm", info.bgClass.replace('bg-', 'bg-') + "/10", info.borderClass)}>
+                    <div className={cn("text-[10px] font-bold px-2 py-0.5 rounded border", info.bgClass.replace('bg-', 'bg-') + "/10", info.borderClass)}>
                       取得済み: {stats.titles?.length || 0} <span className="opacity-40 ml-1">/ {type === 'mage' ? MAGE_TITLE_DEFS.length : (type === 'merchant' ? MERCHANT_TITLE_DEFS.length : HERO_TITLE_DEFS.length)}</span>
                     </div>
                   </div>
@@ -1183,39 +1227,39 @@ export default function TemplePage() {
                       <div className="grid grid-cols-2 gap-2">
                         {stats.titles.map((title: any, idx: number) => {
                           const catStyles: Record<string, string> = {
-                            '累計収益': 'bg-violet-500/10 border-violet-500/30 text-violet-200',
-                            '保守・継続': 'bg-emerald-500/10 border-emerald-500/30 text-emerald-200',
-                            '月間アクション': 'bg-amber-500/10 border-amber-500/30 text-amber-200',
-                            '単価・瞬発力': 'bg-rose-500/10 border-rose-500/30 text-rose-200',
-                            'リピート・信頼': 'bg-blue-500/10 border-blue-500/30 text-blue-200',
-                            '複合・時間': 'bg-slate-500/10 border-slate-500/30 text-slate-200',
-                            '武勲の蓄積': 'bg-violet-500/10 border-violet-500/30 text-violet-200',
-                            '行軍の足跡': 'bg-emerald-500/10 border-emerald-500/30 text-emerald-200',
-                            '必殺の技': 'bg-amber-500/10 border-amber-500/30 text-amber-200',
-                            '静岡の英雄': 'bg-blue-500/10 border-blue-500/30 text-blue-200',
-                            '鍛錬の成果': 'bg-rose-500/10 border-rose-500/30 text-rose-200',
-                            '勇者の矜持': 'bg-slate-500/10 border-slate-500/30 text-slate-200'
+                            '累計収益': 'bg-violet-500/10 border-violet-500/30 text-violet-800',
+                            '保守・継続': 'bg-emerald-500/10 border-emerald-500/30 text-emerald-800',
+                            '月間アクション': 'bg-amber-500/10 border-amber-500/30 text-amber-800',
+                            '単価・瞬発力': 'bg-rose-500/10 border-rose-500/30 text-rose-800',
+                            'リピート・信頼': 'bg-blue-500/10 border-blue-500/30 text-blue-800',
+                            '複合・時間': 'bg-slate-500/10 border-slate-500/30 text-slate-700',
+                            '武勲の蓄積': 'bg-violet-500/10 border-violet-500/30 text-violet-800',
+                            '行軍の足跡': 'bg-emerald-500/10 border-emerald-500/30 text-emerald-800',
+                            '必殺の技': 'bg-amber-500/10 border-amber-500/30 text-amber-800',
+                            '静岡の英雄': 'bg-blue-500/10 border-blue-500/30 text-blue-800',
+                            '鍛錬の成果': 'bg-rose-500/10 border-rose-500/30 text-rose-800',
+                            '勇者の矜持': 'bg-slate-500/10 border-slate-500/30 text-slate-700'
                           };
                           const style = catStyles[title.category] || 'bg-secondary/20 border-border/50 text-foreground';
                           
                           return (
                             <div key={idx} className={cn(
-                              "group p-2 rounded border backdrop-blur-md transition-all hover:brightness-125 relative overflow-hidden",
+                              "group p-2 rounded-md border transition-all hover:brightness-95 relative overflow-hidden",
                               style,
-                              idx === 0 && "ring-1 ring-primary/50 shadow-[0_0_10px_rgba(16,185,129,0.2)]"
+                              idx === 0 && "ring-1 ring-primary/50"
                             )}>
                               {idx === 0 && (
-                                <div className="absolute top-0 right-0 bg-primary/40 text-[6px] font-black px-1.5 py-0.5 rounded-bl uppercase animate-pulse">New</div>
+                                <div className="absolute top-0 right-0 bg-primary/40 text-[8px] font-bold px-1.5 py-0.5 rounded-bl uppercase animate-pulse">New</div>
                               )}
                               <div className="flex flex-col gap-0.5">
                                 <div className="flex items-center gap-1">
                                   <Medal className={cn("w-2.5 h-2.5", idx === 0 ? "text-primary" : "opacity-40")} />
-                                  <span className="text-[10px] font-black truncate">{title.name}</span>
+                                  <span className="text-[10px] font-bold truncate">{title.name}</span>
                                 </div>
-                                <div className="text-[8px] font-bold leading-tight line-clamp-2 opacity-70 group-hover:opacity-100">
+                                <div className="text-[9px] font-bold leading-tight line-clamp-2 opacity-80 group-hover:opacity-100">
                                   {title.description}
                                 </div>
-                                <div className="mt-1 text-[7px] font-black opacity-30 uppercase tracking-tighter">
+                                <div className="mt-1 text-[8px] font-bold opacity-50 uppercase tracking-tighter">
                                   {title.acquiredAt}
                                 </div>
                               </div>
@@ -1225,19 +1269,19 @@ export default function TemplePage() {
                       </div>
                     </div>
                   ) : (
-                    <div className="h-[100px] flex flex-col items-center justify-center border border-dashed border-border rounded bg-secondary/5">
-                      <Medal className="w-6 h-6 text-muted-foreground opacity-20 mb-2" />
-                      <span className="text-[10px] font-bold text-muted-foreground opacity-40 uppercase tracking-widest">称号未取得</span>
-                      <p className="text-[8px] text-muted-foreground opacity-30 mt-1">案件を完了して称号を獲得しましょう</p>
+                    <div className="h-[100px] flex flex-col items-center justify-center border border-dashed border-border rounded-md bg-secondary/20">
+                      <Medal className="w-6 h-6 text-muted-foreground opacity-40 mb-2" />
+                      <span className="text-[10px] font-bold text-muted-foreground opacity-70 uppercase tracking-wide">称号未取得</span>
+                      <p className="text-[9px] text-muted-foreground opacity-60 mt-1">案件を完了して称号を獲得しましょう</p>
                     </div>
                   )}
 
-                  <div className="mt-4 pt-4 border-t border-border/30">
+                  <div className="mt-3 pt-3 border-t border-border">
                     <button 
                       onClick={() => document.getElementById('roadmap-section')?.scrollIntoView({ behavior: 'smooth' })}
-                      className="w-full py-2 bg-secondary/30 hover:bg-secondary/50 rounded text-[9px] font-black uppercase tracking-widest transition-colors flex items-center justify-center gap-2"
+                      className="w-full py-2 bg-secondary hover:bg-secondary/70 border border-border rounded-md text-[10px] font-bold uppercase tracking-wide transition-colors flex items-center justify-center gap-2"
                     >
-                      <Star className="w-3 h-3 text-amber-500" />
+                      <Star className="w-3 h-3 text-amber-700" />
                       全称号の取得条件を確認
                     </button>
                   </div>
@@ -1249,47 +1293,47 @@ export default function TemplePage() {
       </div>
 
       {/* Class Roadmap & Titles */}
-      <Card id="roadmap-section" className="bg-card border-border">
-        <div className="p-8">
-          <div className="flex items-center gap-3 mb-10">
-            <Star className="w-5 h-5 text-amber-500" />
+      <Card id="roadmap-section" className="bg-card border border-border ring-0 rounded-md gap-0 py-0">
+        <div className="p-4">
+          <div className="flex items-center gap-3 mb-4">
+            <Star className="w-5 h-5 text-amber-700" />
             <div>
-              <h3 className="text-base font-black tracking-tight uppercase">CLASS ROADMAP & TITLES (クラスと称号)</h3>
-              <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">転職条件と全称号取得条件の一覧</p>
+              <h3 className="text-sm font-bold uppercase">CLASS ROADMAP & TITLES (クラスと称号)</h3>
+              <p className="text-[10px] font-bold text-muted-foreground uppercase">転職条件と全称号取得条件の一覧</p>
             </div>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-5 gap-4 mb-16">
+          <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-5 gap-3 mb-6">
             {TIER_THRESHOLDS.map((th) => (
-              <div key={th.tier} className="bg-secondary/20 rounded-md p-4 border border-border relative overflow-hidden group">
-                <div className="absolute top-2 right-2 text-3xl font-black opacity-5 group-hover:opacity-10 transition-opacity">T{th.tier}</div>
+              <div key={th.tier} className="bg-secondary/30 rounded-md p-3 border border-border relative overflow-hidden group">
+                <div className="absolute top-2 right-2 text-2xl font-bold opacity-10 group-hover:opacity-20 transition-opacity">T{th.tier}</div>
                 <div className="flex flex-col gap-3 relative z-10">
                     <div className="flex items-center justify-between relative z-10 w-full pr-8">
                       <div className="flex items-center gap-3">
-                        <div className="w-12 h-12 bg-background rounded-md flex items-center justify-center border border-border shadow-sm shrink-0">
+                        <div className="w-12 h-12 bg-background rounded-md flex items-center justify-center border border-border shrink-0">
                            <Image src={th.image} alt={th.title} width={32} height={32} className="object-contain" style={{ imageRendering: 'pixelated' }} />
                         </div>
                       </div>
                       
                    </div>
                    <div>
-                     <div className="text-[10px] font-black text-primary uppercase">Lv.{th.level}</div>
-                     <div className="text-xs font-black truncate">{th.title}</div>
-                     <div className="text-[9px] font-bold text-muted-foreground mt-1">
+                     <div className="text-[10px] font-bold text-primary uppercase">Lv.{th.level}</div>
+                     <div className="text-xs font-bold truncate">{th.title}</div>
+                     <div className="text-[10px] font-bold text-muted-foreground mt-1">
                        累計 ¥{(th.min/10000).toFixed(0)}万
                      </div>
                    </div>
                    <div className="space-y-1">
-                     <div className="flex justify-between text-[8px] font-bold">
-                       <span className="text-emerald-500 font-black">MAGE:</span>
+                     <div className="flex justify-between text-[9px] font-bold">
+                       <span className="text-emerald-700 font-bold">MAGE:</span>
                        <span className="text-foreground">{th.jobs.mage}</span>
                      </div>
-                     <div className="flex justify-between text-[8px] font-bold">
-                       <span className="text-amber-500 font-black">MERCHANT:</span>
+                     <div className="flex justify-between text-[9px] font-bold">
+                       <span className="text-amber-700 font-bold">MERCHANT:</span>
                        <span className="text-foreground">{th.jobs.merchant}</span>
                      </div>
-                     <div className="flex justify-between text-[8px] font-bold">
-                       <span className="text-blue-500 font-black">HERO:</span>
+                     <div className="flex justify-between text-[9px] font-bold">
+                       <span className="text-blue-700 font-bold">HERO:</span>
                        <span className="text-foreground">{th.jobs.hero}</span>
                      </div>
                    </div>
@@ -1299,44 +1343,44 @@ export default function TemplePage() {
           </div>
 
           {/* 3-Column Title List Section */}
-          <div className="pt-10 border-t border-border">
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">
+          <div id="temple-title-list" className="pt-4 border-t border-border">
+            <div className="grid grid-cols-1 xl:grid-cols-3 gap-6">
               {/* Mage Titles */}
-              <div className="space-y-8">
+              <div className="space-y-4">
                   <div className="flex items-center gap-3">
-                    <div className="w-8 h-8 rounded bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center">
-                      <Wand2 className="w-4 h-4 text-emerald-500" />
+                    <div className="w-8 h-8 rounded-md bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center">
+                      <Wand2 className="w-4 h-4 text-emerald-700" />
                     </div>
                     <div>
-                      <h4 className="text-xs font-black text-emerald-500 uppercase">MAGE TITLES</h4>
+                      <h4 className="text-xs font-bold text-emerald-700 uppercase">MAGE TITLES</h4>
                       <p className="text-[9px] font-bold text-muted-foreground uppercase">魔法使い系統 称号リスト</p>
                     </div>
                   </div>
                 
-                <div className="space-y-8 max-h-[1200px] overflow-y-auto pr-4 custom-scrollbar">
+                <div className="space-y-4 max-h-[1200px] overflow-y-auto pr-3 custom-scrollbar">
                   {['累計収益', '保守・継続', '月間アクション', '単価・瞬発力', 'リピート・信頼', '複合・時間'].map(cat => (
-                    <div key={cat} className="space-y-3">
-                      <div className="flex items-center gap-2 mb-4">
-                        <div className="px-3 py-1 rounded-full border border-emerald-500/30 bg-emerald-500/10 backdrop-blur-sm">
-                          <span className="text-[10px] font-black uppercase tracking-widest text-emerald-500">{cat}</span>
+                    <div key={cat} className="space-y-2">
+                      <div className="flex items-center gap-2 mb-2">
+                        <div className="px-2 py-0.5 rounded border border-emerald-500/30 bg-emerald-500/10">
+                          <span className="text-[10px] font-bold uppercase tracking-wide text-emerald-700">{cat}</span>
                         </div>
-                        <div className="flex-1 h-[1px] bg-border opacity-30" />
+                        <div className="flex-1 h-[1px] bg-border" />
                       </div>
                       <div className="grid grid-cols-1 gap-2">
                         {MAGE_TITLE_DEFS.filter(d => d.category === cat).map(def => {
                           const isAcquired = data.mage.titles?.some((t: any) => t.id === def.id);
                           return (
                             <div key={def.id} className={cn(
-                              "group p-2 rounded bg-secondary/10 border border-border/30 hover:border-emerald-500/30 transition-all relative overflow-hidden",
+                              "group p-2 rounded-md bg-secondary/20 border border-border hover:border-emerald-500/50 transition-all relative overflow-hidden",
                               isAcquired && "opacity-60 grayscale-[0.5]"
                             )}>
                               {isAcquired && (
-                                <div className="absolute inset-0 bg-emerald-500/10 backdrop-blur-[1px] flex items-center justify-center pointer-events-none z-10">
-                                  <span className="text-[10px] font-black text-emerald-500 uppercase tracking-tighter border border-emerald-500 px-1 py-0.5 bg-background/90 shadow-sm">COMPLETE</span>
+                                <div className="absolute inset-0 bg-emerald-500/10 flex items-center justify-center pointer-events-none z-10">
+                                  <span className="text-[10px] font-bold text-emerald-700 uppercase tracking-tighter border border-emerald-700 px-1 py-0.5 bg-card">COMPLETE</span>
                                 </div>
                               )}
-                              <div className="text-[10px] font-black text-foreground group-hover:text-emerald-500 transition-colors">{def.name}</div>
-                              <div className="text-[8px] font-bold text-muted-foreground leading-tight mt-0.5">{def.description}</div>
+                              <div className="text-[10px] font-bold text-foreground group-hover:text-emerald-700 transition-colors">{def.name}</div>
+                              <div className="text-[9px] font-bold text-muted-foreground leading-tight mt-0.5">{def.description}</div>
                             </div>
                           );
                         })}
@@ -1347,41 +1391,41 @@ export default function TemplePage() {
               </div>
 
               {/* Merchant Titles */}
-              <div className="space-y-8">
+              <div className="space-y-4">
                   <div className="flex items-center gap-3">
-                    <div className="w-8 h-8 rounded bg-amber-500/10 border border-amber-500/30 flex items-center justify-center">
-                      <Coins className="w-4 h-4 text-amber-500" />
+                    <div className="w-8 h-8 rounded-md bg-amber-500/10 border border-amber-500/30 flex items-center justify-center">
+                      <Coins className="w-4 h-4 text-amber-700" />
                     </div>
                     <div>
-                      <h4 className="text-xs font-black text-amber-500 uppercase">MERCHANT TITLES</h4>
+                      <h4 className="text-xs font-bold text-amber-700 uppercase">MERCHANT TITLES</h4>
                       <p className="text-[9px] font-bold text-muted-foreground uppercase">商人系統 称号リスト</p>
                     </div>
                   </div>
                 
-                <div className="space-y-8 max-h-[1200px] overflow-y-auto pr-4 custom-scrollbar">
+                <div className="space-y-4 max-h-[1200px] overflow-y-auto pr-3 custom-scrollbar">
                   {['累計収益', '保守・継続', '月間アクション', '単価・瞬発力', 'リピート・信頼', '複合・時間'].map(cat => (
-                    <div key={cat} className="space-y-3">
-                      <div className="flex items-center gap-2 mb-4">
-                        <div className="px-3 py-1 rounded-full border border-amber-500/30 bg-amber-500/10 backdrop-blur-sm">
-                          <span className="text-[10px] font-black uppercase tracking-widest text-amber-500">{cat}</span>
+                    <div key={cat} className="space-y-2">
+                      <div className="flex items-center gap-2 mb-2">
+                        <div className="px-2 py-0.5 rounded border border-amber-500/30 bg-amber-500/10">
+                          <span className="text-[10px] font-bold uppercase tracking-wide text-amber-700">{cat}</span>
                         </div>
-                        <div className="flex-1 h-[1px] bg-border opacity-30" />
+                        <div className="flex-1 h-[1px] bg-border" />
                       </div>
                       <div className="grid grid-cols-1 gap-2">
                         {MERCHANT_TITLE_DEFS.filter(d => d.category === cat).map(def => {
                           const isAcquired = data.merchant.titles?.some((t: any) => t.id === def.id);
                           return (
                             <div key={def.id} className={cn(
-                              "group p-2 rounded bg-secondary/10 border border-border/30 hover:border-amber-500/30 transition-all relative overflow-hidden",
+                              "group p-2 rounded-md bg-secondary/20 border border-border hover:border-amber-500/50 transition-all relative overflow-hidden",
                               isAcquired && "opacity-60 grayscale-[0.5]"
                             )}>
                               {isAcquired && (
-                                <div className="absolute inset-0 bg-amber-500/10 backdrop-blur-[1px] flex items-center justify-center pointer-events-none z-10">
-                                  <span className="text-[10px] font-black text-amber-500 uppercase tracking-tighter border border-amber-500 px-1 py-0.5 bg-background/90 shadow-sm">COMPLETE</span>
+                                <div className="absolute inset-0 bg-amber-500/10 flex items-center justify-center pointer-events-none z-10">
+                                  <span className="text-[10px] font-bold text-amber-700 uppercase tracking-tighter border border-amber-700 px-1 py-0.5 bg-card">COMPLETE</span>
                                 </div>
                               )}
-                              <div className="text-[10px] font-black text-foreground group-hover:text-amber-500 transition-colors">{def.name}</div>
-                              <div className="text-[8px] font-bold text-muted-foreground leading-tight mt-0.5">{def.description}</div>
+                              <div className="text-[10px] font-bold text-foreground group-hover:text-amber-700 transition-colors">{def.name}</div>
+                              <div className="text-[9px] font-bold text-muted-foreground leading-tight mt-0.5">{def.description}</div>
                             </div>
                           );
                         })}
@@ -1392,41 +1436,41 @@ export default function TemplePage() {
               </div>
 
               {/* Hero Titles */}
-              <div className="space-y-8">
+              <div className="space-y-4">
                   <div className="flex items-center gap-3">
-                    <div className="w-8 h-8 rounded bg-blue-500/10 border border-blue-500/30 flex items-center justify-center">
-                      <Sword className="w-4 h-4 text-blue-500" />
+                    <div className="w-8 h-8 rounded-md bg-blue-500/10 border border-blue-500/30 flex items-center justify-center">
+                      <Sword className="w-4 h-4 text-blue-700" />
                     </div>
                     <div>
-                      <h4 className="text-xs font-black text-blue-500 uppercase">HERO TITLES</h4>
+                      <h4 className="text-xs font-bold text-blue-700 uppercase">HERO TITLES</h4>
                       <p className="text-[9px] font-bold text-muted-foreground uppercase">勇者系統 称号リスト</p>
                     </div>
                   </div>
                 
-                <div className="space-y-8 max-h-[1200px] overflow-y-auto pr-4 custom-scrollbar">
+                <div className="space-y-4 max-h-[1200px] overflow-y-auto pr-3 custom-scrollbar">
                   {['武勲の蓄積', '行軍の足跡', '必殺の技', '静岡の英雄', '鍛錬の成果', '勇者の矜持'].map(cat => (
-                    <div key={cat} className="space-y-3">
-                      <div className="flex items-center gap-2 mb-4">
-                        <div className="px-3 py-1 rounded-full border border-blue-500/30 bg-blue-500/10 backdrop-blur-sm">
-                          <span className="text-[10px] font-black uppercase tracking-widest text-blue-500">{cat}</span>
+                    <div key={cat} className="space-y-2">
+                      <div className="flex items-center gap-2 mb-2">
+                        <div className="px-2 py-0.5 rounded border border-blue-500/30 bg-blue-500/10">
+                          <span className="text-[10px] font-bold uppercase tracking-wide text-blue-700">{cat}</span>
                         </div>
-                        <div className="flex-1 h-[1px] bg-border opacity-30" />
+                        <div className="flex-1 h-[1px] bg-border" />
                       </div>
                       <div className="grid grid-cols-1 gap-2">
                         {HERO_TITLE_DEFS.filter(d => d.category === cat).map(def => {
                           const isAcquired = data.hero.titles?.some((t: any) => t.id === def.id);
                           return (
                             <div key={def.id} className={cn(
-                              "group p-2 rounded bg-secondary/10 border border-border/30 hover:border-blue-500/30 transition-all relative overflow-hidden",
+                              "group p-2 rounded-md bg-secondary/20 border border-border hover:border-blue-500/50 transition-all relative overflow-hidden",
                               isAcquired && "opacity-60 grayscale-[0.5]"
                             )}>
                               {isAcquired && (
-                                <div className="absolute inset-0 bg-blue-500/10 backdrop-blur-[1px] flex items-center justify-center pointer-events-none z-10">
-                                  <span className="text-[10px] font-black text-blue-500 uppercase tracking-tighter border border-blue-500 px-1 py-0.5 bg-background/90 shadow-sm">COMPLETE</span>
+                                <div className="absolute inset-0 bg-blue-500/10 flex items-center justify-center pointer-events-none z-10">
+                                  <span className="text-[10px] font-bold text-blue-700 uppercase tracking-tighter border border-blue-700 px-1 py-0.5 bg-card">COMPLETE</span>
                                 </div>
                               )}
-                              <div className="text-[10px] font-black text-foreground group-hover:text-blue-500 transition-colors">{def.name}</div>
-                              <div className="text-[8px] font-bold text-muted-foreground leading-tight mt-0.5">{def.description}</div>
+                              <div className="text-[10px] font-bold text-foreground group-hover:text-blue-700 transition-colors">{def.name}</div>
+                              <div className="text-[9px] font-bold text-muted-foreground leading-tight mt-0.5">{def.description}</div>
                             </div>
                           );
                         })}
