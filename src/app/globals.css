@@ -7,9 +7,9 @@
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-noto);
-  --font-mono: var(--font-geist-mono);
-  --font-heading: var(--font-outfit);
+  --font-sans: var(--font-mplus), var(--font-noto), ui-monospace, monospace;
+  --font-mono: var(--font-mplus), var(--font-noto), ui-monospace, monospace;
+  --font-heading: var(--font-mplus), var(--font-noto), ui-monospace, monospace;
   --color-sidebar-ring: var(--sidebar-ring);
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
@@ -115,39 +115,40 @@
 }
 
 :root {
-  --background: #000000; /* Pitch black */
-  --foreground: #e2e8f0;
-  --card: #232323;
-  --card-foreground: #e2e8f0;
-  --popover: #232323;
-  --popover-foreground: #e2e8f0;
-  --primary: #10b981;
+  /* Beige + monospace theme (explorer layout) */
+  --font-outfit: var(--font-mplus), var(--font-noto), ui-monospace, monospace;
+  --background: #eadfc8;
+  --foreground: #3a3226;
+  --card: #f6efdd;
+  --card-foreground: #3a3226;
+  --popover: #f6efdd;
+  --popover-foreground: #3a3226;
+  --primary: #0e7fd1;
   --primary-foreground: #ffffff;
-  --secondary: #2e2e2e;
-  --secondary-foreground: #e2e8f0;
-  --muted: #2e2e2e;
-  --muted-foreground: #94a3b8;
-  --accent: #10b981;
+  --secondary: #e0d3b6;
+  --secondary-foreground: #3a3226;
+  --muted: #e0d3b6;
+  --muted-foreground: #7a6c54;
+  --accent: #0e7fd1;
   --accent-foreground: #ffffff;
-  --destructive: #ef4444;
+  --destructive: #c62828;
   --destructive-foreground: #ffffff;
-  --border: #2e2e2e;
-  --input: #141414;
-  --ring: #10b981;
-  --radius: 0.5rem;
+  --border: #d8cbae;
+  --input: #f1e8d2;
+  --ring: #0e7fd1;
+  --radius: 0.25rem;
 
-  /* Sidebar Modern Dark Theme */
-  --sidebar-bg: #000000;
-  --sidebar-fg: #e2e8f0;
-  --sidebar-accent: rgba(16, 185, 129, 0.1);
+  --sidebar-bg: #f6efdd;
+  --sidebar-fg: #3a3226;
+  --sidebar-accent: rgba(14, 127, 209, 0.1);
 }
 
 @layer utilities {
   .paper-shadow {
-    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.3), 0 2px 4px -2px rgba(0, 0, 0, 0.3);
+    box-shadow: 0 4px 6px -1px rgba(58, 50, 38, 0.18), 0 2px 4px -2px rgba(58, 50, 38, 0.18);
   }
   .paper-shadow-lg {
-    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.4), 0 4px 6px -4px rgba(0, 0, 0, 0.4);
+    box-shadow: 0 10px 15px -3px rgba(58, 50, 38, 0.25), 0 4px 6px -4px rgba(58, 50, 38, 0.25);
   }
   .scrollbar-hide::-webkit-scrollbar {
     display: none;
@@ -157,16 +158,16 @@
     height: 6px;
   }
   .custom-scrollbar::-webkit-scrollbar-track {
-    background: rgba(0, 0, 0, 0.2);
+    background: rgba(58, 50, 38, 0.08);
     border-radius: 10px;
   }
   .custom-scrollbar::-webkit-scrollbar-thumb {
-    background: rgba(255, 255, 255, 0.1);
+    background: rgba(58, 50, 38, 0.25);
     border-radius: 10px;
-    border: 1px solid rgba(0, 0, 0, 0.2);
+    border: 1px solid rgba(58, 50, 38, 0.1);
   }
   .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-    background: rgba(255, 255, 255, 0.2);
+    background: rgba(58, 50, 38, 0.4);
   }
 }
 

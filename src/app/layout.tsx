@@ -1,14 +1,14 @@
 import type { Metadata } from "next";
-import { Outfit, Noto_Sans_JP } from "next/font/google";
+import { M_PLUS_1_Code, Noto_Sans_JP } from "next/font/google";
 import "./globals.css";
 import { PwaRegister } from "@/components/PwaRegister";
 import { RootWrapper } from "@/components/layout/RootWrapper";
 import { cn } from "@/lib/utils";
 
-const outfit = Outfit({
+const mplusCode = M_PLUS_1_Code({
   subsets: ["latin"],
-  variable: "--font-outfit",
-  weight: ["400", "700", "900"],
+  variable: "--font-mplus",
+  weight: ["400", "500", "700"],
 });
 
 const notoSansJp = Noto_Sans_JP({
@@ -41,7 +41,7 @@ export default function RootLayout({
   return (
     <html
       lang="ja"
-      className={cn(outfit.variable, notoSansJp.variable, "h-full antialiased")}
+      className={cn(mplusCode.variable, notoSansJp.variable, "h-full antialiased")}
     >
       <body className="h-full overflow-hidden flex flex-col font-sans bg-background text-foreground">
         <PwaRegister />

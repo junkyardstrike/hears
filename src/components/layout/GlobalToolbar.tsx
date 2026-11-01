@@ -1,12 +1,11 @@
 'use client';
 
 import { usePathname, useRouter } from 'next/navigation';
-import { 
-  Search, HelpCircle, Settings, User, 
-  Bell, Command, ChevronDown, Menu, Plus
+import {
+  Search, HelpCircle, Settings, User,
+  Bell, Command, ChevronDown, Plus
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
 import {
   DropdownMenu,
@@ -16,7 +15,6 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { useHearsStore } from '@/store/useHearsStore';
 import { GlobalTaskModal } from '@/components/GlobalTaskModal';
 import { useState } from 'react';
 import { supabase } from '@/lib/supabase';
@@ -24,13 +22,12 @@ import { supabase } from '@/lib/supabase';
 export function GlobalToolbar() {
   const pathname = usePathname();
   const router = useRouter();
-  const { setMobileMenuOpen } = useHearsStore();
   const [isTaskModalOpen, setIsTaskModalOpen] = useState(false);
-  
+
   const handleLogout = async () => {
     await supabase.auth.signOut();
   };
-  
+
   const getPageTitle = (path: string) => {
     if (path === '/temple') return 'ステータス・神殿';
     if (path === '/clients') return '取引先・案件管理';
@@ -44,35 +41,28 @@ export function GlobalToolbar() {
   };
 
   return (
-    <header className="h-16 lg:h-20 shrink-0 bg-background border-b border-border z-40 px-4 lg:px-8 flex items-center justify-between font-sans">
-      {/* Left: Page Title */}
-      <div className="flex items-center gap-2 lg:gap-6 min-w-0">
-        <div className="lg:hidden">
-          <Button variant="ghost" size="icon" onClick={() => setMobileMenuOpen(true)}>
-            <Menu className="w-6 h-6" />
-          </Button>
-        </div>
-        <div className="flex flex-col min-w-0">
-          <h2 className="text-sm lg:text-xl font-bold italic tracking-tighter text-foreground uppercase font-[family-name:var(--font-outfit)] truncate">
-            {getPageTitle(pathname)}
-          </h2>
-          <div className="flex items-center gap-2">
-            <Badge variant="outline" className="bg-primary/5 text-primary border-primary/20 text-[8px] lg:text-[9px] font-bold uppercase tracking-widest px-2 py-0 font-[family-name:var(--font-outfit)]">
-              Ver 6.3.0
-            </Badge>
-            <span className="text-[8px] lg:text-[9px] font-medium text-muted-foreground uppercase tracking-widest opacity-60 hidden sm:inline">System Active</span>
-          </div>
-        </div>
+    <header className="h-12 shrink-0 bg-card border-b border-border z-40 px-3 lg:px-4 flex items-center justify-between font-sans">
+      {/* Left: Breadcrumb / Page Title */}
+      <div className="flex items-center gap-2 lg:gap-3 min-w-0">
+        <span className="hidden sm:inline text-[11px] text-muted-foreground tracking-wider">ALCHEMIST</span>
+        <span className="hidden sm:inline text-muted-foreground">›</span>
+        <h2 className="text-sm lg:text-[13px] font-bold text-foreground truncate">
+          {getPageTitle(pathname)}
+        </h2>
+        <Badge variant="outline" className="bg-transparent text-muted-foreground border-border text-[9px] font-bold px-2 py-0 hidden sm:inline-flex">
+          Ver 6.3.0
+        </Badge>
+        <span className="text-[10px] font-medium text-muted-foreground hidden md:inline">● System Active</span>
       </div>
 
       {/* Right: Actions */}
-      <div className="flex items-center gap-2 lg:gap-4 shrink-0">
-        <div className="hidden xl:flex items-center gap-3 bg-secondary px-4 py-2 rounded-md border border-border group focus-within:ring-1 focus-within:ring-primary transition-all">
-          <Search className="w-4 h-4 text-muted-foreground" />
-          <input 
-            type="text" 
-            placeholder="クイック検索..." 
-            className="bg-transparent border-none text-xs font-medium focus:outline-none w-48 text-foreground"
+      <div className="flex items-center gap-2 lg:gap-3 shrink-0">
+        <div className="hidden xl:flex items-center gap-2 bg-input px-3 py-1.5 rounded-md border border-border group focus-within:ring-1 focus-within:ring-primary transition-all">
+          <Search className="w-3.5 h-3.5 text-muted-foreground" />
+          <input
+            type="text"
+            placeholder="クイック検索..."
+            className="bg-transparent border-none text-xs font-medium focus:outline-none w-44 text-foreground"
           />
           <div className="flex items-center gap-1 bg-background border border-border px-1.5 py-0.5 rounded-md">
             <Command className="w-2.5 h-2.5 text-muted-foreground" />
@@ -80,56 +70,56 @@ export function GlobalToolbar() {
           </div>
         </div>
 
-        <Button 
+        <Button
           onClick={() => setIsTaskModalOpen(true)}
-          className="hidden sm:flex items-center gap-2 bg-primary hover:brightness-110 text-primary-foreground font-bold h-10 px-4 rounded-md transition-all active:scale-95 ml-2 lg:ml-4"
+          className="flex items-center gap-1.5 bg-primary hover:brightness-110 text-primary-foreground font-bold h-8 px-3 rounded-md transition-all active:scale-95"
         >
-          <Plus className="w-4 h-4" />
-          <span className="text-xs uppercase tracking-widest font-black">NEW TASK</span>
+          <Plus className="w-3.5 h-3.5" />
+          <span className="text-[11px] uppercase tracking-wider font-bold">NEW TASK</span>
         </Button>
 
-        <div className="flex items-center gap-1 lg:border-l border-border lg:pl-4">
-          <Button variant="ghost" size="icon" className="hidden sm:flex text-muted-foreground hover:text-primary rounded-xl" title="ヘルプ">
-            <HelpCircle className="w-5 h-5" />
+        <div className="flex items-center gap-0.5 lg:border-l border-border lg:pl-3">
+          <Button variant="ghost" size="icon" className="hidden sm:flex text-muted-foreground hover:text-primary rounded-md h-8 w-8" title="ヘルプ">
+            <HelpCircle className="w-4 h-4" />
           </Button>
-          
+
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button variant="ghost" size="icon" className="text-muted-foreground hover:text-primary rounded-xl relative" title="通知">
-                <Bell className="w-5 h-5" />
-                <div className="absolute top-2.5 right-2.5 w-2 h-2 bg-red-500 rounded-full border-2 border-white" />
+              <Button variant="ghost" size="icon" className="text-muted-foreground hover:text-primary rounded-md relative h-8 w-8" title="通知">
+                <Bell className="w-4 h-4" />
+                <div className="absolute top-1.5 right-1.5 w-2 h-2 bg-destructive rounded-full border-2 border-card" />
               </Button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent className="w-64 rounded-2xl p-2 border-border paper-shadow-lg" align="end">
+            <DropdownMenuContent className="w-64 rounded-md p-2 border-border paper-shadow-lg" align="end">
               <DropdownMenuLabel className="font-bold text-xs uppercase tracking-widest p-4">通知センター</DropdownMenuLabel>
               <DropdownMenuSeparator />
-              <div className="p-4 text-center text-[10px] text-muted-foreground font-medium italic">新しい通知はありません</div>
+              <div className="p-4 text-center text-[10px] text-muted-foreground font-medium">新しい通知はありません</div>
             </DropdownMenuContent>
           </DropdownMenu>
 
-          <Button 
-            variant="ghost" 
-            size="icon" 
-            className="text-muted-foreground hover:text-primary rounded-xl" 
+          <Button
+            variant="ghost"
+            size="icon"
+            className="hidden sm:flex text-muted-foreground hover:text-primary rounded-md h-8 w-8"
             title="設定"
             onClick={() => router.push('/settings')}
           >
-            <Settings className="w-5 h-5" />
+            <Settings className="w-4 h-4" />
           </Button>
         </div>
 
         {/* User Profile */}
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <div className="flex items-center gap-2 lg:gap-3 bg-secondary pl-2 lg:pl-4 pr-2 py-1.5 rounded-md border border-border hover:bg-secondary/80 transition-all cursor-pointer group">
+            <div className="flex items-center gap-2 bg-input pl-2 lg:pl-3 pr-1.5 py-1 rounded-md border border-border hover:bg-secondary transition-all cursor-pointer group">
               <div className="flex flex-col items-end hidden md:flex">
-                <span className="text-[10px] font-bold text-foreground uppercase tracking-tight">ADMIN</span>
-                <span className="text-[8px] font-medium text-primary uppercase tracking-widest">管理者</span>
+                <span className="text-[10px] font-bold text-foreground uppercase tracking-tight leading-tight">ADMIN</span>
+                <span className="text-[8px] font-medium text-primary tracking-widest leading-tight">管理者</span>
               </div>
-              <div className="w-8 h-8 lg:w-9 lg:h-9 rounded-md bg-primary flex items-center justify-center text-primary-foreground font-bold text-xs group-hover:scale-105 transition-transform">
+              <div className="w-7 h-7 rounded-md bg-primary flex items-center justify-center text-primary-foreground font-bold text-[10px]">
                 AU
               </div>
-              <ChevronDown className="w-4 h-4 text-muted-foreground opacity-40 group-hover:opacity-100" />
+              <ChevronDown className="w-3.5 h-3.5 text-muted-foreground opacity-50 group-hover:opacity-100" />
             </div>
           </DropdownMenuTrigger>
           <DropdownMenuContent className="w-56 rounded-md p-2 border-border bg-popover" align="end">
@@ -143,8 +133,8 @@ export function GlobalToolbar() {
         </DropdownMenu>
       </div>
 
-      <GlobalTaskModal 
-        isOpen={isTaskModalOpen} 
+      <GlobalTaskModal
+        isOpen={isTaskModalOpen}
         onClose={() => setIsTaskModalOpen(false)}
         editingTodo={null}
       />
