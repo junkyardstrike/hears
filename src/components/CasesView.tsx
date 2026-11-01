@@ -17,6 +17,7 @@ import { cn } from '@/lib/utils';
 import { Input } from '@/components/ui/input';
 import { Suspense, useState } from 'react';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { SideTree, TreeItem } from '@/components/layout/SideTree';
 
 function CasesViewContent() {
   const { cases, createCase, deleteCase, updateCase } = useHearsStore();
@@ -47,12 +48,12 @@ function CasesViewContent() {
 
     if (list.length === 0) {
       return (
-        <div className="py-24 text-center bg-card border border-dashed border-border rounded-lg animate-in fade-in duration-700">
-          <div className="bg-secondary/50 w-24 h-24 rounded-full flex items-center justify-center mx-auto mb-6">
-            <Briefcase className="w-12 h-12 text-muted-foreground opacity-20" />
+        <div className="py-12 text-center bg-card border border-dashed border-border rounded-md animate-in fade-in duration-300">
+          <div className="bg-secondary w-12 h-12 rounded-md flex items-center justify-center mx-auto mb-3">
+            <Briefcase className="w-6 h-6 text-muted-foreground" />
           </div>
-          <h3 className="text-xl font-bold italic tracking-tighter text-foreground mb-2">No Cases Found</h3>
-          <p className="text-muted-foreground font-bold text-xs uppercase tracking-widest opacity-40">該当する案件はありません</p>
+          <h3 className="text-base font-bold text-foreground mb-1">No Cases Found</h3>
+          <p className="text-muted-foreground font-bold text-xs">該当する案件はありません</p>
         </div>
       );
     }
@@ -98,75 +99,75 @@ function CasesViewContent() {
     });
 
     return (
-      <div className="grid grid-cols-2 lg:grid-cols-1 gap-2 lg:gap-4">
+      <div className="grid grid-cols-2 lg:grid-cols-1 gap-2">
         {sortedList.map((c, idx) => (
           <div key={`${c.id}-${idx}`} className="block group relative">
-            <Link href={`/cases/${c.id}`} className="absolute inset-0 z-0 rounded-lg" />
-            <div className="bg-card p-3 lg:p-8 rounded-lg border border-border hover:border-primary/50 transition-all flex flex-col lg:flex-row items-start lg:items-center gap-2 lg:gap-8 relative overflow-hidden pointer-events-none">
+            <Link href={`/cases/${c.id}`} className="absolute inset-0 z-0 rounded-md" />
+            <div className="bg-card p-3 lg:py-3 lg:pl-5 lg:pr-3 rounded-md border border-border hover:border-primary/50 transition-colors flex flex-col lg:flex-row items-start lg:items-center gap-2 lg:gap-6 relative overflow-hidden pointer-events-none">
               <div className={cn(
-                "absolute left-0 top-0 bottom-0 w-1.5 lg:w-2 transition-all",
+                "absolute left-0 top-0 bottom-0 w-1 transition-all",
                 c.status === 'active' ? "bg-emerald-500" : "bg-blue-500"
               )} />
               
-              <div className="flex flex-col items-start min-w-0 lg:min-w-[140px] shrink-0 w-full lg:w-auto">
+              <div className="flex flex-col items-start min-w-0 lg:w-[150px] shrink-0 w-full">
                 <Badge className={cn(
-                  "rounded-md lg:rounded-lg px-2 lg:px-3 py-0.5 lg:py-1 text-[7px] lg:text-[9px] font-bold tracking-widest border-none mb-1 lg:mb-3",
-                  c.status === 'active' ? 'bg-emerald-500/10 text-emerald-600' : 'bg-blue-500/10 text-blue-600'
+                  "rounded-md px-2 py-0.5 text-[7px] lg:text-[10px] font-bold tracking-wide border-none mb-1 lg:mb-1.5",
+                  c.status === 'active' ? 'bg-emerald-500/10 text-emerald-700' : 'bg-blue-500/10 text-blue-700'
                 )}>
                   {c.status === 'active' ? '進行中 / active' : '完了済 / completed'}
                 </Badge>
-                <div className="flex flex-col items-start gap-1 lg:gap-1.5">
-                  <div className="flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-primary/10 text-primary">
+                <div className="flex flex-col items-start gap-1">
+                  <div className="flex items-center gap-1.5 px-2 py-0.5 rounded-md bg-primary/10 text-primary">
                     <Tag className="w-2.5 h-2.5 lg:w-3 lg:h-3" />
-                    <span className="text-[8px] lg:text-[10px] font-bold tracking-tighter italic truncate max-w-[100px] lg:max-w-none">
+                    <span className="text-[8px] lg:text-[10px] font-bold truncate max-w-[100px] lg:max-w-none">
                       {c.genre || '未設定'}
                     </span>
                   </div>
-                  <div className="flex items-center gap-1 lg:gap-1.5 text-[8px] lg:text-[9px] font-bold text-muted-foreground tracking-widest opacity-60 ml-1">
+                  <div className="flex items-center gap-1 lg:gap-1.5 text-[8px] lg:text-[10px] font-bold text-muted-foreground">
                     <Calendar className="w-3 h-3" /> {c.finance?.revenueStartMonth || '未設定'}
                   </div>
                 </div>
               </div>
 
-              <div className="flex-1 w-full lg:w-auto min-w-0 text-left py-1 lg:py-2 group-hover:translate-x-1 transition-transform">
-                <h3 className="text-sm lg:text-2xl font-bold tracking-tight text-foreground group-hover:text-primary transition-colors mb-0 lg:mb-2 leading-tight truncate">
+              <div className="flex-1 w-full lg:w-auto min-w-0 text-left py-1 lg:py-0">
+                <h3 className="text-sm lg:text-base font-bold text-foreground group-hover:text-primary transition-colors mb-0 lg:mb-0.5 leading-tight truncate lg:whitespace-normal lg:line-clamp-2">
                   {c.name}
                 </h3>
-                <p className="text-[7px] lg:text-[10px] font-bold text-muted-foreground tracking-[0.2em] opacity-40 truncate">
+                <p className="text-[7px] lg:text-[11px] font-bold text-muted-foreground truncate">
                   {c.contractEntity || '法人契約なし'}
                 </p>
               </div>
 
-              <div className="flex flex-row lg:flex-row items-center gap-2 lg:gap-10 px-0 lg:px-10 border-t lg:border-t-0 lg:border-x border-border/50 shrink-0 w-full lg:w-auto pt-2 lg:pt-0 justify-between lg:justify-start">
+              <div className="flex flex-row items-center gap-2 lg:gap-4 px-0 border-t lg:border-t-0 border-border shrink-0 w-full lg:w-[280px] pt-2 lg:pt-0 justify-between lg:justify-end">
                 {c.genre === 'HP制作' || c.genre === 'SNS運用' ? (
                   <>
-                    <div className="flex flex-col text-left lg:text-center min-w-0 lg:min-w-[100px]">
-                      <span className="text-[6px] lg:text-[9px] font-bold text-muted-foreground uppercase tracking-widest opacity-40 mb-0.5 lg:mb-1">保守 / MAINTENANCE</span>
+                    <div className="flex flex-col text-left lg:text-right min-w-0 lg:min-w-[120px]">
+                      <span className="text-[6px] lg:text-[10px] font-bold text-muted-foreground uppercase tracking-wide mb-0.5">保守 / MAINTENANCE</span>
                       <div className="flex flex-col">
-                        <span className="text-[10px] lg:text-sm font-bold tracking-tight text-foreground">¥{(c.finance?.maintenanceFee || 0).toLocaleString()} <span className="text-[7px] text-muted-foreground opacity-60">GROSS</span></span>
-                        <span className="text-[10px] lg:text-sm font-bold tracking-tight text-emerald-500">¥{Math.floor((c.finance?.maintenanceFee || 0) * 0.4).toLocaleString()} <span className="text-[7px] text-emerald-500/60">NET</span></span>
+                        <span className="text-[10px] lg:text-xs font-bold text-foreground">¥{(c.finance?.maintenanceFee || 0).toLocaleString()} <span className="text-[7px] lg:text-[9px] text-muted-foreground">GROSS</span></span>
+                        <span className="text-[10px] lg:text-xs font-bold text-emerald-700">¥{Math.floor((c.finance?.maintenanceFee || 0) * 0.4).toLocaleString()} <span className="text-[7px] lg:text-[9px] text-emerald-700">NET</span></span>
                       </div>
                     </div>
-                    <div className="flex flex-col text-left lg:text-center min-w-0 lg:min-w-[100px] border-l border-border/50 pl-3 lg:pl-6">
-                      <span className="text-[6px] lg:text-[9px] font-bold text-muted-foreground uppercase tracking-widest opacity-40 mb-0.5 lg:mb-1">制作 / PRODUCTION</span>
+                    <div className="flex flex-col text-left lg:text-right min-w-0 lg:min-w-[120px] border-l border-border pl-3 lg:pl-4">
+                      <span className="text-[6px] lg:text-[10px] font-bold text-muted-foreground uppercase tracking-wide mb-0.5">制作 / PRODUCTION</span>
                       <div className="flex flex-col">
-                        <span className="text-[10px] lg:text-sm font-bold tracking-tight text-foreground">¥{(c.finance?.oneTimeFee || 0).toLocaleString()} <span className="text-[7px] text-muted-foreground opacity-60">GROSS</span></span>
-                        <span className="text-[10px] lg:text-sm font-bold tracking-tight text-emerald-500">¥{(c.finance?.oneTimeFeeTakeHome ?? Math.floor((c.finance?.oneTimeFee || 0) * 0.4)).toLocaleString()} <span className="text-[7px] text-emerald-500/60">NET</span></span>
+                        <span className="text-[10px] lg:text-xs font-bold text-foreground">¥{(c.finance?.oneTimeFee || 0).toLocaleString()} <span className="text-[7px] lg:text-[9px] text-muted-foreground">GROSS</span></span>
+                        <span className="text-[10px] lg:text-xs font-bold text-emerald-700">¥{(c.finance?.oneTimeFeeTakeHome ?? Math.floor((c.finance?.oneTimeFee || 0) * 0.4)).toLocaleString()} <span className="text-[7px] lg:text-[9px] text-emerald-700">NET</span></span>
                       </div>
                     </div>
                   </>
                 ) : (
-                  <div className="flex flex-col text-left lg:text-center min-w-0 lg:min-w-[100px]">
-                    <span className="text-[6px] lg:text-[9px] font-bold text-muted-foreground uppercase tracking-widest opacity-40 mb-0.5 lg:mb-1">SPOT / スポット</span>
+                  <div className="flex flex-col text-left lg:text-right min-w-0 lg:min-w-[120px]">
+                    <span className="text-[6px] lg:text-[10px] font-bold text-muted-foreground uppercase tracking-wide mb-0.5">SPOT / スポット</span>
                     <div className="flex flex-col">
-                      <span className="text-[10px] lg:text-sm font-bold tracking-tight text-foreground">¥{(c.finance?.spotFee || 0).toLocaleString()} <span className="text-[7px] text-muted-foreground opacity-60">GROSS</span></span>
-                      <span className="text-[10px] lg:text-sm font-bold tracking-tight text-emerald-500">¥{Math.floor((c.finance?.spotFee || 0) * ((c.finance?.spotRate ?? 40) / 100)).toLocaleString()} <span className="text-[7px] text-emerald-500/60">NET</span></span>
+                      <span className="text-[10px] lg:text-xs font-bold text-foreground">¥{(c.finance?.spotFee || 0).toLocaleString()} <span className="text-[7px] lg:text-[9px] text-muted-foreground">GROSS</span></span>
+                      <span className="text-[10px] lg:text-xs font-bold text-emerald-700">¥{Math.floor((c.finance?.spotFee || 0) * ((c.finance?.spotRate ?? 40) / 100)).toLocaleString()} <span className="text-[7px] lg:text-[9px] text-emerald-700">NET</span></span>
                     </div>
                   </div>
                 )}
               </div>
 
-              <div className="flex lg:flex items-center gap-1 lg:gap-3 shrink-0 lg:ml-auto pointer-events-auto absolute lg:relative right-2 top-2 lg:right-auto lg:top-auto z-10 bg-card/80 lg:bg-transparent p-1 lg:p-0 rounded-md backdrop-blur-md lg:backdrop-blur-none">
+              <div className="flex lg:flex items-center gap-1 lg:gap-1 shrink-0 lg:ml-auto pointer-events-auto absolute lg:relative right-2 top-2 lg:right-auto lg:top-auto z-10 bg-card/80 lg:bg-transparent p-1 lg:p-0 rounded-md backdrop-blur-md lg:backdrop-blur-none">
                 <Button 
                   variant="ghost" 
                   size="icon" 
@@ -175,12 +176,12 @@ function CasesViewContent() {
                     toggleStatus(c.id, c.status);
                   }}
                   className={cn(
-                    "h-6 w-6 lg:h-10 lg:w-10 rounded-md transition-all border border-transparent hover:border-border",
-                    c.status === 'active' ? "text-emerald-500 hover:bg-emerald-500/10" : "text-blue-500 hover:bg-blue-500/10"
+                    "h-6 w-6 lg:h-8 lg:w-8 rounded-md transition-all border border-transparent hover:border-border",
+                    c.status === 'active' ? "text-emerald-700 hover:bg-emerald-500/10" : "text-blue-700 hover:bg-blue-500/10"
                   )}
                   title={c.status === 'active' ? "完了にする" : "進行中に戻す"}
                 >
-                  {c.status === 'active' ? <CheckCircle2 className="w-3 h-3 lg:w-5 lg:h-5" /> : <RefreshCw className="w-3 h-3 lg:w-5 lg:h-5" />}
+                  {c.status === 'active' ? <CheckCircle2 className="w-3 h-3 lg:w-4 lg:h-4" /> : <RefreshCw className="w-3 h-3 lg:w-4 lg:h-4" />}
                 </Button>
                 <Button 
                   variant="ghost" 
@@ -189,12 +190,12 @@ function CasesViewContent() {
                     e.stopPropagation();
                     if(confirm('案件を削除しますか？')) deleteCase(c.id);
                   }}
-                  className="h-6 w-6 lg:h-10 lg:w-10 rounded-md text-muted-foreground hover:text-destructive hover:bg-destructive/10 transition-all"
+                  className="h-6 w-6 lg:h-8 lg:w-8 rounded-md text-muted-foreground hover:text-destructive hover:bg-destructive/10 transition-all"
                 >
-                  <Trash2 className="w-3 h-3 lg:w-5 lg:h-5" />
+                  <Trash2 className="w-3 h-3 lg:w-4 lg:h-4" />
                 </Button>
-                <div className="hidden lg:block bg-secondary p-2 rounded-md group-hover:bg-primary/10 transition-all ml-1">
-                  <ChevronRight className="w-5 h-5 text-muted-foreground group-hover:text-primary transition-all group-hover:translate-x-1" />
+                <div className="hidden lg:block bg-secondary p-1.5 rounded-md group-hover:bg-primary/10 transition-colors ml-1">
+                  <ChevronRight className="w-4 h-4 text-muted-foreground group-hover:text-primary transition-colors" />
                 </div>
               </div>
             </div>
@@ -205,20 +206,45 @@ function CasesViewContent() {
   };
 
   return (
-    <div className="space-y-10 animate-in fade-in slide-in-from-bottom-4 duration-700 font-sans pb-10">
-      <div className="flex flex-col gap-5 bg-card p-5 lg:p-6 rounded-lg border border-border">
-        <div className="flex flex-col xl:flex-row justify-between items-start xl:items-center gap-4">
+    <div className="space-y-3 animate-in fade-in duration-300 font-sans pb-4">
+      <SideTree title="案件の絞り込み">
+        <TreeItem glyph="▾" label="状態" />
+        <TreeItem
+          depth={1}
+          label="ALL CASES すべての案件"
+          badge={cases.length}
+          active={initialFilter === 'all'}
+          href="/cases?filter=all"
+        />
+        <TreeItem
+          depth={1}
+          label="ACTIVE 進行中の案件"
+          badge={cases.filter(c => c.status === 'active').length}
+          active={initialFilter === 'active'}
+          href="/cases?filter=active"
+        />
+        <TreeItem
+          depth={1}
+          label="COMPLETED 完了済みの案件"
+          badge={cases.filter(c => c.status === 'completed').length}
+          active={initialFilter === 'completed'}
+          href="/cases?filter=completed"
+        />
+      </SideTree>
+
+      <div className="flex flex-col gap-3 bg-card p-4 rounded-md border border-border">
+        <div className="flex flex-col xl:flex-row justify-between items-start xl:items-center gap-3">
           <div className="min-w-0">
-            <h2 className="text-2xl lg:text-3xl font-bold tracking-tight text-foreground flex items-center gap-3 lg:gap-4 uppercase mb-1">
-              <Briefcase className="w-6 h-6 lg:w-8 lg:h-8 text-primary" /> Case Repository
+            <h2 className="text-base font-bold text-foreground flex items-center gap-2 uppercase">
+              <Briefcase className="w-5 h-5 text-primary" /> Case Repository
             </h2>
-            <p className="text-[9px] lg:text-[10px] font-bold text-muted-foreground uppercase tracking-[0.2em] opacity-40 ml-9 lg:ml-12">案件管理リポジトリ ・ プロジェクト一括管理</p>
+            <p className="text-[11px] font-bold text-muted-foreground mt-0.5">案件管理リポジトリ ・ プロジェクト一括管理</p>
           </div>
 
-          <div className="flex flex-col sm:flex-row gap-3 w-full xl:w-auto shrink-0 justify-end">
+          <div className="flex flex-col sm:flex-row gap-2 w-full xl:w-auto shrink-0 justify-end">
             <div className="flex items-center gap-2">
               <Select value={sortOption} onValueChange={(val: any) => setSortOption(val)}>
-                <SelectTrigger className="h-10 lg:h-12 bg-input border border-border rounded-md font-bold text-[10px] lg:text-xs w-40">
+                <SelectTrigger className="h-10 bg-input border border-border rounded-md font-bold text-xs w-40">
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
@@ -229,126 +255,112 @@ function CasesViewContent() {
               </Select>
               <Button 
                 variant="outline" 
-                className="h-10 lg:h-12 w-10 lg:w-12 px-0 bg-card"
+                className="h-10 w-10 px-0 bg-card"
                 onClick={() => setSortOrder(sortOrder === 'desc' ? 'asc' : 'desc')}
               >
                 {sortOrder === 'desc' ? <ChevronDown className="w-4 h-4" /> : <ChevronUp className="w-4 h-4" />}
               </Button>
             </div>
-            <div className="relative flex-1 sm:w-80">
-              <Search className="absolute left-3 lg:left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground opacity-30" />
+            <div className="relative flex-1 sm:w-72">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
               <Input 
                 placeholder="案件名・法人名で検索... / SEARCH" 
-                className="h-10 lg:h-12 bg-input border border-border rounded-md pl-10 lg:pl-12 font-bold text-[10px] lg:text-xs focus-visible:ring-1 focus-visible:ring-primary"
+                className="h-10 bg-input border border-border rounded-md pl-9 font-bold text-xs focus-visible:ring-1 focus-visible:ring-primary"
               />
             </div>
           </div>
         </div>
 
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-t border-border/50 pt-4 px-1 lg:px-2">
-          <div className="flex items-center gap-4 lg:gap-8">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-t border-border pt-3">
+          <div className="flex items-center gap-4 lg:gap-6">
             <div className="flex flex-col">
-              <span className="text-[8px] lg:text-[9px] font-bold text-muted-foreground uppercase tracking-widest opacity-40">TOTAL CASES / 全案件数</span>
-              <span className="text-lg lg:text-xl font-bold tracking-tight">{cases.length}</span>
+              <span className="text-[8px] lg:text-[10px] font-bold text-muted-foreground uppercase tracking-wide">TOTAL CASES / 全案件数</span>
+              <span className="text-lg font-bold">{cases.length}</span>
             </div>
-            <div className="w-px h-5 lg:h-6 bg-border" />
+            <div className="w-px h-6 bg-border" />
             <div className="flex flex-col">
-              <span className="text-[8px] lg:text-[9px] font-bold text-emerald-500 uppercase tracking-widest opacity-60">ACTIVE / 進行中</span>
-              <span className="text-lg lg:text-xl font-bold tracking-tight text-emerald-500">{cases.filter(c => c.status === 'active').length}</span>
+              <span className="text-[8px] lg:text-[10px] font-bold text-emerald-700 uppercase tracking-wide">ACTIVE / 進行中</span>
+              <span className="text-lg font-bold text-emerald-700">{cases.filter(c => c.status === 'active').length}</span>
             </div>
-            <div className="w-px h-5 lg:h-6 bg-border" />
+            <div className="w-px h-6 bg-border" />
             <div className="flex flex-col">
-              <span className="text-[8px] lg:text-[9px] font-bold text-blue-500 uppercase tracking-widest opacity-60">COMPLETED / 完了済</span>
-              <span className="text-lg lg:text-xl font-bold tracking-tight text-blue-500">{cases.filter(c => c.status === 'completed').length}</span>
+              <span className="text-[8px] lg:text-[10px] font-bold text-blue-700 uppercase tracking-wide">COMPLETED / 完了済</span>
+              <span className="text-lg font-bold text-blue-700">{cases.filter(c => c.status === 'completed').length}</span>
             </div>
           </div>
           
           <Button 
             onClick={handleCreate} 
-            className="h-10 lg:h-12 px-6 lg:px-8 bg-primary hover:brightness-110 text-primary-foreground font-bold tracking-tight rounded-md transition-all active:scale-95 shrink-0 flex items-center gap-2 lg:gap-3"
+            className="h-10 px-4 bg-primary hover:brightness-110 text-primary-foreground font-bold rounded-md transition-all shrink-0 flex items-center gap-2 shadow-none"
           >
-            <Plus className="w-5 h-5 lg:w-6 lg:h-6" />
-            <span className="text-base uppercase tracking-widest flex flex-col items-start leading-none">
-              <span className="text-[10px] lg:text-[11px] font-black">NEW CASE</span>
-              <span className="text-[7px] lg:text-[8px] font-bold opacity-60 mt-1">新規案件を作成</span>
+            <Plus className="w-5 h-5" />
+            <span className="uppercase flex flex-col items-start leading-none">
+              <span className="text-[11px] font-bold">NEW CASE</span>
+              <span className="text-[8px] lg:text-[9px] font-bold opacity-80 mt-1">新規案件を作成</span>
             </span>
           </Button>
         </div>
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-10">
+      {/* スマホ用タブ（PCは左のツリーに移動） */}
+      <div className="lg:hidden grid grid-cols-3 gap-1 border-b border-border">
         <NavTab 
           active={initialFilter === 'all'} 
           onClick={() => router.push('/cases?filter=all')}
-          icon={<LayoutGrid className="w-5 h-5" />}
+          icon={<LayoutGrid className="w-3.5 h-3.5" />}
           label="ALL CASES"
           subLabel="すべての案件"
           count={cases.length}
-          color="primary"
         />
         <NavTab 
           active={initialFilter === 'active'} 
           onClick={() => router.push('/cases?filter=active')}
-          icon={<Clock className="w-5 h-5" />}
+          icon={<Clock className="w-3.5 h-3.5" />}
           label="ACTIVE"
           subLabel="進行中の案件"
           count={cases.filter(c => c.status === 'active').length}
-          color="emerald"
         />
         <NavTab 
           active={initialFilter === 'completed'} 
           onClick={() => router.push('/cases?filter=completed')}
-          icon={<CheckCircle2 className="w-5 h-5" />}
+          icon={<CheckCircle2 className="w-3.5 h-3.5" />}
           label="COMPLETED"
           subLabel="完了済みの案件"
           count={cases.filter(c => c.status === 'completed').length}
-          color="blue"
         />
       </div>
 
-      <div className="animate-in fade-in duration-500">
+      <div className="animate-in fade-in duration-300">
         {renderCaseList(initialFilter)}
       </div>
     </div>
   );
 }
 
-function NavTab({ active, onClick, icon, label, subLabel, count, color }: any) {
-  const activeColors = {
-    primary: "border-primary text-primary",
-    emerald: "border-emerald-500 text-emerald-600",
-    blue: "border-blue-500 text-blue-600"
-  };
-
+function NavTab({ active, onClick, icon, label, subLabel, count }: any) {
   return (
     <button 
       onClick={onClick}
       className={cn(
-        "relative flex flex-col p-5 rounded-lg border transition-all text-left group active:scale-95",
+        "flex flex-col gap-0.5 px-2 py-2 border-b-2 transition-colors text-left min-w-0",
         active 
-          ? "bg-card border-primary " + (activeColors as any)[color]
-          : "bg-secondary hover:bg-card border-border hover:border-primary/50 text-muted-foreground"
+          ? "bg-card border-primary text-foreground"
+          : "border-transparent text-muted-foreground hover:bg-card"
       )}
     >
-      <div className={cn(
-        "p-2.5 rounded-md mb-4 w-fit transition-all",
-        active ? "bg-primary/10 text-primary" : "bg-background text-muted-foreground group-hover:bg-primary/10 group-hover:text-primary"
-      )}>
-        {icon}
-      </div>
-      
-      <div className="flex justify-between items-end">
-        <div>
-          <span className={cn("text-[11px] font-black uppercase tracking-[0.2em] block mb-1", active ? "text-foreground" : "text-muted-foreground")}>{label}</span>
-          <span className="text-[9px] font-bold text-muted-foreground opacity-40 uppercase tracking-widest">{subLabel}</span>
-        </div>
-        <div className={cn(
-          "px-3 py-1 rounded-md text-[10px] font-black",
-          active ? "bg-primary text-primary-foreground" : "bg-background text-muted-foreground"
+      <div className="flex flex-wrap items-center justify-between gap-x-1 gap-y-0.5">
+        <span className="flex items-center gap-1 text-[10px] sm:text-[11px] font-bold uppercase">
+          <span className={cn("hidden sm:inline-flex", active ? "text-primary" : "")}>{icon}</span>
+          {label}
+        </span>
+        <span className={cn(
+          "px-1.5 py-0.5 rounded-md text-[10px] font-bold shrink-0",
+          active ? "bg-primary text-primary-foreground" : "bg-secondary text-muted-foreground"
         )}>
           {count}
-        </div>
+        </span>
       </div>
+      <span className="text-[9px] font-bold text-muted-foreground">{subLabel}</span>
     </button>
   );
 }
