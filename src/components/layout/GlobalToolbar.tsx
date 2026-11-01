@@ -75,7 +75,8 @@ export function GlobalToolbar() {
           className="flex items-center gap-1.5 bg-primary hover:brightness-110 text-primary-foreground font-bold h-8 px-3 rounded-md transition-all active:scale-95"
         >
           <Plus className="w-3.5 h-3.5" />
-          <span className="text-[11px] uppercase tracking-wider font-bold">NEW TASK</span>
+          <span className="hidden sm:inline text-[11px] uppercase tracking-wider font-bold">NEW TASK</span>
+          <span className="sm:hidden text-[11px] font-bold">タスク</span>
         </Button>
 
         <div className="flex items-center gap-0.5 lg:border-l border-border lg:pl-3">
