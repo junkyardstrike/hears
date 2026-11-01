@@ -5,13 +5,29 @@ import { useHearsStore, ClientData, CaseData } from '@/store/useHearsStore';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { 
+import {
   Building2, Plus, Trash2, Edit, Save, X, Search,
   Users, Briefcase, ChevronDown, ChevronUp, Check, LayoutDashboard, ArrowUpRight
 } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { cn } from '@/lib/utils';
 import { Badge } from '@/components/ui/badge';
+import { SideTree, TreeItem } from '@/components/layout/SideTree';
+
+type CaseWithStats = CaseData & {
+  caseGross: number;
+  caseStock: number;
+  caseShot: number;
+  monthsActive: number;
+  recognitionMonth: string;
+};
+
+type ClientWithStats = ClientData & {
+  clientCases: CaseWithStats[];
+  clientTotalGross: number;
+  clientTotalStock: number;
+  clientTotalShot: number;
+};
 
 const ClientDetailForm = ({ client, updateClient }: { client: ClientData, updateClient: any }) => {
   const [managerName, setManagerName] = useState(client.managerName || '');
@@ -28,34 +44,226 @@ const ClientDetailForm = ({ client, updateClient }: { client: ClientData, update
   };
 
   return (
-    <div className="flex-1 bg-card border border-border p-5 rounded-md flex flex-col gap-4 relative">
-      <div className="absolute top-4 right-4">
-        <Button onClick={handleSave} className="h-8 px-3 bg-primary text-primary-foreground font-bold text-[10px]">
-          {isSaved ? <Check className="w-3 h-3 mr-1" /> : <Save className="w-3 h-3 mr-1" />} 保存
-        </Button>
-      </div>
-      <div className="flex flex-col">
-        <span className="text-[9px] font-bold text-muted-foreground uppercase tracking-widest mb-1">MANAGER / 担当者</span>
-        <Input 
-          value={managerName} 
-          onChange={e => setManagerName(e.target.value)} 
-          className="h-10 bg-input border-border font-bold text-sm w-3/4 lg:w-2/3" 
+    <div className="bg-card border border-border p-3 rounded-md flex flex-col lg:flex-row lg:items-end gap-3">
+      <div className="flex flex-col lg:flex-1 min-w-0">
+        <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-wide mb-1">MANAGER / 担当者</span>
+        <Input
+          value={managerName}
+          onChange={e => setManagerName(e.target.value)}
+          className="h-9 bg-input border-border font-bold text-sm w-full"
           placeholder="担当者名を入力"
         />
       </div>
-      <div className="w-full h-px bg-border" />
-      <div className="flex flex-col">
-        <span className="text-[9px] font-bold text-muted-foreground uppercase tracking-widest mb-1">MEMO / メモ</span>
-        <textarea 
-          value={memo} 
-          onChange={e => setMemo(e.target.value)} 
-          className="min-h-[80px] bg-input border border-border rounded-md p-3 text-sm font-medium resize-y" 
+      <div className="flex flex-col lg:flex-[2] min-w-0">
+        <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-wide mb-1">MEMO / メモ</span>
+        <textarea
+          value={memo}
+          onChange={e => setMemo(e.target.value)}
+          className="min-h-[60px] bg-input border border-border rounded-md px-3 py-2 text-sm font-medium resize-y"
           placeholder="メモを入力"
         />
       </div>
+      <Button onClick={handleSave} className="h-9 px-3 bg-primary text-primary-foreground font-bold text-[11px] self-end shrink-0">
+        {isSaved ? <Check className="w-3 h-3 mr-1" /> : <Save className="w-3 h-3 mr-1" />} 保存
+      </Button>
     </div>
   );
 };
+
+const SummaryStat = ({ label, className, children }: { label: string; className?: string; children: React.ReactNode }) => (
+  <div className={cn("flex flex-col text-left min-w-0", className)}>
+    <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-wide mb-0.5">{label}</span>
+    {children}
+  </div>
+);
+
+interface ClientSummaryProps {
+  c: ClientWithStats;
+  editingId: string | null;
+  setEditingId: (id: string | null) => void;
+  editForm: Partial<ClientData>;
+  setEditForm: (form: Partial<ClientData>) => void;
+  startEdit: (c: ClientData, e: React.MouseEvent) => void;
+  saveEdit: (e: React.MouseEvent) => void;
+  deleteClient: (id: string) => void;
+}
+
+// 取引先のサマリー行（PCは本文上部、スマホはカード見出しとして共用）
+const ClientSummary = ({ c, editingId, setEditingId, editForm, setEditForm, startEdit, saveEdit, deleteClient }: ClientSummaryProps) => (
+  editingId === c.id ? (
+    <div className="flex-1 w-full grid grid-cols-1 md:grid-cols-2 gap-3 animate-in fade-in duration-200" onClick={e => e.stopPropagation()}>
+      <div className="space-y-1">
+        <label className="text-[10px] font-bold text-muted-foreground uppercase tracking-wide">ENTITY NAME / 法人名</label>
+        <Input value={editForm.name} onChange={(e) => setEditForm({...editForm, name: e.target.value})} className="h-9 bg-input border-border rounded-md font-bold" />
+      </div>
+      <div className="space-y-1">
+        <label className="text-[10px] font-bold text-muted-foreground uppercase tracking-wide">MANAGER / 担当者名</label>
+        <Input value={editForm.managerName} onChange={(e) => setEditForm({...editForm, managerName: e.target.value})} className="h-9 bg-input border-border rounded-md font-bold" />
+      </div>
+      <div className="md:col-span-2 space-y-1">
+        <label className="text-[10px] font-bold text-muted-foreground uppercase tracking-wide">MEMO / メモ</label>
+        <Input value={editForm.memo} onChange={(e) => setEditForm({...editForm, memo: e.target.value})} className="h-9 bg-input border-border rounded-md font-bold" />
+      </div>
+    </div>
+  ) : (
+    <div className="flex-1 flex items-center gap-3 min-w-0">
+      <div className="flex-1 grid grid-cols-2 sm:grid-cols-5 gap-x-4 gap-y-2 min-w-0">
+        <SummaryStat label="ENTITY / 取引先" className="col-span-2 sm:col-span-1">
+          <h3 className="text-sm font-bold text-foreground leading-tight line-clamp-2">
+            {c.name}
+          </h3>
+        </SummaryStat>
+        <SummaryStat label="MANAGER / 担当者">
+          <span className="text-xs font-bold text-foreground truncate">
+            {c.managerName || '-'}
+          </span>
+        </SummaryStat>
+        <SummaryStat label="CASES / 案件数">
+          <span className="text-sm font-bold text-primary">
+            {c.clientCases.length}
+          </span>
+        </SummaryStat>
+        <SummaryStat label="MAINT. / 保守">
+          <span className="text-xs font-bold text-emerald-700">
+            ¥{c.clientTotalStock.toLocaleString()}
+          </span>
+        </SummaryStat>
+        <SummaryStat label="SPOT / 制作">
+          <span className="text-xs font-bold text-blue-700">
+            ¥{c.clientTotalShot.toLocaleString()}
+          </span>
+        </SummaryStat>
+      </div>
+
+      {/* 操作ボタン列 (右端) */}
+      <div className="flex flex-col lg:flex-row gap-1 shrink-0 border-l border-border pl-2" onClick={e => e.stopPropagation()}>
+        {editingId === c.id ? (
+          <>
+            <Button onClick={saveEdit} className="h-8 w-8 bg-primary text-primary-foreground rounded-md font-bold flex items-center justify-center hover:brightness-110">
+              <Check className="w-4 h-4" />
+            </Button>
+            <Button variant="ghost" size="icon" onClick={(e) => { e.stopPropagation(); setEditingId(null); }} className="h-8 w-8 rounded-md text-muted-foreground hover:bg-secondary">
+              <X className="w-4 h-4" />
+            </Button>
+          </>
+        ) : (
+          <>
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={(e) => startEdit(c, e)}
+              className="h-8 w-8 rounded-md text-muted-foreground hover:text-primary hover:bg-primary/10 transition-all"
+            >
+              <Edit className="w-4 h-4" />
+            </Button>
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={(e) => { e.stopPropagation(); if(confirm('取引先を削除しますか？')) deleteClient(c.id); }}
+              className="h-8 w-8 rounded-md text-muted-foreground hover:text-destructive hover:bg-destructive/10 transition-all"
+            >
+              <Trash2 className="w-4 h-4" />
+            </Button>
+          </>
+        )}
+      </div>
+    </div>
+  )
+);
+
+// 取引先の詳細（PCは本文、スマホはカード展開部として共用）
+const ClientDetailBody = ({ c, updateClient, onOpenCase }: { c: ClientWithStats; updateClient: (id: string, updater: (client: ClientData) => void) => void; onOpenCase: (id: string) => void }) => (
+  <div className="flex flex-col gap-3">
+    <ClientDetailForm client={c} updateClient={updateClient} />
+
+    <div className="bg-card border border-border p-3 rounded-md grid grid-cols-1 sm:grid-cols-2 gap-3">
+      <div className="flex items-center justify-between gap-3">
+        <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-wide">CUMULATIVE MAINTENANCE / 保守累計獲得額</span>
+        <span className="text-base font-bold text-emerald-700">¥{c.clientTotalStock.toLocaleString()}</span>
+      </div>
+      <div className="flex items-center justify-between gap-3">
+        <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-wide">PRODUCTION・SPOT TOTAL / 制作・スポット累計</span>
+        <span className="text-base font-bold text-blue-700">¥{c.clientTotalShot.toLocaleString()}</span>
+      </div>
+    </div>
+
+    <h4 className="text-xs font-bold text-foreground flex items-center gap-2 uppercase mt-1">
+      <Briefcase className="w-4 h-4 text-primary" /> ASSOCIATED CASES / 紐付けられた案件
+    </h4>
+    {c.clientCases.length === 0 ? (
+      <div className="text-center py-6 bg-card rounded-md border border-dashed border-border">
+        <p className="text-[11px] font-bold text-muted-foreground uppercase tracking-wide">紐づく案件はありません</p>
+      </div>
+    ) : (
+      <div className="overflow-x-auto bg-card rounded-md border border-border">
+        <table className="w-full text-left whitespace-nowrap">
+          <thead>
+            <tr className="border-b border-border bg-secondary">
+              <th className="px-3 py-2 text-[10px] font-bold text-muted-foreground uppercase tracking-wide">案件名・カテゴリ</th>
+              <th className="px-3 py-2 text-[10px] font-bold text-muted-foreground uppercase tracking-wide">ステータス</th>
+              <th className="px-3 py-2 text-[10px] font-bold text-muted-foreground uppercase tracking-wide">計上月</th>
+              <th className="px-3 py-2 text-[10px] font-bold text-muted-foreground uppercase tracking-wide text-right">制作/SPOT</th>
+              <th className="px-3 py-2 text-[10px] font-bold text-muted-foreground uppercase tracking-wide text-right">保守(月額/累計/月数)</th>
+              <th className="px-3 py-2 text-[10px] font-bold text-muted-foreground uppercase tracking-wide text-right">TOTAL</th>
+              <th className="px-3 py-2 w-10"></th>
+            </tr>
+          </thead>
+          <tbody className="divide-y divide-border">
+            {c.clientCases.map((caseItem) => (
+              <tr
+                key={caseItem.id}
+                className="group hover:bg-secondary transition-colors cursor-pointer"
+                onClick={() => onOpenCase(caseItem.id)}
+              >
+                <td className="px-3 py-2">
+                  <div className="flex flex-col">
+                    <span className="text-xs font-bold text-foreground">{caseItem.name}</span>
+                    <span className="text-[10px] font-medium text-muted-foreground mt-0.5">{caseItem.genre || '未分類'}</span>
+                  </div>
+                </td>
+                <td className="px-3 py-2">
+                  <Badge className={cn("border-none font-bold text-[10px] uppercase tracking-wide px-2 py-0.5 rounded-md",
+                    caseItem.status === 'active' ? "bg-emerald-500/15 text-emerald-700" : "bg-secondary text-muted-foreground"
+                  )}>
+                    {caseItem.status === 'active' ? '進行中' : 'アーカイブ'}
+                  </Badge>
+                </td>
+                <td className="px-3 py-2">
+                  <span className="text-[11px] font-bold text-foreground">
+                    {caseItem.recognitionMonth || '-'}
+                  </span>
+                </td>
+                <td className="px-3 py-2 text-right">
+                  <span className="text-xs font-bold text-blue-700">
+                    ¥{caseItem.caseShot.toLocaleString()}
+                  </span>
+                </td>
+                <td className="px-3 py-2 text-right">
+                  <div className="flex flex-col items-end">
+                    <span className="text-xs font-bold text-emerald-700">
+                      ¥{caseItem.caseStock.toLocaleString()}
+                    </span>
+                    <span className="text-[10px] font-medium text-muted-foreground mt-0.5">
+                      ¥{(caseItem.finance?.maintenanceFee || 0).toLocaleString()}/月 (x{caseItem.monthsActive}ヶ月)
+                    </span>
+                  </div>
+                </td>
+                <td className="px-3 py-2 text-right">
+                  <span className="text-sm font-bold text-foreground">
+                    ¥{caseItem.caseGross.toLocaleString()}
+                  </span>
+                </td>
+                <td className="px-3 py-2 text-right">
+                  <ArrowUpRight className="w-4 h-4 text-muted-foreground opacity-40 group-hover:opacity-100 transition-opacity ml-auto" />
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    )}
+  </div>
+);
 
 export default function ClientsDashboard() {
   const router = useRouter();
@@ -64,6 +272,8 @@ export default function ClientsDashboard() {
   const [editingId, setEditingId] = useState<string | null>(null);
   const [editForm, setEditForm] = useState<Partial<ClientData>>({});
   const [expandedClientId, setExpandedClientId] = useState<string | null>(null);
+  // PC: ツリーで選択中の取引先（表示専用）
+  const [selectedClientId, setSelectedClientId] = useState<string | null>(null);
   const containerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -77,16 +287,16 @@ export default function ClientsDashboard() {
   }, []);
 
   const clientsWithStats = useMemo(() => {
-    const filtered = clients.filter(c => 
+    const filtered = clients.filter(c =>
       c.name.toLowerCase().includes(search.toLowerCase()) ||
       (c.managerName || '').toLowerCase().includes(search.toLowerCase())
     );
 
     const now = new Date();
-    
+
     return filtered.map(c => {
       const clientCasesRaw = cases.filter(item => item.clientId === c.id || item.contractEntity === c.name);
-      
+
       let clientTotalGross = 0;
       let clientTotalStock = 0;
       let clientTotalShot = 0;
@@ -97,14 +307,14 @@ export default function ClientsDashboard() {
         let caseShot = 0;
         let monthsActive = 0;
         let recognitionMonth = '';
-        
+
         if (!caseItem.finance) return { ...caseItem, caseGross, caseStock, caseShot, monthsActive, recognitionMonth };
-        
+
         const isStockType = caseItem.genre === 'HP制作' || caseItem.genre === 'SNS運用';
         if (isStockType) {
           caseShot = caseItem.finance.oneTimeFee || 0;
           recognitionMonth = caseItem.finance.oneTimeFeeMonth || caseItem.finance.revenueStartMonth || '';
-          
+
           const startStr = caseItem.finance.revenueStartMonth;
           if (startStr) {
             const startYear = parseInt(startStr.split('-')[0]);
@@ -120,12 +330,12 @@ export default function ClientsDashboard() {
           caseShot = caseItem.finance.spotFee || 0;
           recognitionMonth = caseItem.finance.spotMonth || caseItem.finance.revenueStartMonth || '';
         }
-        
+
         caseGross = caseStock + caseShot;
         clientTotalGross += caseGross;
         clientTotalStock += caseStock;
         clientTotalShot += caseShot;
-        
+
         return { ...caseItem, caseGross, caseStock, caseShot, monthsActive, recognitionMonth };
       }).sort((a,b) => b.updatedAt - a.updatedAt);
 
@@ -138,6 +348,10 @@ export default function ClientsDashboard() {
       };
     }).sort((a, b) => b.clientTotalGross - a.clientTotalGross);
   }, [clients, search, cases]);
+
+  // 選択中の取引先（未選択、または絞り込みで消えた場合は先頭）
+  const selectedClient: ClientWithStats | undefined =
+    clientsWithStats.find(c => c.id === selectedClientId) ?? clientsWithStats[0];
 
   const handleAdd = () => {
     const name = prompt('取引先法人名を入力してください', '新規取引先');
@@ -160,259 +374,117 @@ export default function ClientsDashboard() {
     }
   };
 
+  const openCase = (id: string) => router.push(`/cases/${id}`);
+
+  const summaryProps = { editingId, setEditingId, editForm, setEditForm, startEdit, saveEdit, deleteClient };
+
   return (
-    <div className="space-y-8 animate-in fade-in duration-500 font-sans pb-20 max-w-[1600px] mx-auto pt-2">
+    <div className="space-y-3 animate-in fade-in duration-500 pb-4 max-w-[1600px] mx-auto">
+      {/* PC: 左ツリーに取引先と紐づく案件 */}
+      {clientsWithStats.length > 0 && (
+        <SideTree title="取引先と案件">
+          {clientsWithStats.map((c) => {
+            const isSelected = selectedClient?.id === c.id;
+            return (
+              <div key={c.id} className="flex flex-col gap-px">
+                <TreeItem
+                  label={c.name}
+                  glyph={isSelected ? '▾' : '▸'}
+                  badge={c.clientCases.length}
+                  active={isSelected}
+                  onClick={() => setSelectedClientId(c.id)}
+                />
+                {isSelected && c.clientCases.map((caseItem) => (
+                  <TreeItem
+                    key={caseItem.id}
+                    depth={1}
+                    label={caseItem.name}
+                    href={`/cases/${caseItem.id}`}
+                  />
+                ))}
+              </div>
+            );
+          })}
+        </SideTree>
+      )}
+
       {/* ヘッダー */}
-      <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-8 bg-card p-6 lg:p-8 rounded-lg border border-border">
+      <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-3 bg-card px-3 py-3 rounded-md border border-border">
         <div className="min-w-0 flex-1">
-          <div className="flex items-center gap-4 mb-2">
-            <h2 className="text-3xl font-bold italic tracking-tighter text-foreground flex items-center gap-4 uppercase font-[family-name:var(--font-outfit)]">
-              <Building2 className="w-10 h-10 text-primary" /> CLIENTS DASHBOARD
-            </h2>
-          </div>
-          <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-[0.2em] opacity-40 ml-14">取引先別 案件管理ダッシュボード</p>
+          <h2 className="text-base font-bold text-foreground flex items-center gap-2 uppercase">
+            <Building2 className="w-5 h-5 text-primary" /> CLIENTS DASHBOARD
+          </h2>
+          <p className="text-[11px] font-medium text-muted-foreground">取引先別 案件管理ダッシュボード</p>
         </div>
-        
-        <div className="flex flex-col sm:flex-row gap-4 w-full lg:w-auto shrink-0">
-          <div className="relative w-full sm:w-80">
-            <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground opacity-40" />
-            <Input 
-              placeholder="法人名で検索... / SEARCH" 
+
+        <div className="flex flex-col sm:flex-row gap-2 w-full lg:w-auto shrink-0">
+          <div className="relative w-full sm:w-72">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+            <Input
+              placeholder="法人名で検索... / SEARCH"
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              className="pl-12 h-14 bg-input border-none rounded-md font-bold text-xs"
+              className="pl-9 h-10 bg-input border-border rounded-md font-bold text-xs"
             />
           </div>
-          <Button onClick={handleAdd} className="bg-primary hover:brightness-110 text-primary-foreground font-bold h-14 px-8 rounded-md transition-all active:scale-95 shrink-0 flex items-center gap-3">
-            <Plus className="w-7 h-7" />
-            <span className="flex flex-col items-start leading-none uppercase italic tracking-tight text-left">
-              <span className="text-[12px] font-black">NEW CLIENT</span>
-              <span className="text-[9px] font-bold opacity-60 mt-1">新規取引先登録</span>
+          <Button onClick={handleAdd} className="bg-primary hover:brightness-110 text-primary-foreground font-bold h-10 px-4 rounded-md transition-all active:scale-95 shrink-0 flex items-center gap-2">
+            <Plus className="w-5 h-5" />
+            <span className="flex flex-col items-start leading-none text-left">
+              <span className="text-xs font-bold">NEW CLIENT</span>
+              <span className="text-[10px] font-medium opacity-80 mt-1">新規取引先登録</span>
             </span>
           </Button>
         </div>
       </div>
 
-      {/* 一覧 */}
-      <div className="max-w-6xl mx-auto">
-        <div ref={containerRef} className="grid grid-cols-1 md:grid-cols-2 gap-6 justify-center">
-        {clientsWithStats.length === 0 ? (
-          <div className="py-24 text-center bg-card border border-dashed border-border rounded-lg animate-in fade-in duration-700 col-span-1 lg:col-span-2">
-             <Building2 className="w-16 h-16 text-muted-foreground mx-auto opacity-10 mb-6" />
-             <h3 className="text-xl font-bold italic tracking-tighter text-foreground mb-1">NO CLIENTS REGISTERED</h3>
-             <p className="text-muted-foreground font-bold text-[10px] uppercase tracking-widest opacity-40">取引先が登録されていません</p>
-          </div>
-        ) : (
-          clientsWithStats.map((c) => {
-            const isExpanded = expandedClientId === c.id;
-
-            return (
-              <div key={c.id} className={cn(
-                "bg-card rounded-lg border overflow-hidden transition-all",
-                isExpanded ? "border-primary ring-1 ring-primary shadow-lg scale-[1.02] z-20" : "border-border hover:border-primary/50"
-              )}>
-                <div 
-                  className="p-3 lg:p-4 flex flex-col lg:flex-row items-start lg:items-center gap-4 lg:gap-6 group relative cursor-pointer"
-                  onClick={() => setExpandedClientId(isExpanded ? null : c.id)}
-                >
-                   <div className="absolute left-0 top-0 bottom-0 w-2 bg-primary/20 group-hover:bg-primary transition-all" />
-                   
-                   {editingId === c.id ? (
-                     <div className="flex-1 w-full grid grid-cols-1 md:grid-cols-2 gap-6 animate-in slide-in-from-left-2 duration-300" onClick={e => e.stopPropagation()}>
-                        <div className="space-y-3">
-                          <label className="text-[9px] font-bold text-primary/80 uppercase tracking-widest ml-1">ENTITY NAME / 法人名</label>
-                          <Input value={editForm.name} onChange={(e) => setEditForm({...editForm, name: e.target.value})} className="h-12 bg-input border-none rounded-md font-bold" />
-                        </div>
-                        <div className="space-y-3">
-                          <label className="text-[9px] font-bold text-primary/80 uppercase tracking-widest ml-1">MANAGER / 担当者名</label>
-                          <Input value={editForm.managerName} onChange={(e) => setEditForm({...editForm, managerName: e.target.value})} className="h-12 bg-input border-none rounded-md font-bold" />
-                        </div>
-                        <div className="md:col-span-2 space-y-3">
-                          <label className="text-[9px] font-bold text-primary/80 uppercase tracking-widest ml-1">MEMO / メモ</label>
-                          <Input value={editForm.memo} onChange={(e) => setEditForm({...editForm, memo: e.target.value})} className="h-12 bg-input border-none rounded-md font-bold" />
-                        </div>
-                     </div>
-                   ) : (
-                      <div className="flex-1 flex items-center gap-6 min-w-0">
-                        <div className="flex-1 grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-4">
-                          {/* 左列: 取引先・担当者 */}
-                          <div className="space-y-2.5 min-w-0">
-                            <div className="flex flex-col text-left">
-                              <span className="text-[8px] font-black text-muted-foreground uppercase tracking-widest opacity-40 mb-1">ENTITY / 取引先</span>
-                              <h3 className="text-[13px] font-black italic tracking-tighter text-foreground group-hover:text-primary transition-colors font-[family-name:var(--font-outfit)] leading-tight line-clamp-2">
-                                {c.name}
-                              </h3>
-                            </div>
-                            <div className="flex flex-col text-left">
-                              <span className="text-[8px] font-black text-muted-foreground uppercase tracking-widest opacity-40 mb-1">MANAGER / 担当者</span>
-                              <span className="text-[11px] font-bold text-foreground truncate">
-                                {c.managerName || '-'}
-                              </span>
-                            </div>
-                          </div>
-
-                          {/* 右列: 案件数・収益計 */}
-                          <div className="space-y-1.5 border-l border-border/30 pl-8 flex flex-col justify-center min-w-[140px]">
-                            <div className="flex justify-between items-end gap-4">
-                              <span className="text-[8px] font-black text-muted-foreground uppercase tracking-widest opacity-40">CASES / 案件数</span>
-                              <span className="text-[13px] font-black italic tracking-tighter text-primary font-[family-name:var(--font-outfit)]">
-                                {c.clientCases.length}
-                              </span>
-                            </div>
-                            <div className="flex justify-between items-end gap-4">
-                              <span className="text-[8px] font-black text-muted-foreground uppercase tracking-widest opacity-40">MAINT. / 保守</span>
-                              <span className="text-[12px] font-black tracking-tight text-emerald-500">
-                                ¥{c.clientTotalStock.toLocaleString()}
-                              </span>
-                            </div>
-                            <div className="flex justify-between items-end gap-4">
-                              <span className="text-[8px] font-black text-muted-foreground uppercase tracking-widest opacity-40">SPOT / 制作</span>
-                              <span className="text-[12px] font-black tracking-tight text-blue-500">
-                                ¥{c.clientTotalShot.toLocaleString()}
-                              </span>
-                            </div>
-                          </div>
-                        </div>
-
-                        {/* 操作ボタン列 (右端・縦並び) */}
-                        <div className="flex flex-col gap-1.5 shrink-0 border-l border-border/30 pl-4" onClick={e => e.stopPropagation()}>
-                          {editingId === c.id ? (
-                            <>
-                              <Button onClick={saveEdit} className="h-8 w-8 lg:h-9 lg:w-9 bg-primary text-primary-foreground rounded-md font-bold flex items-center justify-center hover:brightness-110 shadow-lg shadow-primary/20">
-                                <Check className="w-4 h-4" />
-                              </Button>
-                              <Button variant="ghost" size="icon" onClick={(e) => { e.stopPropagation(); setEditingId(null); }} className="h-8 w-8 lg:h-9 lg:w-9 rounded-md text-muted-foreground hover:bg-secondary">
-                                <X className="w-4 h-4" />
-                              </Button>
-                            </>
-                          ) : (
-                            <>
-                              <Button 
-                                variant="ghost" 
-                                size="icon" 
-                                onClick={(e) => startEdit(c, e)}
-                                className="h-8 w-8 lg:h-9 lg:w-9 rounded-md text-muted-foreground hover:text-primary hover:bg-primary/10 transition-all"
-                              >
-                                <Edit className="w-4 h-4" />
-                              </Button>
-                              <Button 
-                                variant="ghost" 
-                                size="icon" 
-                                onClick={(e) => { e.stopPropagation(); if(confirm('取引先を削除しますか？')) deleteClient(c.id); }}
-                                className="h-8 w-8 lg:h-9 lg:w-9 rounded-md text-muted-foreground hover:text-destructive hover:bg-destructive/10 transition-all"
-                              >
-                                <Trash2 className="w-4 h-4" />
-                              </Button>
-                            </>
-                          )}
-                        </div>
-                      </div>
-                    )}
-                </div>
-
-                {/* 展開時の詳細情報 */}
-                {isExpanded && (
-                  <div className="border-t border-border/50 bg-secondary/10 p-4 lg:p-6 animate-in slide-in-from-top-4 duration-300 cursor-default" onClick={e => e.stopPropagation()}>
-                    <div className="flex flex-col gap-4 mb-6">
-                      <ClientDetailForm client={c} updateClient={updateClient} />
-                      
-                      <div className="bg-card border border-border p-5 rounded-md flex flex-col gap-4">
-                        <div className="flex items-center justify-between">
-                          <span className="text-[9px] font-black text-muted-foreground uppercase tracking-widest">CUMULATIVE MAINTENANCE / 保守累計獲得額</span>
-                          <span className="text-base font-black tracking-tight text-emerald-500">¥{c.clientTotalStock.toLocaleString()}</span>
-                        </div>
-                        <div className="flex items-center justify-between">
-                          <span className="text-[9px] font-black text-muted-foreground uppercase tracking-widest">PRODUCTION・SPOT TOTAL / 制作・スポット累計</span>
-                          <span className="text-base font-black tracking-tight text-blue-500">¥{c.clientTotalShot.toLocaleString()}</span>
-                        </div>
-                      </div>
-                    </div>
-
-                    <div className="flex items-center justify-between mb-6">
-                      <h4 className="text-sm font-bold italic tracking-tighter text-foreground flex items-center gap-2 font-[family-name:var(--font-outfit)] uppercase">
-                        <Briefcase className="w-5 h-5 text-primary" /> ASSOCIATED CASES / 紐付けられた案件
-                      </h4>
-                    </div>
-                    {c.clientCases.length === 0 ? (
-                      <div className="text-center py-10 bg-card rounded-lg border border-dashed border-border">
-                        <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest opacity-50">紐づく案件はありません</p>
-                      </div>
-                    ) : (
-                      <div className="overflow-x-auto bg-card rounded-lg border border-border">
-                        <table className="w-full text-left whitespace-nowrap">
-                          <thead>
-                            <tr className="border-b border-border bg-muted/50">
-                              <th className="p-4 text-[9px] font-bold text-muted-foreground uppercase tracking-widest">案件名・カテゴリ</th>
-                              <th className="p-4 text-[9px] font-bold text-muted-foreground uppercase tracking-widest">ステータス</th>
-                              <th className="p-4 text-[9px] font-bold text-muted-foreground uppercase tracking-widest">計上月</th>
-                              <th className="p-4 text-[9px] font-bold text-muted-foreground uppercase tracking-widest text-right">制作/SPOT</th>
-                              <th className="p-4 text-[9px] font-bold text-muted-foreground uppercase tracking-widest text-right">保守(月額/累計/月数)</th>
-                              <th className="p-4 text-[9px] font-bold text-muted-foreground uppercase tracking-widest text-right">TOTAL</th>
-                              <th className="p-4 w-12"></th>
-                            </tr>
-                          </thead>
-                          <tbody className="divide-y divide-border">
-                            {c.clientCases.map((caseItem) => (
-                              <tr 
-                                key={caseItem.id} 
-                                className="group hover:bg-muted/50 transition-colors cursor-pointer"
-                                onClick={() => router.push(`/cases/${caseItem.id}`)}
-                              >
-                                <td className="p-4">
-                                  <div className="flex flex-col">
-                                    <span className="text-sm font-bold tracking-tight text-foreground">{caseItem.name}</span>
-                                    <span className="text-[9px] font-bold text-muted-foreground opacity-60 mt-1">{caseItem.genre || '未分類'}</span>
-                                  </div>
-                                </td>
-                                <td className="p-4">
-                                  <Badge className={cn("border-none font-bold text-[9px] uppercase tracking-widest px-2 py-0.5 rounded-md", 
-                                    caseItem.status === 'active' ? "bg-emerald-500/10 text-emerald-600" : "bg-secondary text-muted-foreground"
-                                  )}>
-                                    {caseItem.status === 'active' ? '進行中' : 'アーカイブ'}
-                                  </Badge>
-                                </td>
-                                <td className="p-4">
-                                  <span className="text-[11px] font-bold text-foreground">
-                                    {caseItem.recognitionMonth || '-'}
-                                  </span>
-                                </td>
-                                <td className="p-4 text-right">
-                                  <span className="text-[13px] font-bold text-blue-500">
-                                    ¥{caseItem.caseShot.toLocaleString()}
-                                  </span>
-                                </td>
-                                <td className="p-4 text-right">
-                                  <div className="flex flex-col items-end">
-                                    <span className="text-[13px] font-bold text-emerald-500">
-                                      ¥{caseItem.caseStock.toLocaleString()}
-                                    </span>
-                                    <span className="text-[9px] font-bold text-muted-foreground opacity-60 mt-1">
-                                      ¥{(caseItem.finance?.maintenanceFee || 0).toLocaleString()}/月 (x{caseItem.monthsActive}ヶ月)
-                                    </span>
-                                  </div>
-                                </td>
-                                <td className="p-4 text-right">
-                                  <span className="text-[14px] font-bold tracking-tight text-foreground">
-                                    ¥{caseItem.caseGross.toLocaleString()}
-                                  </span>
-                                </td>
-                                <td className="p-4 text-right">
-                                  <ArrowUpRight className="w-4 h-4 text-muted-foreground opacity-20 group-hover:opacity-100 transition-opacity ml-auto" />
-                                </td>
-                              </tr>
-                            ))}
-                          </tbody>
-                        </table>
-                      </div>
-                    )}
-                  </div>
-                )}
-              </div>
-            );
-          })
-        )}
+      {clientsWithStats.length === 0 ? (
+        <div className="py-16 text-center bg-card border border-dashed border-border rounded-md animate-in fade-in duration-700">
+           <Building2 className="w-12 h-12 text-muted-foreground mx-auto opacity-30 mb-4" />
+           <h3 className="text-base font-bold text-foreground mb-1">NO CLIENTS REGISTERED</h3>
+           <p className="text-muted-foreground font-bold text-[11px] uppercase tracking-wide">取引先が登録されていません</p>
         </div>
-      </div>
+      ) : (
+        <>
+          {/* PC: 選択した取引先の詳細 */}
+          {selectedClient && (
+            <div className="hidden lg:flex flex-col gap-3">
+              <div className="bg-card rounded-md border border-border p-3 flex items-center">
+                <ClientSummary c={selectedClient} {...summaryProps} />
+              </div>
+              <ClientDetailBody c={selectedClient} updateClient={updateClient} onOpenCase={openCase} />
+            </div>
+          )}
+
+          {/* スマホ: カードを縦に並べて行クリックで展開 */}
+          <div ref={containerRef} className="lg:hidden flex flex-col gap-2">
+            {clientsWithStats.map((c) => {
+              const isExpanded = expandedClientId === c.id;
+
+              return (
+                <div key={c.id} className={cn(
+                  "bg-card rounded-md border overflow-hidden transition-colors",
+                  isExpanded ? "border-primary border-l-[3px]" : "border-border hover:border-primary/50"
+                )}>
+                  <div
+                    className="p-3 flex items-center gap-2 cursor-pointer"
+                    onClick={() => setExpandedClientId(isExpanded ? null : c.id)}
+                  >
+                    <ClientSummary c={c} {...summaryProps} />
+                    {isExpanded ? <ChevronUp className="w-4 h-4 text-muted-foreground shrink-0" /> : <ChevronDown className="w-4 h-4 text-muted-foreground shrink-0" />}
+                  </div>
+
+                  {/* 展開時の詳細情報 */}
+                  {isExpanded && (
+                    <div className="border-t border-border bg-secondary/40 p-3 animate-in fade-in duration-200 cursor-default" onClick={e => e.stopPropagation()}>
+                      <ClientDetailBody c={c} updateClient={updateClient} onOpenCase={openCase} />
+                    </div>
+                  )}
+                </div>
+              );
+            })}
+          </div>
+        </>
+      )}
     </div>
   );
 }
