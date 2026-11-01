@@ -15,6 +15,7 @@ import {
 } from 'lucide-react';
 import { format, parseISO, isAfter, startOfMonth, getYear, getMonth, addMonths, subMonths } from 'date-fns';
 import { cn } from '@/lib/utils';
+import { SideTree, TreeItem } from '@/components/layout/SideTree';
 
 function FinanceDetailsContent() {
   const router = useRouter();
@@ -158,41 +159,58 @@ function FinanceDetailsContent() {
   const pageSubTitle = mode === 'gross' ? 'ALL TIME GROSS REVENUE BREAKDOWN' : mode === 'year' ? 'YEARLY CUMULATIVE REVENUE BREAKDOWN' : 'MONTHLY ESTIMATED REVENUE BREAKDOWN';
 
   return (
-    <div className="space-y-8 animate-in fade-in duration-500 font-sans pb-20">
-      <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center bg-card p-8 rounded-lg border border-border gap-6">
-        <div className="flex items-center gap-6">
-          <Button variant="ghost" size="icon" onClick={() => router.push('/finance')} className="text-muted-foreground hover:text-primary rounded-md shrink-0"><ChevronLeft className="w-8 h-8" /></Button>
+    <div className="space-y-3 animate-in fade-in duration-500 font-sans pb-10">
+      <SideTree title="表示する期間">
+        <TreeItem glyph="▾" label={`${yearParam}年度`} />
+        {Array.from({ length: 12 }, (_, i) => i + 1).map(m => (
+          <TreeItem key={m} depth={1} label={`${m}月`} active={mode === 'month' && monthParam === m} href={`/finance/details?mode=month&year=${yearParam}&month=${m}`} />
+        ))}
+        <TreeItem glyph="▸" label="年度の累計実績" active={mode === 'year'} href={`/finance/details?mode=year&year=${yearParam}`} />
+        <TreeItem glyph="▸" label="全期間 法人総売上" active={mode === 'gross'} href={`/finance/details?mode=gross`} />
+      </SideTree>
+      <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center bg-card p-4 rounded-md border border-border gap-3">
+        <div className="flex items-center gap-3">
+          <Button variant="ghost" size="icon" onClick={() => router.push('/finance')} className="text-muted-foreground hover:text-primary rounded-md shrink-0"><ChevronLeft className="w-6 h-6" /></Button>
           <div>
-            <div className="flex items-center gap-4">
-              <h1 className="text-2xl font-bold tracking-tight text-foreground uppercase">{pageTitle}</h1>
-              {mode === 'month' && (<div className="flex items-center bg-input p-1 rounded-md border border-border"><Button variant="ghost" size="icon" onClick={() => navigateMonth('prev')} className="h-8 w-8 hover:bg-secondary hover:text-primary rounded-md"><ChevronLeft className="w-4 h-4" /></Button><span className="px-3 text-[10px] font-bold">{monthParam}月</span><Button variant="ghost" size="icon" onClick={() => navigateMonth('next')} className="h-8 w-8 hover:bg-secondary hover:text-primary rounded-md"><ChevronRight className="w-4 h-4" /></Button></div>)}
+            <div className="flex flex-wrap items-center gap-3">
+              <h1 className="text-lg font-bold tracking-tight text-foreground uppercase">{pageTitle}</h1>
+              {mode === 'month' && (<div className="flex items-center bg-input p-1 rounded-md border border-border"><Button variant="ghost" size="icon" onClick={() => navigateMonth('prev')} className="h-8 w-8 hover:bg-secondary hover:text-primary rounded-md"><ChevronLeft className="w-4 h-4" /></Button><span className="px-3 text-[11px] font-bold">{monthParam}月</span><Button variant="ghost" size="icon" onClick={() => navigateMonth('next')} className="h-8 w-8 hover:bg-secondary hover:text-primary rounded-md"><ChevronRight className="w-4 h-4" /></Button></div>)}
             </div>
-            <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-[0.2em] opacity-40">{pageSubTitle}</p>
+            <p className="text-[11px] font-bold text-muted-foreground uppercase tracking-wider">{pageSubTitle}</p>
           </div>
         </div>
-        <div className="text-right"><span className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest opacity-40 block mb-1">{mode === 'gross' ? 'TOTAL GROSS REVENUE / 法人総売上' : 'TOTAL PAY / 確定給与総額'}</span><span className="text-4xl font-bold tracking-tight text-primary">¥{totalTakeHome.toLocaleString()}</span></div>
+        <div className="text-right"><span className="text-[11px] font-bold text-muted-foreground uppercase tracking-wider block mb-1">{mode === 'gross' ? 'TOTAL GROSS REVENUE / 法人総売上' : 'TOTAL PAY / 確定給与総額'}</span><span className="text-2xl font-bold tracking-tight text-primary">¥{totalTakeHome.toLocaleString()}</span></div>
       </div>
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        <div className="space-y-6">
-          <Card className="bg-card border border-border rounded-lg overflow-hidden shadow-none">
-            <CardHeader className="p-6 pb-4 border-b border-border/50 bg-secondary/50"><CardTitle className="text-xs font-bold text-muted-foreground uppercase tracking-widest flex items-center gap-3"><Activity className="w-4 h-4 text-primary" /> REVENUE SUMMARY</CardTitle></CardHeader>
+      <div className="flex flex-wrap gap-1 lg:hidden">
+        {[
+          { key: 'month', label: '月ごとの内訳', href: `/finance/details?mode=month&year=${yearParam}&month=${monthParam}` },
+          { key: 'year', label: '年度の累計実績', href: `/finance/details?mode=year&year=${yearParam}` },
+          { key: 'gross', label: '全期間 法人総売上', href: `/finance/details?mode=gross` },
+        ].map(m => (
+          <button key={m.key} type="button" onClick={() => router.push(m.href)} className={cn("px-3 py-1.5 rounded-md border text-[11px] font-bold transition-colors", mode === m.key ? "bg-primary text-primary-foreground border-primary" : "bg-card text-muted-foreground border-border hover:text-foreground")}>{m.label}</button>
+        ))}
+      </div>
+      <div className="grid grid-cols-1 lg:grid-cols-[minmax(240px,290px)_minmax(0,1fr)] gap-3">
+        <div className="space-y-3">
+          <Card className="bg-card border border-border rounded-md ring-0 overflow-hidden shadow-none gap-0 py-0">
+            <CardHeader className="p-3 border-b border-border bg-secondary/50"><CardTitle className="text-xs font-bold text-muted-foreground uppercase tracking-wider flex items-center gap-2"><Activity className="w-4 h-4 text-primary" /> REVENUE SUMMARY</CardTitle></CardHeader>
             {mode === 'gross' ? (
-              <CardContent className="p-6 pt-6 space-y-6">
-                <SummaryItem label="案件売上合計 (100%)" value={`¥${totalTakeHome.toLocaleString()}`} sub="GROSS REVENUE TOTAL" color="text-indigo-500" isLarge />
+              <CardContent className="p-4 space-y-4">
+                <SummaryItem label="案件売上合計 (100%)" value={`¥${totalTakeHome.toLocaleString()}`} sub="GROSS REVENUE TOTAL" color="text-indigo-700" isLarge />
               </CardContent>
             ) : (
-              <CardContent className="p-6 pt-6 space-y-6"><SummaryItem label="基本給 (計上分)" value={`¥${baseSalaryTotal.toLocaleString()}`} sub="BASE SALARY TOTAL" color="text-muted-foreground" /><SummaryItem label="案件歩合合計" value={`¥${(totalTakeHome - baseSalaryTotal).toLocaleString()}`} sub="CASE COMMISSION TOTAL" color="text-emerald-500" /><div className="pt-4 border-t border-dashed border-border"><SummaryItem label="総合計額" value={`¥${totalTakeHome.toLocaleString()}`} sub="GRAND TOTAL" color="text-primary" isLarge /></div></CardContent>
+              <CardContent className="p-4 space-y-4"><SummaryItem label="基本給 (計上分)" value={`¥${baseSalaryTotal.toLocaleString()}`} sub="BASE SALARY TOTAL" color="text-muted-foreground" /><SummaryItem label="案件歩合合計" value={`¥${(totalTakeHome - baseSalaryTotal).toLocaleString()}`} sub="CASE COMMISSION TOTAL" color="text-emerald-700" /><div className="pt-3 border-t border-dashed border-border"><SummaryItem label="総合計額" value={`¥${totalTakeHome.toLocaleString()}`} sub="GRAND TOTAL" color="text-primary" isLarge /></div></CardContent>
             )}
           </Card>
-          <Card className="bg-card border border-border rounded-lg overflow-hidden shadow-none p-6"><div className="flex items-center gap-4 text-amber-500 mb-4"><Landmark className="w-6 h-6" /><span className="text-[10px] font-bold uppercase tracking-widest leading-tight">計算ルール<br/><span className="opacity-60 text-[8px]">REVENUE RULE</span></span></div><p className="text-xs font-bold text-muted-foreground leading-relaxed">基本給は内訳から直接編集して月ごとに調整可能です。案件の収益計算は各還元率に基づきます。</p></Card>
+          <Card className="bg-card border border-border rounded-md ring-0 overflow-hidden shadow-none p-4 gap-0"><div className="flex items-center gap-3 text-amber-700 mb-3"><Landmark className="w-5 h-5" /><span className="text-[11px] font-bold uppercase tracking-wider leading-tight">計算ルール<br/><span className="text-[10px]">REVENUE RULE</span></span></div><p className="text-xs font-bold text-muted-foreground leading-relaxed">基本給は内訳から直接編集して月ごとに調整可能です。案件の収益計算は各還元率に基づきます。</p></Card>
         </div>
-        <div className="lg:col-span-2 space-y-8">
+        <div className="space-y-4 min-w-0">
           {(mode === 'year' || mode === 'gross') ? (Object.entries(groupedItems).reverse().map(([month, monthItems]) => (
-            <div key={month} className="space-y-4">
-              <div className="flex items-center gap-4 px-4"><Badge className="bg-primary/20 text-primary border-none text-[10px] font-bold px-3 py-1 rounded-md tracking-widest">{month}</Badge><div className="h-px flex-1 bg-gradient-to-r from-primary/20 to-transparent" /><span className="text-[10px] font-bold text-muted-foreground opacity-60 uppercase tracking-widest">MONTHLY TOTAL: ¥{monthItems.reduce((s, i) => s + i.amount, 0).toLocaleString()}</span></div>
-              <div className="space-y-3">{monthItems.sort((a, b) => b.amount - a.amount).map((item) => (<BreakdownCard key={item.id} item={item} onUpdateBaseSalary={handleUpdateBaseSalary} />))}</div>
+            <div key={month} className="space-y-2">
+              <div className="flex items-center gap-3 px-1"><Badge className="bg-primary/15 text-primary border-none text-[11px] font-bold px-3 py-1 rounded-md tracking-wider">{month}</Badge><div className="h-px flex-1 bg-border" /><span className="text-[11px] font-bold text-muted-foreground uppercase tracking-wider">MONTHLY TOTAL: ¥{monthItems.reduce((s, i) => s + i.amount, 0).toLocaleString()}</span></div>
+              <div className="space-y-2">{monthItems.sort((a, b) => b.amount - a.amount).map((item) => (<BreakdownCard key={item.id} item={item} onUpdateBaseSalary={handleUpdateBaseSalary} />))}</div>
             </div>
-          ))) : (<div className="space-y-3"><div className="flex items-center justify-between px-4 mb-2"><h3 className="text-sm font-bold text-muted-foreground uppercase tracking-widest flex items-center gap-2"><List className="w-4 h-4" /> BREAKDOWN ITEMS / 明細一覧</h3><Badge variant="outline" className="rounded-md font-bold text-[10px] border-primary/20 text-primary">{items.length} ITEMS</Badge></div>{items.map((item) => (<BreakdownCard key={item.id} item={item} onUpdateBaseSalary={handleUpdateBaseSalary} />))}{!isGross && (<BreakdownCard item={{ id: `base-salary-${yearParam}-${monthParam}`, caseName: '基本給', client: 'SYSTEM', type: '固定給', amount: globalFinance?.baseSalaryOverrides?.[`${yearParam}-${monthParam.toString().padStart(2, '0')}`] ?? globalFinance?.baseSalary ?? 0, date: `${yearParam}-${monthParam.toString().padStart(2, '0')}分`, isStock: true, isBase: true, monthStr: `${yearParam}-${monthParam.toString().padStart(2, '0')}`, isOverridden: globalFinance?.baseSalaryOverrides?.[`${yearParam}-${monthParam.toString().padStart(2, '0')}`] !== undefined }} onUpdateBaseSalary={handleUpdateBaseSalary} />)}</div>)}
+          ))) : (<div className="space-y-2"><div className="flex items-center justify-between px-1 mb-1"><h3 className="text-sm font-bold text-muted-foreground uppercase tracking-wider flex items-center gap-2"><List className="w-4 h-4" /> BREAKDOWN ITEMS / 明細一覧</h3><Badge variant="outline" className="rounded-md font-bold text-[11px] border-primary/40 text-primary">{items.length} ITEMS</Badge></div>{items.map((item) => (<BreakdownCard key={item.id} item={item} onUpdateBaseSalary={handleUpdateBaseSalary} />))}{!isGross && (<BreakdownCard item={{ id: `base-salary-${yearParam}-${monthParam}`, caseName: '基本給', client: 'SYSTEM', type: '固定給', amount: globalFinance?.baseSalaryOverrides?.[`${yearParam}-${monthParam.toString().padStart(2, '0')}`] ?? globalFinance?.baseSalary ?? 0, date: `${yearParam}-${monthParam.toString().padStart(2, '0')}分`, isStock: true, isBase: true, monthStr: `${yearParam}-${monthParam.toString().padStart(2, '0')}`, isOverridden: globalFinance?.baseSalaryOverrides?.[`${yearParam}-${monthParam.toString().padStart(2, '0')}`] !== undefined }} onUpdateBaseSalary={handleUpdateBaseSalary} />)}</div>)}
         </div>
       </div>
     </div>
@@ -220,23 +238,23 @@ function BreakdownCard({ item, onUpdateBaseSalary }: { item: any, onUpdateBaseSa
   return (
     <div 
       onClick={() => item.caseId && router.push(`/cases/${item.caseId}`)} 
-      className={cn("bg-card p-5 rounded-lg border hover:border-primary/50 transition-all flex items-center gap-6 group shadow-sm", item.isBase ? "bg-secondary/30 border-dashed border-border" : "border-border", item.caseId && "cursor-pointer")}
+      className={cn("bg-card p-3 rounded-md border hover:border-primary/60 transition-colors flex flex-wrap sm:flex-nowrap items-center gap-3 group", item.isBase ? "bg-secondary/30 border-dashed border-border" : "border-border", item.caseId && "cursor-pointer")}
     >
-      <div className={cn("p-3 rounded-md shrink-0", item.isBase ? "bg-secondary text-muted-foreground" : item.isStock ? "bg-emerald-500/10 text-emerald-500" : "bg-blue-500/10 text-blue-500")}>{item.isBase ? <Landmark className="w-5 h-5" /> : item.isStock ? <TrendingUp className="w-5 h-5" /> : <Wallet className="w-5 h-5" />}</div>
-      <div className="flex-1 min-w-0">
-        <div className="flex items-center gap-3 mb-1">
+      <div className={cn("p-2 rounded-md shrink-0", item.isBase ? "bg-secondary text-muted-foreground" : item.isStock ? "bg-emerald-600/15 text-emerald-700" : "bg-blue-600/15 text-blue-700")}>{item.isBase ? <Landmark className="w-5 h-5" /> : item.isStock ? <TrendingUp className="w-5 h-5" /> : <Wallet className="w-5 h-5" />}</div>
+      <div className="flex-1 min-w-[8rem]">
+        <div className="flex flex-wrap items-center gap-2 mb-1">
           <span className="text-sm font-bold text-foreground group-hover:text-primary transition-colors flex items-center gap-2">
             {item.caseName}
             {item.caseId && <ArrowUpRight className="w-3 h-3 text-muted-foreground opacity-30 group-hover:opacity-100 transition-opacity" />}
           </span>
-          <Badge className={cn("text-[8px] font-bold border-none px-2 rounded-md shrink-0", item.isBase ? (item.isOverridden ? "bg-emerald-500/20 text-emerald-500" : "bg-secondary text-muted-foreground") : item.isManualRecognized ? "bg-amber-500/20 text-amber-500" : "bg-secondary text-muted-foreground")}>{item.type} {item.isManualRecognized && "• 手動計上"} {item.rate && ` (${item.rate}%)`} {item.isOverridden && "• 個別調整済み"}</Badge>
+          <Badge className={cn("text-[10px] font-bold border-none px-2 rounded-md shrink-0", item.isBase ? (item.isOverridden ? "bg-emerald-600/20 text-emerald-700" : "bg-secondary text-muted-foreground") : item.isManualRecognized ? "bg-amber-600/20 text-amber-700" : "bg-secondary text-muted-foreground")}>{item.type} {item.isManualRecognized && "• 手動計上"} {item.rate && ` (${item.rate}%)`} {item.isOverridden && "• 個別調整済み"}</Badge>
         </div>
-        <div className="flex items-center gap-4 text-[10px] font-bold text-muted-foreground opacity-60">
+        <div className="flex flex-wrap items-center gap-x-4 gap-y-0.5 text-[11px] font-bold text-muted-foreground">
           <span className="flex items-center gap-1"><Briefcase className="w-3 h-3" /> {item.client}</span>
           <span className="flex items-center gap-1"><Calendar className="w-3 h-3" /> {item.date}</span>
         </div>
       </div>
-      <div className="text-right shrink-0" onClick={e => e.stopPropagation()}>
+      <div className="text-right shrink-0 ml-auto" onClick={e => e.stopPropagation()}>
         {item.isBase ? (
           <div className="flex flex-col items-end gap-1">
             <div className="flex items-center gap-2">
@@ -245,19 +263,19 @@ function BreakdownCard({ item, onUpdateBaseSalary }: { item: any, onUpdateBaseSa
                 <NumericInput 
                   value={parseInt(localAmount) || 0} 
                   onChange={(val) => setLocalAmount(val.toString())} 
-                  className="h-10 w-32 bg-input border border-border rounded-md font-bold text-base pl-7 pr-3 text-foreground focus:border-primary transition-all text-right"
+                  className="h-9 w-32 bg-input border border-border rounded-md font-bold text-base pl-7 pr-3 text-foreground focus:border-primary transition-all text-right"
                 />
               </div>
-              <Button onClick={handleSave} variant="secondary" className="h-10 px-3 border border-border">
-                {isSaved ? <Check className="w-3.5 h-3.5 text-emerald-500" /> : <span className="text-[10px] font-bold">保存</span>}
+              <Button onClick={handleSave} variant="secondary" className="h-9 px-3 border border-border">
+                {isSaved ? <Check className="w-3.5 h-3.5 text-emerald-600" /> : <span className="text-[10px] font-bold">保存</span>}
               </Button>
             </div>
-            <span className="text-[7px] font-bold text-muted-foreground uppercase opacity-40">EDIT BASE SALARY</span>
+            <span className="text-[10px] font-bold text-muted-foreground uppercase">EDIT BASE SALARY</span>
           </div>
         ) : (
           <>
             <div className="text-lg font-bold text-foreground">¥{item.amount.toLocaleString()}</div>
-            {item.gross && item.gross !== item.amount && (<div className="text-[9px] font-bold text-muted-foreground opacity-60 mt-1">GROSS: ¥{item.gross?.toLocaleString()}</div>)}
+            {item.gross && item.gross !== item.amount && (<div className="text-[10px] font-bold text-muted-foreground mt-1">GROSS: ¥{item.gross?.toLocaleString()}</div>)}
           </>
         )}
       </div>
@@ -266,7 +284,7 @@ function BreakdownCard({ item, onUpdateBaseSalary }: { item: any, onUpdateBaseSa
 }
 
 function SummaryItem({ label, value, sub, color, isLarge }: any) {
-  return (<div className="flex justify-between items-end"><div><span className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest block opacity-60">{label}</span><span className="text-[8px] font-bold text-muted-foreground uppercase tracking-tighter block opacity-30">{sub}</span></div><span className={cn("font-bold tracking-tight", color, isLarge ? "text-2xl" : "text-lg")}>{value}</span></div>);
+  return (<div className="flex justify-between items-end"><div><span className="text-[11px] font-bold text-muted-foreground uppercase tracking-wider block">{label}</span><span className="text-[10px] font-bold text-muted-foreground uppercase block">{sub}</span></div><span className={cn("font-bold tracking-tight", color, isLarge ? "text-2xl" : "text-lg")}>{value}</span></div>);
 }
 
 export default function FinanceDetailsPage() {

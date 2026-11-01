@@ -20,8 +20,9 @@ import { useRouter } from 'next/navigation';
 import { format, startOfMonth, addMonths, isAfter, parseISO, subMonths, getYear, subYears } from 'date-fns';
 import { ja } from 'date-fns/locale';
 import { cn } from '@/lib/utils';
+import { SideTree, TreeItem } from '@/components/layout/SideTree';
 
-const COLORS = ['#00896B', '#3498db', '#9b59b6', '#f1c40f', '#e67e22', '#e74c3c', '#2ecc71', '#1abc9c'];
+const COLORS = ['#00896B', '#3498db', '#9b59b6', '#d19a00', '#e67e22', '#e74c3c', '#2ecc71', '#1abc9c'];
 
 export default function FinancePage() {
   const router = useRouter();
@@ -265,9 +266,137 @@ export default function FinancePage() {
   }, [currentYearData, globalFinance, cases, lastYearFullTotal, clients.length, viewYear]);
 
   return (
-    <div className="space-y-4 animate-in fade-in duration-500 font-sans pb-10">
+    <div className="space-y-3 animate-in fade-in duration-500 font-sans pb-10">
+      <SideTree title="年度と内訳">
+        <TreeItem glyph="▾" label="年度" />
+        {[viewYear - 1, viewYear, viewYear + 1].map(y => (
+          <TreeItem key={y} depth={1} label={`${y}年度`} active={viewYear === y} onClick={() => setViewYear(y)} />
+        ))}
+        <TreeItem glyph="▾" label="内訳を見る" />
+        <TreeItem depth={1} label="月ごとの内訳" href={`/finance/details?year=${new Date().getFullYear()}&month=${stats.currentMonthNum}&mode=month`} />
+        <TreeItem depth={1} label="年度の累計実績" href={`/finance/details?year=${viewYear}&mode=year`} />
+        <TreeItem depth={1} label="全期間 法人総売上" href={`/finance/details?mode=gross`} />
+        <TreeItem glyph="▾" label="移動" />
+        <TreeItem depth={1} label="TOTAL PROJECTS" badge={`${stats.totalProjects}件`} href="/cases?filter=all" />
+        <TreeItem depth={1} label="ACTIVE CASES" badge={`${stats.activeCases}件`} href="/cases?filter=active" />
+        <TreeItem depth={1} label="CLIENTS" badge={`${stats.totalClients}社`} href="/" />
+      </SideTree>
+
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-3 bg-card p-4 rounded-md border border-border">
+        <div className="flex items-center gap-3">
+          <div className="p-2 bg-primary/10 rounded-md"><BarChart3 className="w-5 h-5 text-primary" /></div>
+          <div>
+            <h1 className="text-lg font-bold tracking-tight text-foreground uppercase leading-none">FINANCIAL ANALYSIS</h1>
+            <p className="text-[11px] font-bold text-muted-foreground uppercase tracking-wider">収益分析 ・ 経営目標管理</p>
+          </div>
+        </div>
+        <div className="flex flex-wrap items-center gap-3 w-full md:w-auto">
+          <div className="flex bg-input p-0.5 rounded-md border border-border shrink-0 lg:hidden">
+            {[viewYear - 1, viewYear, viewYear + 1].map(y => (
+              <button key={y} onClick={() => setViewYear(y)} className={cn("px-3 py-1 rounded text-[11px] font-bold uppercase transition-all", viewYear === y ? "bg-primary text-primary-foreground " : "text-muted-foreground hover:text-foreground")}>{y}年度</button>
+            ))}
+          </div>
+          <div className="flex items-center gap-2.5 bg-input px-3 py-1 rounded-md border border-border flex-1 md:flex-none justify-between md:justify-start">
+             <span className="text-[11px] font-bold text-muted-foreground uppercase tracking-wider leading-none">基本給設定</span>
+             <div className="flex items-center gap-1">
+               <NumericInput value={parseInt(baseSalaryInput) || 0} onChange={(val) => setBaseSalaryInput(val.toString())} className="h-5 w-16 border-none bg-transparent font-bold text-sm p-0 focus-visible:ring-0 text-foreground text-right" />
+               <Button size="icon" variant="ghost" onClick={handleSaveBaseSalary} className="h-6 w-6 hover:bg-secondary rounded-sm">{isSalarySaved ? <Check className="w-3 h-3 text-emerald-600" /> : <Settings2 className="w-3 h-3 text-muted-foreground" />}</Button>
+             </div>
+          </div>
+        </div>
+      </div>
+
+      <div className="grid grid-cols-2 xl:grid-cols-5 gap-3 [&>*:last-child]:col-span-2 xl:[&>*:last-child]:col-span-1">
+        <StatCardCompact label={`累計 法人総売上 (100%)`} subLabel="ALL TIME GROSS" value={`¥${stats.allTimeGrossTotal.toLocaleString()}`} sub="基本給を含まない累計総売上" icon={<Landmark className="w-4 h-4" />} color="bg-indigo-600" onClick={() => router.push(`/finance/details?mode=gross`)} />
+        <StatCardCompact label={`${viewYear}年度 累計実績`} subLabel="CUMULATIVE" value={`¥${stats.yearlyTotal.toLocaleString()}`} sub="今日までの確定給与総額" icon={<Wallet className="w-4 h-4" />} color="bg-primary" onClick={() => router.push(`/finance/details?year=${viewYear}&mode=year`)} />
+        <StatCardCompact label={`${viewYear - 1}年度 実績`} subLabel="PREVIOUS" value={`¥${lastYearFullTotal.toLocaleString()}`} sub="前年度の最終着地実績" icon={<TargetIcon className="w-4 h-4" />} color="bg-slate-500" onClick={() => router.push(`/finance/details?year=${viewYear - 1}&mode=year`)} />
+        <StatCardCompact label="当月推定給与総額" subLabel="MONTHLY" value={`¥${stats.currentMonthPrediction.toLocaleString()}`} sub="基本給 ＋ 保守還元合算" icon={<Activity className="w-4 h-4" />} color="bg-blue-600" onClick={() => router.push(`/finance/details?year=${new Date().getFullYear()}&month=${stats.currentMonthNum}&mode=month`)} />
+        <StatCardCompact label="前年目標達成率" subLabel="RATE" value={`${stats.reachRate}%`} sub={`前年 ¥${lastYearFullTotal.toLocaleString()} 比`} icon={<TrendingUp className="w-4 h-4" />} color="bg-emerald-600" isPercent />
+      </div>
+
+      <div className="grid grid-cols-1 xl:grid-cols-3 gap-3">
+        {/* YoY Performance カードの余白と高さを調整 */}
+        <Card className="xl:col-span-2 bg-card border border-border rounded-md ring-0 shadow-none p-4 pb-2 gap-0">
+          <div className="flex justify-between items-center mb-3">
+            <div><h3 className="text-sm font-bold tracking-tight flex items-center gap-2 uppercase"><History className="w-4 h-4 text-primary" /> YoY PERFORMANCE</h3><p className="text-[11px] font-bold text-muted-foreground uppercase tracking-wider ml-6">実績比較：<span className="text-primary">確定</span> • <span className="text-amber-600">予定</span> • <span className="text-muted-foreground">前年</span></p></div>
+            <div className="flex gap-3">
+               <div className="flex items-center gap-1"><div className="w-1.5 h-1.5 rounded-full bg-primary" /><span className="text-[11px] font-bold text-muted-foreground">確定</span></div>
+               <div className="flex items-center gap-1"><div className="w-1.5 h-1.5 rounded-full bg-amber-400" /><span className="text-[11px] font-bold text-muted-foreground">予定</span></div>
+            </div>
+          </div>
+          <div className="h-[200px] w-full">
+            <ResponsiveContainer width="100%" height="100%">
+              <BarChart data={yoyComparison}>
+                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="var(--border)" />
+                <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{fontSize: 11, fontWeight: 'bold', fill: 'var(--muted-foreground)'}} />
+                <YAxis axisLine={false} tickLine={false} tick={{fontSize: 11, fontWeight: 'bold', fill: 'var(--muted-foreground)'}} tickFormatter={(v) => `${(v/1000).toLocaleString()}k`} />
+                <Tooltip contentStyle={{ borderRadius: '4px', border: '1px solid var(--border)', background: 'var(--card)', color: 'var(--foreground)', fontSize: '10px' }} formatter={(v: any) => v === null ? '---' : `${(v/1000).toLocaleString()}千円`} />
+                <Bar dataKey="confirmed" fill="var(--primary)" radius={[3, 3, 0, 0]} barSize={16} name="確定収益" />
+                <Bar dataKey="planned" fill="#f59e0b" radius={[3, 3, 0, 0]} barSize={16} name="収益予定" />
+                <Bar dataKey="lastYear" fill="var(--muted-foreground)" fillOpacity={0.5} radius={[3, 3, 0, 0]} barSize={16} name="前年度" />
+              </BarChart>
+            </ResponsiveContainer>
+          </div>
+        </Card>
+
+        {/* Genre Mix を隣のカードと高さを合わせる */}
+        <Card className="bg-card border border-border rounded-md ring-0 shadow-none p-4 gap-0 flex flex-col h-full overflow-hidden">
+          <div className="mb-2"><h3 className="text-sm font-bold tracking-tight flex items-center gap-2 uppercase"><PieIcon className="w-4 h-4 text-primary" /> GENRE MIX</h3><p className="text-[11px] font-bold text-muted-foreground uppercase tracking-wider ml-6">ジャンル別 収益構成比</p></div>
+          <div className="flex-1 flex flex-col justify-between overflow-hidden">
+            <div className="h-[120px] w-full shrink-0">
+              <ResponsiveContainer width="100%" height="100%">
+                <RechartsPieChart>
+                  <Pie 
+                    data={genreMix} 
+                    cx="50%" cy="50%" 
+                    innerRadius={40} 
+                    outerRadius={55} 
+                    paddingAngle={4} 
+                    dataKey="value"
+                    label={({ payload }: any) => `${payload.count}`}
+                    labelLine={false}
+                  >
+                    {genreMix.map((entry, index) => <Cell key={`cell-${index}`} fill={entry.color} />)}
+                    <Label 
+                      value={`${totalCaseCountForMix}件`} 
+                      position="center" 
+                      className="text-sm font-bold fill-foreground"
+                    />
+                  </Pie>
+                  <Tooltip contentStyle={{ borderRadius: '4px', border: '1px solid var(--border)', background: 'var(--card)', color: 'var(--foreground)', fontSize: '9px' }} />
+                </RechartsPieChart>
+              </ResponsiveContainer>
+            </div>
+            <div className="space-y-1 overflow-y-auto pr-1 custom-scrollbar max-h-[90px] mt-2">
+              {genreMix.map((item) => (
+                <div key={item.name} className="flex justify-between items-center p-1.5 rounded-md bg-secondary/50 group hover:bg-secondary transition-all shrink-0">
+                  <div className="flex items-center gap-1.5 min-w-0"><div className="w-1 h-1 rounded-full shrink-0" style={{ backgroundColor: item.color }} /><span className="text-[10px] font-bold text-foreground uppercase truncate">{item.name}</span></div>
+                  <div className="text-right shrink-0"><span className="text-[11px] font-bold block leading-none">¥{item.value.toLocaleString()}</span></div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </Card>
+      </div>
+
+      <Card className="bg-card border border-border rounded-md ring-0 shadow-none p-4 gap-0">
+        <div className="mb-3"><h3 className="text-sm font-bold tracking-tight flex items-center gap-2 uppercase"><TrendingUp className="w-4 h-4 text-primary" /> REVENUE STACK</h3><p className="text-[11px] font-bold text-muted-foreground uppercase tracking-wider ml-6">収益種別 積み上げ推移分析</p></div>
+        <div className="h-[220px] w-full">
+          <ResponsiveContainer width="100%" height="100%">
+            <AreaChart data={stackData}>
+              <defs><linearGradient id="colorStock" x1="0" y1="0" x2="0" y2="1"><stop offset="5%" stopColor="#0e7fd1" stopOpacity={0.25}/><stop offset="95%" stopColor="#0e7fd1" stopOpacity={0}/></linearGradient></defs>
+              <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="var(--border)" />
+              <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{fontSize: 11, fontWeight: 'bold', fill: 'var(--muted-foreground)'}} />
+              <YAxis axisLine={false} tickLine={false} tick={{fontSize: 11, fontWeight: 'bold', fill: 'var(--muted-foreground)'}} tickFormatter={(v) => `${(v/1000).toLocaleString()}k`} />
+              <Tooltip contentStyle={{ borderRadius: '4px', border: '1px solid var(--border)', background: 'var(--card)', color: 'var(--foreground)', fontSize: '10px' }} formatter={(v: any) => v === null ? '---' : `${(v/1000).toLocaleString()}k`} />
+              <Area type="monotone" dataKey="stock" stroke="var(--primary)" strokeWidth={2.5} fill="url(#colorStock)" stackId="1" name="保守" />
+              <Area type="monotone" dataKey="shot" stroke="#3498db" strokeWidth={1.5} fillOpacity={0.12} stackId="1" name="案件" />
+            </AreaChart>
+          </ResponsiveContainer>
+        </div>
+      </Card>
       {/* 小型化されたナビゲーションカード */}
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 lg:hidden">
         <NavCard 
           label="累計プロジェクト" 
           subLabel="TOTAL PROJECTS" 
@@ -297,195 +426,61 @@ export default function FinancePage() {
         />
       </div>
 
-      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 bg-card p-5 rounded-lg border border-border">
-        <div className="flex items-center gap-3">
-          <div className="p-2.5 bg-primary/10 rounded-md"><BarChart3 className="w-5 h-5 text-primary" /></div>
-          <div>
-            <h1 className="text-lg font-bold tracking-tight text-foreground uppercase leading-none">FINANCIAL ANALYSIS</h1>
-            <p className="text-[9px] font-bold text-muted-foreground uppercase tracking-[0.2em] opacity-40">収益分析 ・ 経営目標管理</p>
-          </div>
-        </div>
-        <div className="flex flex-wrap items-center gap-3 w-full md:w-auto">
-          <div className="flex bg-input p-0.5 rounded-md border border-border shrink-0">
-            {[viewYear - 1, viewYear, viewYear + 1].map(y => (
-              <button key={y} onClick={() => setViewYear(y)} className={cn("px-3 py-1 rounded text-[9px] font-bold uppercase transition-all", viewYear === y ? "bg-primary text-primary-foreground shadow-sm" : "text-muted-foreground hover:text-foreground")}>{y}年度</button>
-            ))}
-          </div>
-          <div className="flex items-center gap-2.5 bg-input px-3 py-1 rounded-md border border-border flex-1 md:flex-none justify-between md:justify-start">
-             <span className="text-[9px] font-bold text-muted-foreground uppercase tracking-widest opacity-60 leading-none">基本給設定</span>
-             <div className="flex items-center gap-1">
-               <NumericInput value={parseInt(baseSalaryInput) || 0} onChange={(val) => setBaseSalaryInput(val.toString())} className="h-5 w-16 border-none bg-transparent font-bold text-sm p-0 focus-visible:ring-0 text-foreground text-right" />
-               <Button size="icon" variant="ghost" onClick={handleSaveBaseSalary} className="h-6 w-6 hover:bg-secondary rounded-sm">{isSalarySaved ? <Check className="w-3 h-3 text-emerald-500" /> : <Settings2 className="w-3 h-3 text-muted-foreground" />}</Button>
-             </div>
-          </div>
-        </div>
-      </div>
-
-      <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-5 gap-3">
-        <StatCardCompact label={`累計 法人総売上 (100%)`} subLabel="ALL TIME GROSS" value={`¥${stats.allTimeGrossTotal.toLocaleString()}`} sub="基本給を含まない累計総売上" icon={<Landmark className="w-4 h-4" />} color="bg-indigo-600" onClick={() => router.push(`/finance/details?mode=gross`)} />
-        <StatCardCompact label={`${viewYear}年度 累計実績`} subLabel="CUMULATIVE" value={`¥${stats.yearlyTotal.toLocaleString()}`} sub="今日までの確定給与総額" icon={<Wallet className="w-4 h-4" />} color="bg-primary" onClick={() => router.push(`/finance/details?year=${viewYear}&mode=year`)} />
-        <StatCardCompact label={`${viewYear - 1}年度 実績`} subLabel="PREVIOUS" value={`¥${lastYearFullTotal.toLocaleString()}`} sub="前年度の最終着地実績" icon={<TargetIcon className="w-4 h-4" />} color="bg-slate-500" onClick={() => router.push(`/finance/details?year=${viewYear - 1}&mode=year`)} />
-        <StatCardCompact label="当月推定給与総額" subLabel="MONTHLY" value={`¥${stats.currentMonthPrediction.toLocaleString()}`} sub="基本給 ＋ 保守還元合算" icon={<Activity className="w-4 h-4" />} color="bg-blue-600" onClick={() => router.push(`/finance/details?year=${new Date().getFullYear()}&month=${stats.currentMonthNum}&mode=month`)} />
-        <StatCardCompact label="前年目標達成率" subLabel="RATE" value={`${stats.reachRate}%`} sub={`前年 ¥${lastYearFullTotal.toLocaleString()} 比`} icon={<TrendingUp className="w-4 h-4" />} color="bg-emerald-600" isPercent />
-      </div>
-
-      <div className="grid grid-cols-1 xl:grid-cols-3 gap-4">
-        {/* YoY Performance カードの余白と高さを調整 */}
-        <Card className="xl:col-span-2 bg-card border border-border rounded-lg p-5 pb-2">
-          <div className="flex justify-between items-center mb-3">
-            <div><h3 className="text-sm font-bold tracking-tight flex items-center gap-2 uppercase"><History className="w-4 h-4 text-primary" /> YoY PERFORMANCE</h3><p className="text-[11px] font-bold text-muted-foreground uppercase tracking-widest ml-6">実績比較：<span className="text-primary">確定</span> • <span className="text-amber-500">予定</span> • <span className="text-muted-foreground">前年</span></p></div>
-            <div className="flex gap-3">
-               <div className="flex items-center gap-1"><div className="w-1.5 h-1.5 rounded-full bg-primary" /><span className="text-[9px] font-bold text-muted-foreground">確定</span></div>
-               <div className="flex items-center gap-1"><div className="w-1.5 h-1.5 rounded-full bg-amber-400" /><span className="text-[9px] font-bold text-muted-foreground">予定</span></div>
-            </div>
-          </div>
-          <div className="h-[200px] w-full">
-            <ResponsiveContainer width="100%" height="100%">
-              <BarChart data={yoyComparison}>
-                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f5f5f5" />
-                <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{fontSize: 11, fontWeight: 'bold', fill: '#94a3b8'}} />
-                <YAxis axisLine={false} tickLine={false} tick={{fontSize: 11, fontWeight: 'bold', fill: '#94a3b8'}} tickFormatter={(v) => `${(v/1000).toLocaleString()}k`} />
-                <Tooltip contentStyle={{ borderRadius: '8px', border: '1px solid var(--border)', background: 'var(--card)', color: 'var(--foreground)', fontSize: '10px' }} formatter={(v: any) => v === null ? '---' : `${(v/1000).toLocaleString()}千円`} />
-                <Bar dataKey="confirmed" fill="var(--primary)" radius={[3, 3, 0, 0]} barSize={16} name="確定収益" />
-                <Bar dataKey="planned" fill="#f59e0b" radius={[3, 3, 0, 0]} barSize={16} name="収益予定" />
-                <Bar dataKey="lastYear" fill="var(--muted)" radius={[3, 3, 0, 0]} barSize={16} name="前年度" />
-              </BarChart>
-            </ResponsiveContainer>
-          </div>
-        </Card>
-
-        {/* Genre Mix を隣のカードと高さを合わせる */}
-        <Card className="bg-card border border-border rounded-lg p-5 flex flex-col h-full overflow-hidden">
-          <div className="mb-2"><h3 className="text-sm font-bold tracking-tight flex items-center gap-2 uppercase"><PieIcon className="w-4 h-4 text-primary" /> GENRE MIX</h3><p className="text-[8px] font-bold text-muted-foreground uppercase tracking-widest opacity-60 ml-6">ジャンル別 収益構成比</p></div>
-          <div className="flex-1 flex flex-col justify-between overflow-hidden">
-            <div className="h-[120px] w-full shrink-0">
-              <ResponsiveContainer width="100%" height="100%">
-                <RechartsPieChart>
-                  <Pie 
-                    data={genreMix} 
-                    cx="50%" cy="50%" 
-                    innerRadius={40} 
-                    outerRadius={55} 
-                    paddingAngle={4} 
-                    dataKey="value"
-                    label={({ payload }: any) => `${payload.count}`}
-                    labelLine={false}
-                  >
-                    {genreMix.map((entry, index) => <Cell key={`cell-${index}`} fill={entry.color} />)}
-                    <Label 
-                      value={`${totalCaseCountForMix}件`} 
-                      position="center" 
-                      className="text-sm font-bold fill-foreground"
-                    />
-                  </Pie>
-                  <Tooltip contentStyle={{ borderRadius: '8px', border: '1px solid var(--border)', background: 'var(--card)', color: 'var(--foreground)', fontSize: '9px' }} />
-                </RechartsPieChart>
-              </ResponsiveContainer>
-            </div>
-            <div className="space-y-1 overflow-y-auto pr-1 custom-scrollbar max-h-[85px] mt-2">
-              {genreMix.map((item) => (
-                <div key={item.name} className="flex justify-between items-center p-1.5 rounded-md bg-secondary/30 group hover:bg-secondary transition-all shrink-0">
-                  <div className="flex items-center gap-1.5 min-w-0"><div className="w-1 h-1 rounded-full shrink-0" style={{ backgroundColor: item.color }} /><span className="text-[8px] font-bold text-foreground uppercase tracking-tight truncate">{item.name}</span></div>
-                  <div className="text-right shrink-0"><span className="text-[10px] font-bold block leading-none">¥{item.value.toLocaleString()}</span></div>
-                </div>
-              ))}
-            </div>
-          </div>
-        </Card>
-      </div>
-
-      <Card className="bg-card border border-border rounded-lg p-5">
-        <div className="mb-3"><h3 className="text-sm font-bold tracking-tight flex items-center gap-2 uppercase"><TrendingUp className="w-4 h-4 text-primary" /> REVENUE STACK</h3><p className="text-[8px] font-bold text-muted-foreground uppercase tracking-widest opacity-60 ml-6">収益種別 積み上げ推移分析</p></div>
-        <div className="h-[220px] w-full">
-          <ResponsiveContainer width="100%" height="100%">
-            <AreaChart data={stackData}>
-              <defs><linearGradient id="colorStock" x1="0" y1="0" x2="0" y2="1"><stop offset="5%" stopColor="#00896B" stopOpacity={0.1}/><stop offset="95%" stopColor="#00896B" stopOpacity={0}/></linearGradient></defs>
-              <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f5f5f5" />
-              <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{fontSize: 11, fontWeight: 'bold', fill: '#94a3b8'}} />
-              <YAxis axisLine={false} tickLine={false} tick={{fontSize: 11, fontWeight: 'bold', fill: '#94a3b8'}} tickFormatter={(v) => `${(v/1000).toLocaleString()}k`} />
-              <Tooltip contentStyle={{ borderRadius: '8px', border: '1px solid var(--border)', background: 'var(--card)', color: 'var(--foreground)', fontSize: '10px' }} formatter={(v: any) => v === null ? '---' : `${(v/1000).toLocaleString()}k`} />
-              <Area type="monotone" dataKey="stock" stroke="var(--primary)" strokeWidth={2.5} fill="url(#colorStock)" stackId="1" name="保守" />
-              <Area type="monotone" dataKey="shot" stroke="#3498db" strokeWidth={1} fillOpacity={0.05} stackId="1" name="案件" />
-            </AreaChart>
-          </ResponsiveContainer>
-        </div>
-      </Card>
     </div>
   );
 }
 
 function NavCard({ label, subLabel, value, unit, icon, color, onClick }: any) {
-  const colorClasses = {
-    emerald: "from-emerald-500 to-teal-600 shadow-emerald-200/50",
-    blue: "from-blue-500 to-indigo-600 shadow-blue-200/50",
-    amber: "from-amber-500 to-orange-600 shadow-amber-200/50"
+  const iconClasses = {
+    emerald: "bg-emerald-600/15 text-emerald-700",
+    blue: "bg-blue-600/15 text-blue-700",
+    amber: "bg-amber-600/15 text-amber-700"
   };
   
   return (
     <button 
       onClick={onClick}
-      className={cn(
-        "relative group overflow-hidden p-4 rounded-lg border transition-all text-left",
-        color === 'emerald' ? 'bg-emerald-500/5 border-emerald-500/20 hover:border-emerald-500/50 hover:bg-emerald-500/10' :
-        color === 'blue' ? 'bg-blue-500/5 border-blue-500/20 hover:border-blue-500/50 hover:bg-blue-500/10' : 
-        'bg-amber-500/5 border-amber-500/20 hover:border-amber-500/50 hover:bg-amber-500/10'
-      )}
+      className="relative group p-3 rounded-md border border-border bg-card hover:border-primary/60 transition-colors text-left"
     >
-      <div className={cn(
-        "absolute right-[-5px] top-[-5px] w-20 h-20 bg-gradient-to-br opacity-[0.03] group-hover:opacity-[0.08] transition-all rounded-full",
-        color === 'emerald' ? 'from-emerald-500 to-teal-600' :
-        color === 'blue' ? 'from-blue-500 to-indigo-600' : 'from-amber-500 to-orange-600'
-      )} />
-      
-      <div className="flex justify-between items-start mb-3">
-        <div className={cn(
-          "p-2 rounded-md text-white shadow-sm bg-gradient-to-br",
-          (colorClasses as any)[color]
-        )}>
+      <div className="flex justify-between items-start mb-2">
+        <div className={cn("p-1.5 rounded-md", (iconClasses as any)[color])}>
           {icon}
         </div>
-        <ArrowUpRight className="w-4 h-4 text-muted-foreground opacity-10 group-hover:opacity-100 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-all" />
+        <ArrowUpRight className="w-4 h-4 text-muted-foreground opacity-40 group-hover:opacity-100 group-hover:text-primary transition-all" />
       </div>
       
       <div className="relative z-10">
         <div className="flex flex-col mb-1">
-          <span className="text-xs font-black text-foreground uppercase tracking-widest">{label}</span>
-          <span className="text-[8px] font-bold text-primary uppercase tracking-widest">{subLabel}</span>
+          <span className="text-xs font-bold text-foreground uppercase tracking-wide">{label}</span>
+          <span className="text-[10px] font-bold text-primary uppercase tracking-wide">{subLabel}</span>
         </div>
         <div className="w-6 h-px bg-border my-2" />
         <div className="flex items-baseline gap-1.5">
-          <span className="text-3xl font-bold tracking-tight text-foreground leading-none">{value}</span>
-          <span className="text-[10px] font-bold text-muted-foreground">{unit}</span>
+          <span className="text-2xl font-bold tracking-tight text-foreground leading-none">{value}</span>
+          <span className="text-[11px] font-bold text-muted-foreground">{unit}</span>
         </div>
       </div>
-      
-      <div className={cn(
-        "absolute bottom-0 left-0 h-1 transition-all",
-        color === 'emerald' ? 'bg-emerald-500 w-0 group-hover:w-full' :
-        color === 'blue' ? 'bg-blue-500 w-0 group-hover:w-full' : 'bg-amber-500 w-0 group-hover:w-full'
-      )} />
     </button>
   );
 }
 
 function StatCardCompact({ label, subLabel, value, sub, icon, color, isPercent, onClick }: any) {
   return (
-    <Card className={cn("bg-card border border-border rounded-lg overflow-hidden group transition-all flex flex-col", onClick && "cursor-pointer hover:border-primary/50")} onClick={onClick}>
-      <div className={cn("h-1 w-full opacity-50 group-hover:opacity-100 transition-opacity shrink-0", color)} />
-      <CardContent className="p-4 flex flex-col flex-1">
-        <div className="flex justify-between items-start mb-3">
+    <Card className={cn("bg-card border border-border rounded-md ring-0 shadow-none overflow-hidden group transition-colors flex flex-col gap-0 py-0", onClick && "cursor-pointer hover:border-primary/60")} onClick={onClick}>
+      <CardContent className="p-3 flex flex-col flex-1">
+        <div className="flex justify-between items-start mb-2 gap-2">
           <div className={cn("p-1.5 rounded-md text-white shrink-0", color)}>{icon}</div>
           <div className="text-right leading-none min-w-0">
-            <span className="text-xs font-black text-foreground uppercase tracking-widest block mb-1 truncate">{label}</span>
-            <span className="text-[8px] font-bold text-primary uppercase tracking-widest truncate block">{subLabel}</span>
+            <span className="text-xs font-bold text-foreground uppercase tracking-normal block mb-1 truncate">{label}</span>
+            <span className="text-[10px] font-bold text-primary uppercase tracking-wide truncate block">{subLabel}</span>
           </div>
         </div>
         <div className="mt-auto">
-          <div className="w-full h-px bg-border/50 mb-2" />
+          <div className="w-full h-px bg-border mb-2" />
           <div className="flex items-baseline gap-1.5">
-            <span className={cn("text-2xl font-bold tracking-tight", isPercent ? (parseInt(value) >= 0 ? "text-primary" : "text-destructive") : "text-foreground")}>{value}</span>
+            <span className={cn("text-xl font-bold tracking-tight", isPercent ? (parseInt(value) >= 0 ? "text-primary" : "text-destructive") : "text-foreground")}>{value}</span>
           </div>
-          <p className="text-[9px] font-bold text-muted-foreground uppercase tracking-widest mt-1.5 truncate">{sub}</p>
+          <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-wide mt-1 truncate">{sub}</p>
         </div>
       </CardContent>
     </Card>
